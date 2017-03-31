@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/BrianLTJ/se-project/issues"
   },
-  "homepage": "https://github.com/BrianLTJ/se-project#readme"
+  "homepage": "https://github.com/BrianLTJ/se-project#readme",
+  "dependencies": {
+    "vue": "^2.2.6"
+  }
 }
