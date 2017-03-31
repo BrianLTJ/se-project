@@ -1,0 +1,19 @@
+{
+  "name": "se-project",
+  "version": "1.0.0",
+  "description": "Software Engineering project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BrianLTJ/se-project.git"
+  },
+  "author": "litingjun",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BrianLTJ/se-project/issues"
+  },
+  "homepage": "https://github.com/BrianLTJ/se-project#readme"
+}
