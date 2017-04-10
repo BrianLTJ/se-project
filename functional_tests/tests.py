@@ -1,4 +1,14 @@
+'''
+
+Author: Tingjun Li
+Function:
+Functional tests
+
+'''
+
 from selenium import webdriver
+from django.test import LiveServerTestCase
+
 
 browser = webdriver.PhantomJS()
 
