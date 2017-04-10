@@ -9,14 +9,13 @@ Functional tests
 from selenium import webdriver
 from django.test import LiveServerTestCase
 
+class NewVisitorTest(LiveServerTestCase):
+    def test_index_visit(self):
+        self.browser = webdriver.PhantomJS()
 
-browser = webdriver.PhantomJS()
+        # 首页标题
+        self.browser.get(self.live_server_url)
 
-# 首页标题
-browser.get('http://localhost:8000')
+        assert '大学图书管理系统' in self.browser.title
 
-assert '大学图书管理系统' in browser.title
-
-
-
-browser.quit()
+        self.browser.quit()
