@@ -32,7 +32,13 @@ class AddBookTest(LiveServerTestCase):
     def test_add_book(self):
         self.browser.get(self.live_server_url+'/api/book/book/add')
         jsontest = self.browser.find_element_by_tag_name('pre').text
-        self.assertIn('{\"result\": \"ok\", \"book_id\": \"12345\"}', jsontest)
+        # self.assertIn('\"book_id\": \"12345\"', jsontest)
+        # self.assertIn('\"result\": \"ok\"', jsontest)
+        self.assertIn('\"message\": \"Not a valid request.\"', jsontest)
+        self.assertIn('\"result\": \"error\"', jsontest)
+
+    # def test_get_book_detail(self):
+
 
     def tearDown(self):
         self.browser.quit()

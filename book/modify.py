@@ -9,10 +9,18 @@ from book.models import Book, Author, Category, Tag, LibBook
 import json
 
 def book_add(request):
-
     response_data = {}
-    response_data['result'] = 'ok'
-    response_data['book_id'] = '12345'
+    response_data['result'] = 'error'
+    if request.method == "POST":
+        # Requests
+        raw_data = request.body
+
+
+        # Response Data
+        response_data['result'] = 'ok'
+        response_data['book_id'] = '12345'
+    else:
+        response_data['message'] = 'Not a valid request.'
 
     return JsonResponse(response_data)
 
