@@ -18,6 +18,7 @@
   "homepage": "https://github.com/BrianLTJ/se-project#readme",
   "dependencies": {
     "jquery": "^3.2.1",
+    "js-cookie": "^2.1.4",
     "vue": "^2.2.6"
   }
 }
