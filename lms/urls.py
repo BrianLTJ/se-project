@@ -18,6 +18,7 @@ from django.contrib import admin
 
 urlpatterns = [
     #url(r'^admin/', admin.site.urls),
-    url(r'api/book', include('book.urls', namespace='book')),
+    url(r'api/book/', include('book.urls', namespace='book', app_name='book')),
+    url(r'admin/',include('index.admin_urls', namespace='admin_urls')),
     url(r'^', include('index.urls', namespace="index")),
 ]

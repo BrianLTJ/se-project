@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>添加图书</title>
+    <script src="/static/jquery/dist/jquery.js"></script>
+</head>
+<body>
+<form id="new-book-info">
+    <div><label for="">ISBN</label><input type="text" name="isbn"></div>
+    <div><label for="">标题</label><input type="text" name="title"></div>
+    <div><label for="">版次</label><input type="text" name="edition"></div>
+    <div><label for="">出版社</label><input type="text" name="pubhouse"></div>
+    <div><label for="">出版时间</label><input type="text" name="pubtime"></div>
+    <div><label for="">摘要</label><input type="text" name="summary"></div>
+    <div><label for="">章节目录</label><input type="text" name="context"></div>
+    <div><label for="">图书分类号</label><input type="text" name="clc"></div>
+    <div><label for="">价格</label><input type="text" name="price"></div>
+</form>
+<button id="btn-save" onclick="submitform()">保存</button>
+
+<script>
+var posturl='{% url 'book:add' %}';
+function submitform(){
+    var formdata = $("#new-book-info").serializeArray();
+    $.post(posturl, formdata, function( data ) {console.log(data)});
+}
+</script>
+</body>
+</html>

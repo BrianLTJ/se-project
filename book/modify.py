@@ -14,6 +14,11 @@ def book_add(request):
     if request.method == "POST":
         # Requests
         raw_data = request.body
+        req = json.loads(raw_data)
+
+        print(req['isbn'])
+
+
 
 
         # Response Data

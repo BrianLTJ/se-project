@@ -8,3 +8,4 @@ def index_index(request):
 
 def search_index(request):
     return render(request, template_name='search/index.html')
+
