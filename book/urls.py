@@ -4,6 +4,7 @@ from book import modify as book_modify
 
 urlpatterns =[
     url(r'book/add', book_modify.book_add, name='add'),
-    url(r'detail/book', book_query.book_detail),
+
+    url(r'book/detail/(.+)', book_query.book_detail, name='detail'),
     # url(r'detail/libbook', ),
 ]

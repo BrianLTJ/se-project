@@ -15,14 +15,42 @@ def book_add(request):
     response_data['result'] = 'error'
     if request.method == "POST":
         # Requests
-        raw_data = request.body
-        req = json.loads(raw_data)
+        req = json.loads(request.body.decode('utf-8'))
+        
+        attrlist = [
+            "isbn",
+            "title",
+            "edition",
+            "pubhouse",
+            "pubtime",
+            "summary",
+            "context",
+            "clc",
+            "price"
+        ]
+        # print(req)
+        # print(type(req))
+
+        book_item = Book()
+        book_item.isbn = req['isbn']
+        book_item.title= req['title']
+        book_item.edition = req['edition']
+        book_item.pubhouse = req['pubhouse']
+        book_item.pubtime = req['pubtime']
+        book_item.summary = req['summary']
+        book_item.context = req['context']
+        book_item.clc = req['clc']
+        book_item.price = req['price']
 
 
-
-        # Response Data
-        response_data['result'] = 'ok'
-        response_data['book_id'] = '12345'
+        try:
+            book_item.save()
+            # Response Data
+            response_data['result'] = 'ok'
+            response_data['book_id'] = book_item.bookid
+        except:
+            response_data['message'] = 'Fail to save data.'
+        
     else:
         response_data['message'] = 'Not a valid request.'
 

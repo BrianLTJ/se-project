@@ -13,22 +13,22 @@
 <body>
 <div id="formarea">
     <form id="new-book-info">
-        <div><label for="">ISBN</label><input type="text" name="isbn" v-model="isbn"></div>
-        <div><label for="">标题</label><input type="text" name="title" v-model="title"></div>
-        <div><label for="">版次</label><input type="text" name="edition" v-model="edition"></div>
-        <div><label for="">出版社</label><input type="text" name="pubhouse" v-model="pubhouse"></div>
-        <div><label for="">出版时间</label><input type="text" name="pubtime" v-model="pubtime"></div>
-        <div><label for="">摘要</label><input type="text" name="summary" v-model="summary"></div>
-        <div><label for="">章节目录</label><input type="text" name="context" v-model="context"></div>
-        <div><label for="">图书分类号</label><input type="text" name="clc" v-model="clc"></div>
-        <div><label for="">价格</label><input type="text" name="price" v-model="price"></div>
+        <div><label for="">ISBN</label><input type="text" name="isbn" id="isbn" v-model="isbn"></div>
+        <div><label for="">标题</label><input type="text" name="title" id="title" v-model="title"></div>
+        <div><label for="">版次</label><input type="text" name="edition" id="edition" v-model="edition"></div>
+        <div><label for="">出版社</label><input type="text" name="pubhouse" id="pubhouse" v-model="pubhouse"></div>
+        <div><label for="">出版时间</label><input type="text" name="pubtime" id="pubtime" v-model="pubtime"></div>
+        <div><label for="">摘要</label><input type="text" name="summary" id="summary" v-model="summary"></div>
+        <div><label for="">章节目录</label><input type="text" name="context" id="context" v-model="context"></div>
+        <div><label for="">图书分类号</label><input type="text" name="clc" id="clc" v-model="clc"></div>
+        <div><label for="">价格</label><input type="text" name="price" id="price" v-model="price"></div>
     </form>
     <button id="btn-save" onclick="submitform()">保存</button>
 </div>
 
 
 <script>
-var posturl='{% url 'book:add' %}';
+var posturl="{% url 'book:add' %}";
 
 var formapp=new Vue({
     el: "#formarea",
@@ -49,10 +49,11 @@ var formapp=new Vue({
 function submitform(){
     $.post({
         url: posturl,
-        data: JSON.stringify(formapp.$data),
+        data: "["+JSON.stringify(formapp.$data)+"]",
         success: function( data ) {console.log(data)}
     });
 }
+
 
 
 </script>

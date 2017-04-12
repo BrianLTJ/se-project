@@ -5,9 +5,52 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="/static/vue/dist/vue.js"></script>
+    <script src="/static/jquery/dist/jquery.js"></script>
     <title>图书详情</title>
 </head>
 <body>
+<div id="book-info">
+    <div>ISBN: ${ book.isbn }</div>
+    <div></div>
+    <div>标题: ${ book.title }</div>
+    <div>版次: ${ book.edition }</div>
+    <div>出版社: ${ book.pubhouse }</div>
+    <div>出版时间: ${ book.pubtime }</div>
+    <div>摘要: ${ book.summary }</div>
+    <div>目录: ${ book.context }</div>
+    <div>索书号: ${ book.clc }</div>
+    <div>价格: ${ book.price }</div>
+</div>
+<script>
+    
+    var bookinfo = new Vue({
+        el: "#book-info",
+        data: {
+            book: {
+                isbn: "",
+                cover: "",
+                title: "",
+                edition: "",
+                pubhouse: "",
+                pubtime: "",
+                summary: "",
+                context: "",
+                clc: "",
+                price: ""
+            }
+        },
+        delimiters: ['${', '}']
+    });
 
+    $.get({
+        url: "/api/book/book/detail/{{ book_id }}",
+        success: function(data){
+            if(data.length>1) {
+                bookinfo.$data['book']=data;
+            }
+        }
+        });
+</script>
 </body>
 </html>
