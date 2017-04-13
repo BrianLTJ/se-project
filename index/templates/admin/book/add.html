@@ -9,6 +9,7 @@
     <script src="/static/vue/dist/vue.js"></script>
     <script src="/static/jquery/dist/jquery.js"></script>
     <script src="/static/js-cookie/src/js.cookie.js"></script>
+    <script src="/static/jquery-json/dist/jquery.json.min.js"></script>
 </head>
 <body>
 <div id="formarea">
@@ -27,22 +28,24 @@
         <div><label for="">价格</label><input type="text" name="price" id="price" v-model="book.price"></div>
 
         <div><label for="">分类</label>
-            <select name="" id="cate_sel">
+            <select name="" id="cate-sel">
                 <option value="">(请选择)</option>
-                <option :value="item.id" v-for="item in cates">
-                    {{ item.text }}
-                </option>
+                <option
+                        is="cate-option"
+                        v-for="c in cates"
+                        v-bind:id="c.id"
+                        v-bind:text="c.text"></option>
             </select>
-            <button id="btn-addcate-from-list">确定</button>
+            <button type="button" id="btn-addcate-from-list">确定</button>
 
             <div>
-                <input type="text" placeholder="或者在这儿输入新的分类" v-model="newcate">
-            <button id="btn-addnewcate">添加新分类</button>
+                <input type="text" id="input-newcate" placeholder="或者在这儿输入新的分类" v-model="newcate">
+            <button type="button" id="btn-addnewcate" @click="addcate()">添加新分类</button>
             </div>
 
         </div>
     </form>
-    <button id="btn-save" @click="submitform()">保存</button>
+    <button id="btn-save" type="button" @click="submitform()">保存</button>
     {% endverbatim %}
 </div>
 
@@ -50,8 +53,12 @@
 <script>
 var posturl="{% url 'book:add' %}";
 var cate_list="{% url 'book:cate_list' %}";
-var cate_add="{%  %}"
-
+var cate_add="{% url 'book:cate_add' %}";
+{% verbatim %}
+Vue.component("cate-option",{
+    template: "<option value='id'>{{ text }}</option>",
+    props: ['id', 'text']
+});
 var formapp=new Vue({
     el: "#formarea",
     data: {
@@ -67,7 +74,10 @@ var formapp=new Vue({
             summary: "",
             context: "",
             clc: "",
-            price: ""
+            price: "",
+            categories: [
+
+            ]
         },
         cates: [
         ],
@@ -83,24 +93,39 @@ var formapp=new Vue({
                 }
             });
         },
+
         fetchcates: function(){
+            console.log("123");
             $.get({
                 url: cate_list,
                 success: function(data) {
                     // Get cate list
                     if(data['result']=='ok'){
-                        bookinfo.$data['book']=$.evalJSON(data['data'])[0]['fields'];
+                        console.log(data['data']);
+                        formapp.$data['cates']=$.evalJSON(data['data']);
                     }
                 }
             })
         },
+
         addcate: function () {
-            $.post
+            $.post({
+                url: cate_add,
+                data: $.toJSON({text:this.$data['newcate']}),
+                success: function (data) {
+                    if(data['result']=='ok'){
+                        formapp.fetchcates();
+                        formapp.$data['newcate']="";
+                    }
+                }
+            });
         }
     }
 });
 
-
+// Fetch catelist
+    formapp.fetchcates();
+{% endverbatim %}
 </script>
 </body>
 </html>

@@ -46,7 +46,20 @@ class AddBookTest(StaticLiveServerTestCase):
 
     def test_cate_list(self):
         # Add cate from add book
-
         self.browser.get(self.live_server_url+'/admin/book/add')
+        new_cate_input=self.browser.find_element_by_id("input-newcate")
+        new_cate_add_btn = self.browser.find_element_by_id("btn-addnewcate")
+        for item in AddBookTest.catelist1:
+            new_cate_input.send_keys(item)
+            new_cate_add_btn.click()
+            time.sleep(0.5)
+
+        catelist = self.browser.find_elements_by_tag_name("option")
+        catelisttext=[]
+        for i in catelist:
+            catelisttext.append(i.text)
+
+        for item in AddBookTest.catelist1:
+            self.assertTrue(item in catelisttext)
 
 
