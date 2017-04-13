@@ -48,20 +48,5 @@ def book_detail(request, bid):
 # Show lib book details
 
 
-# Show cate list
-def cate_list(request):
-    response_data = {}
-    response_data['result'] = 'error'
-    if request.method == "GET":
-        try:
-            cates = Category.objects.all()
-            response_data['result'] = 'ok'
-            response_data['data'] = serializers.serialize('json', cates)
-        except:
-            response_data['result'] = 'error'
-            response_data['message'] = 'Fail to fetch categories.'
-    else:
-        response_data['message'] = 'Not a valid request.'
 
-    return JsonResponse(response_data)
 
