@@ -15,6 +15,8 @@
     <form id="new-book-info">
         <div><label for="">ISBN</label><input type="text" name="isbn" id="isbn" v-model="isbn"></div>
         <div><label for="">标题</label><input type="text" name="title" id="title" v-model="title"></div>
+        <div><label for="">作者</label><input type="text" name="author" id="author" v-model="author"></div>
+        <div><label for="">译者</label><input type="text" name="translator" id="translator" v-model="translator"></div>
         <div><label for="">版次</label><input type="text" name="edition" id="edition" v-model="edition"></div>
         <div><label for="">出版社</label><input type="text" name="pubhouse" id="pubhouse" v-model="pubhouse"></div>
         <div><label for="">出版时间</label><input type="text" name="pubtime" id="pubtime" v-model="pubtime"></div>
@@ -22,8 +24,10 @@
         <div><label for="">章节目录</label><input type="text" name="context" id="context" v-model="context"></div>
         <div><label for="">图书分类号</label><input type="text" name="clc" id="clc" v-model="clc"></div>
         <div><label for="">价格</label><input type="text" name="price" id="price" v-model="price"></div>
+
+        <div><label for=""></label><input type="text" name="" id=""></div>
     </form>
-    <button id="btn-save" onclick="submitform()">保存</button>
+    <button id="btn-save" @click="submitform()">保存</button>
 </div>
 
 
@@ -36,7 +40,8 @@ var formapp=new Vue({
         isbn: "",
         cover: "",
         title: "",
-
+        author: "",
+        translator: "",
         edition: "",
         pubhouse: "",
         pubtime: "",
@@ -44,16 +49,17 @@ var formapp=new Vue({
         context: "",
         clc: "",
         price: ""
+    },
+    methods: {
+        submitform: function(){
+            $.post({
+                url: posturl,
+                data: "["+JSON.stringify(this.$data)+"]",
+                success: function( data ) {console.log(data)}
+            });
+        }
     }
 });
-function submitform(){
-    $.post({
-        url: posturl,
-        data: "["+JSON.stringify(formapp.$data)+"]",
-        success: function( data ) {console.log(data)}
-    });
-}
-
 
 
 </script>
