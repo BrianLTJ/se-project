@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from django.core import serializers, exceptions
 import json
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
-from book.models import Book, Author, Tag, Category
+from book.models import Book, Tag, Category
 
 
 def ValuesQuerySetToDict(vqs):

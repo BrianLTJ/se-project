@@ -5,7 +5,7 @@ Functions for Adding, Editing books, author, etc
 
 '''
 from django.http import JsonResponse
-from book.models import Book, Author, Category, Tag, LibBook
+from book.models import Book, Category, Tag, LibBook
 import json
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
@@ -17,10 +17,6 @@ def book_add(request):
         # Requests
         req = json.loads(request.body.decode('utf-8'))
         req = req[0]
-
-        # print(req)
-        # print(type(req))
-        # print(req[0]['isbn'])
 
         book_item = Book()
         book_item.isbn = req['isbn']
