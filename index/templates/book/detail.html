@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="/static/vue/dist/vue.js"></script>
     <script src="/static/jquery/dist/jquery.js"></script>
+    <script src="/static/jquery-json/dist/jquery.json.min.js"></script>
     <title>图书详情</title>
 </head>
 <body>
@@ -46,9 +47,9 @@
     $.get({
         url: "/api/book/book/detail/{{ book_id }}",
         success: function(data){
-            if(data.length>1) {
-                bookinfo.$data['book']=data;
-            }
+            console.log(data['data']);
+            bookinfo.$data['book']=$.evalJSON(data['data'])[0]['fields'];
+
         }
         });
 </script>

@@ -16,20 +16,11 @@ def book_add(request):
     if request.method == "POST":
         # Requests
         req = json.loads(request.body.decode('utf-8'))
-        
-        attrlist = [
-            "isbn",
-            "title",
-            "edition",
-            "pubhouse",
-            "pubtime",
-            "summary",
-            "context",
-            "clc",
-            "price"
-        ]
+        req = req[0]
+
         # print(req)
         # print(type(req))
+        # print(req[0]['isbn'])
 
         book_item = Book()
         book_item.isbn = req['isbn']
@@ -42,7 +33,7 @@ def book_add(request):
         book_item.clc = req['clc']
         book_item.price = req['price']
 
-
+        # book_item.save()
         try:
             book_item.save()
             # Response Data
