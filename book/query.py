@@ -31,8 +31,8 @@ def book_detail(request, bid):
         # response_data['data'] = serializers.serialize('json',book_item)
         try:
             book_item = Book.objects.filter(bookid=bid)
-            # if len(book_item)!=1:
-            #     raise exceptions.ObjectDoesNotExist
+            if len(book_item)!=1:
+                raise exceptions.ObjectDoesNotExist
 
             response_data['result'] = 'ok'
             response_data['data']=serializers.serialize('json',book_item)
@@ -46,4 +46,22 @@ def book_detail(request, bid):
     return JsonResponse(response_data)
 
 # Show lib book details
+
+
+# Show cate list
+def cate_list(request):
+    response_data = {}
+    response_data['result'] = 'error'
+    if request.method == "GET":
+        try:
+            cates = Category.objects.all()
+            response_data['result'] = 'ok'
+            response_data['data'] = serializers.serialize('json', cates)
+        except:
+            response_data['result'] = 'error'
+            response_data['message'] = 'Fail to fetch categories.'
+    else:
+        response_data['message'] = 'Not a valid request.'
+
+    return JsonResponse(response_data)
 

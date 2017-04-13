@@ -15,7 +15,7 @@ class AddBookTest(StaticLiveServerTestCase):
     testadd = [["isbn", "9787505715660"], ["title", "小王子"], ["author", "（法）圣埃克苏佩里"], ["translator", "胡雨苏"],["edition", "13014"], ["pubhouse", "中国友谊出版公司"], ["pubtime", "12342253"],["summary", "小王子驾到！大家好，我是小王子，生活在B612星球，别看我是王子出生，我要做的事也不少，有时给花浇水，有时我还得耐心地把火山口通一通。实在闷得发慌的时候，为了找些事做"],["context", "序言：法兰西玫瑰 小王子 圣埃克苏佩里年表"], ["clc", "239/6"], ["price", "11.4"]]
 
     def setUp(self):
-        self.browser = webdriver.Chrome()
+        self.browser = webdriver.PhantomJS()
 
 
     def tearDown(self):
