@@ -21,6 +21,8 @@ def book_add(request):
         book_item = Book()
         book_item.isbn = req['isbn']
         book_item.title= req['title']
+        book_item.author = req['author']
+        book_item.translator = req['translator']
         book_item.edition = req['edition']
         book_item.pubhouse = req['pubhouse']
         book_item.pubtime = req['pubtime']
