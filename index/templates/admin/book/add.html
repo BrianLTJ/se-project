@@ -28,7 +28,7 @@
         <div><label for="">价格</label><input type="text" name="price" id="price" v-model="book.price"></div>
 
         <div><label for="">分类</label>
-            <select name="" id="cate-sel">
+            <select name="" id="cate-sel" v-model="cateidtoadd">
                 <option value="">(请选择)</option>
                 <option
                         is="cate-option"
@@ -36,8 +36,14 @@
                         v-bind:id="c.id"
                         v-bind:text="c.text"></option>
             </select>
-            <button type="button" id="btn-addcate-from-list">确定</button>
-
+            <button type="button" id="btn-addcate-from-list" @click="catetolist()">添加</button>
+        <div>
+            <span
+                    is="cate-item"
+                    v-for="c in book.categories"
+                    v-bind:text="c.text"
+            ></span>
+        </div>
             <div>
                 <input type="text" id="input-newcate" placeholder="或者在这儿输入新的分类" v-model="newcate">
             <button type="button" id="btn-addnewcate" @click="addcate()">添加新分类</button>
@@ -56,8 +62,12 @@ var cate_list="{% url 'book:cate_list' %}";
 var cate_add="{% url 'book:cate_add' %}";
 {% verbatim %}
 Vue.component("cate-option",{
-    template: "<option value='id'>{{ text }}</option>",
+    template: "<option :value='id'>{{ text }}</option>",
     props: ['id', 'text']
+});
+Vue.component("cate-item",{
+    template: "<span>{{ text }}</span>",
+    props: ['text']
 });
 var formapp=new Vue({
     el: "#formarea",
@@ -81,7 +91,8 @@ var formapp=new Vue({
         },
         cates: [
         ],
-        newcate: ""
+        newcate: "",
+        cateidtoadd: ""
     },
     methods: {
         submitform: function(){
@@ -94,15 +105,23 @@ var formapp=new Vue({
             });
         },
 
-        fetchcates: function(){
-            console.log("123");
+        fetchcates: function(callback){
+            var arg_num=arguments.length;
             $.get({
                 url: cate_list,
                 success: function(data) {
                     // Get cate list
+                    //console.log("Before fetch, the length of cates:"+formapp.$data['cates'].length.toString());
                     if(data['result']=='ok'){
-                        console.log(data['data']);
                         formapp.$data['cates']=$.evalJSON(data['data']);
+                        //console.log("After fetch, the length of cates:"+formapp.$data['cates'].length.toString());
+                        if(arg_num>0){
+                            try {
+                            callback();
+                            }
+                            finally {}
+                        }
+
                     }
                 }
             })
@@ -111,15 +130,52 @@ var formapp=new Vue({
         addcate: function () {
             $.post({
                 url: cate_add,
-                data: $.toJSON({text:this.$data['newcate']}),
+                data: $.toJSON({text: this.$data['newcate']}),
                 success: function (data) {
-                    if(data['result']=='ok'){
-                        formapp.fetchcates();
-                        formapp.$data['newcate']="";
+                    if (data['result'] == 'ok') {
+                        formapp.fetchcates(function () {
+                            formapp.$data['newcate'] = "";
+                            //Add to selected cate list
+                            formapp.$data['cateidtoadd']=data['data']['id'];
+                            formapp.catetolist();
+                        });
+
                     }
                 }
             });
+        },
+        // 将选定的category加入book.categories
+        catetolist: function () {
+            var cate_exists = false;
+            var cate_text_found=false;
+            console.log(formapp.$data['cateidtoadd']);
+            // Judge if cate already exists in book's cates
+            for(var j=0;j<formapp.$data['book']['categories'].length;j++){
+                if(formapp.$data['cateidtoadd']==formapp.$data['book']['categories'][j]['id']){
+                    cate_exists=true;
+                    break;
+                }
+            }
+
+
+            if(!cate_exists){
+                var i=0;
+                console.log(formapp.$data['cates'].length);
+                for(i=0;i<formapp.$data['cates'].length;i++){
+                    //console.log(formapp.$data['cates'][i]['id']);
+                    //console.log(formapp.$data['cateidtoadd']);
+                    if(formapp.$data['cates'][i]['id']==formapp.$data['cateidtoadd']){
+                        cate_text_found=true;
+                        break;
+                    }
+                }
+
+                if(cate_text_found){
+                    formapp.$data['book']['categories'].push({id: formapp.$data['cateidtoadd'], text: formapp.$data['cates'][i]['text'] });
+                }
+            }
         }
+
     }
 });
 
