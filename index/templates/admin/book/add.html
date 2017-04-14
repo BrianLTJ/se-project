@@ -40,7 +40,7 @@
         <div>
             <span
                     is="cate-item"
-                    v-for="c in book.categories"
+                    v-for="c in book.category"
                     v-bind:text="c.text"
             ></span>
         </div>
@@ -85,7 +85,7 @@ var formapp=new Vue({
             context: "",
             clc: "",
             price: "",
-            categories: [
+            category: [
 
             ]
         },
@@ -96,11 +96,14 @@ var formapp=new Vue({
     },
     methods: {
         submitform: function(){
+            console.log(this.$data['book']);
+
             $.post({
                 url: posturl,
                 data: "["+JSON.stringify(this.$data['book'])+"]",
                 success: function( data ) {
                     // Successfully posted data
+                    console.log(data);
                 }
             });
         },
@@ -132,6 +135,7 @@ var formapp=new Vue({
                 url: cate_add,
                 data: $.toJSON({text: this.$data['newcate']}),
                 success: function (data) {
+
                     if (data['result'] == 'ok') {
                         formapp.fetchcates(function () {
                             formapp.$data['newcate'] = "";
@@ -144,14 +148,14 @@ var formapp=new Vue({
                 }
             });
         },
-        // 将选定的category加入book.categories
+        // 将选定的category加入book.category
         catetolist: function () {
             var cate_exists = false;
             var cate_text_found=false;
             console.log(formapp.$data['cateidtoadd']);
             // Judge if cate already exists in book's cates
-            for(var j=0;j<formapp.$data['book']['categories'].length;j++){
-                if(formapp.$data['cateidtoadd']==formapp.$data['book']['categories'][j]['id']){
+            for(var j=0;j<formapp.$data['book']['category'].length;j++){
+                if(formapp.$data['cateidtoadd']==formapp.$data['book']['category'][j]['id']){
                     cate_exists=true;
                     break;
                 }
@@ -171,7 +175,7 @@ var formapp=new Vue({
                 }
 
                 if(cate_text_found){
-                    formapp.$data['book']['categories'].push({id: formapp.$data['cateidtoadd'], text: formapp.$data['cates'][i]['text'] });
+                    formapp.$data['book']['category'].push({id: formapp.$data['cateidtoadd'], text: formapp.$data['cates'][i]['text'] });
                 }
             }
         }

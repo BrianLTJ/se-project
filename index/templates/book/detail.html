@@ -11,22 +11,37 @@
     <title>图书详情</title>
 </head>
 <body>
+{% verbatim %}
 <div id="book-info">
-    <div>ISBN: ${ book.isbn }</div>
+    <div>ISBN: {{ book.isbn }}</div>
     <div></div>
-    <div>标题: ${ book.title }</div>
-    <div>作者: ${ book.author }</div>
-    <div>译者: ${ book.translator }</div>
-    <div>版次: ${ book.edition }</div>
-    <div>出版社: ${ book.pubhouse }</div>
-    <div>出版时间: ${ book.pubtime }</div>
-    <div>摘要: ${ book.summary }</div>
-    <div>目录: ${ book.context }</div>
-    <div>索书号: ${ book.clc }</div>
-    <div>价格: ${ book.price }</div>
+    <div>标题: {{ book.title }}</div>
+    <div>作者: {{ book.author }}</div>
+    <div>译者: {{ book.translator }}</div>
+    <div>版次: {{ book.edition }}</div>
+    <div>出版社: {{ book.pubhouse }}</div>
+    <div>出版时间: {{ book.pubtime }}</div>
+    <div>摘要: {{ book.summary }}</div>
+    <div>目录: {{ book.context }}</div>
+    <div>索书号: {{ book.clc }}</div>
+    <div>价格: {{ book.price }}</div>
+    <div>
+        分类：
+        <div>
+            <span
+                is="cate-item"
+                v-for="cate in book.category"
+                v-bind:text="cate.text"
+            ></span>
+        </div>
+    </div>
 </div>
+{% endverbatim %}
 <script>
-    
+    Vue.component('cate-item',{
+        template: "<span class='cate-item'>{{ text }}</span>",
+        probs: ['text']
+    });
     var bookinfo = new Vue({
         el: "#book-info",
         data: {
@@ -42,10 +57,11 @@
                 summary: "",
                 context: "",
                 clc: "",
+                category: [
+                ],
                 price: ""
             }
-        },
-        delimiters: ['${', '}']
+        }
     });
 
     $.get({

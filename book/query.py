@@ -9,11 +9,6 @@ import json
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from book.models import Book, Tag, Category
 
-
-def ValuesQuerySetToDict(vqs):
-    return [item for item in vqs]
-
-
 # List book
 def book_query_list(request):
 

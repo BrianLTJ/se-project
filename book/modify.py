@@ -30,8 +30,17 @@ def book_add(request):
         book_item.context = req['context']
         book_item.clc = req['clc']
         book_item.price = req['price']
+        # add cate
+        book_item.save()
+        for item in req['category']:
+            try:
+                # print(item['id'])
+                cate = Category.objects.get(id=item['id'])
+                book_item.category.add(cate)
+            except:
+                pass
 
-        # book_item.save()
+        # Save book
         try:
             book_item.save()
             # Response Data

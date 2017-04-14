@@ -54,3 +54,23 @@ def cate_add(request):
         response_data['message'] = 'Not a valid request.'
 
     return JsonResponse(response_data)
+
+
+def cate_getname(request):
+    response_data = {}
+    response_data['result'] = 'error'
+    if request.method == "POST":
+        req = json.loads(request.body.decode('utf-8'))
+        cate_id = req['id']
+        try:
+            cate = Category.objects.get(id=cate_id)
+            response_data['result'] = 'ok'
+            response_data['data'] = {'text': cate.text, 'id': cate.id}
+        except:
+            response_data['result'] = 'error'
+            response_data['message'] = 'Not found.'
+    else:
+        response_data['message'] = 'Not a valid request.'
+
+    return JsonResponse(response_data)
+
