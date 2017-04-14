@@ -12,4 +12,8 @@ urlpatterns =[
     # category
     url(r'cate/list', book_category.cate_list, name='cate_list'),
     url(r'cate/add', book_category.cate_add, name='cate_add'),
+
+    # tag
+    url(r'tag/list', book_category.tag_list, name='tag_list'),
+    url(r'tag/add', book_category.tag_add, name='tag_add'),
 ]

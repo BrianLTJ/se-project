@@ -30,6 +30,15 @@
 
         </div>
     </div>
+    <div>
+        标签：
+        <div>
+            {% for tag in book.tag.all %}
+                <span class="tag-item">{{ tag.text }}</span>
+            {% endfor %}
+
+        </div>
+    </div>
 </div>
 </body>
 </html>

@@ -34,8 +34,8 @@ def cate_list(request):
 
     return JsonResponse(response_data)
 
-@csrf_exempt
 # Add cate
+@csrf_exempt
 def cate_add(request):
     response_data = {}
     response_data['result'] = 'error'
@@ -69,6 +69,53 @@ def cate_getname(request):
         except:
             response_data['result'] = 'error'
             response_data['message'] = 'Not found.'
+    else:
+        response_data['message'] = 'Not a valid request.'
+
+    return JsonResponse(response_data)
+
+
+# Tag list
+def tag_list(request):
+    response_data = {}
+    response_data['result'] = 'error'
+    if request.method == "GET":
+        try:
+            tags = Tag.objects.all()
+            respdata = list()
+            for item in tags:
+                tagitem = {}
+                tagitem['id']=item.id
+                tagitem['text']=item.text
+                tagitem['note']=item.note
+                respdata.append(tagitem)
+
+            response_data['result'] = 'ok'
+            response_data['data'] = json.dumps(respdata)
+        except:
+            response_data['result'] = 'error'
+            response_data['message'] = 'Fail to fetch categories.'
+    else:
+        response_data['message'] = 'Not a valid request.'
+
+    return JsonResponse(response_data)
+
+# Add cate
+@csrf_exempt
+def tag_add(request):
+    response_data = {}
+    response_data['result'] = 'error'
+    if request.method == "POST":
+        req = json.loads(request.body.decode('utf-8'))
+        tag_name = req
+        tag = Tag(text=tag_name['text'])
+        try:
+            tag.save()
+            response_data['result'] = 'ok'
+            response_data['data'] = {'text': tag_name['text'], 'id': tag.id}
+        except:
+            response_data['result'] = 'error'
+            response_data['message'] = 'Fail to fetch taggories.'
     else:
         response_data['message'] = 'Not a valid request.'
 

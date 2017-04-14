@@ -52,6 +52,15 @@ class AddBookTest(StaticLiveServerTestCase):
         for item in AddBookTest.catelist1:
             self.assertTrue(item in catelisttext)
 
+        # Add tag
+        new_tag_input = self.browser.find_element_by_id("input-newtag")
+        new_tag_add_btn = self.browser.find_element_by_id("btn-addnewtag")
+        for item in AddBookTest.taglist:
+            new_tag_input.send_keys(item)
+            new_tag_add_btn.click()
+            time.sleep(0.3)
+
+
         submitbtn = self.browser.find_element_by_id('btn-save')
         submitbtn.click()
 
@@ -72,4 +81,13 @@ class AddBookTest(StaticLiveServerTestCase):
 
         for item in AddBookTest.catelist1:
             self.assertTrue(item in catelisttext)
+
+        # test tags
+        tags = self.browser.find_elements_by_class_name('tag-item')
+        taglisttext = []
+        for i in tags:
+            taglisttext.append(i.text)
+
+        for item in AddBookTest.taglist:
+            self.assertTrue(item in taglisttext)
 

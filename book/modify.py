@@ -40,6 +40,14 @@ def book_add(request):
             except:
                 pass
 
+        # add tag
+        for item in req['tag']:
+            try:
+                tag = Tag.objects.get(id=item['id'])
+                book_item.tag.add(tag)
+            except:
+                pass
+
         # Save book
         try:
             book_item.save()

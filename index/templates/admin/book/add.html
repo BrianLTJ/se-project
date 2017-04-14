@@ -48,7 +48,28 @@
                 <input type="text" id="input-newcate" placeholder="或者在这儿输入新的分类" v-model="newcate">
             <button type="button" id="btn-addnewcate" @click="addcate()">添加新分类</button>
             </div>
-
+        </div>
+        <div><label for="">标签</label>
+            <select name="" id="tag-sel" v-model="tagidtoadd">
+                <option value="">(请选择)</option>
+                <option
+                        is="cate-option"
+                        v-for="t in tags"
+                        v-bind:id="t.id"
+                        v-bind:text="t.text"></option>
+            </select>
+            <button type="button" id="btn-addtag-from-list" @click="tagtolist()">添加</button>
+        <div>
+            <span
+                    is="cate-item"
+                    v-for="t in book.tag"
+                    v-bind:text="t.text"
+            ></span>
+        </div>
+            <div>
+                <input type="text" id="input-newtag" placeholder="或者在这儿输入新的标签" v-model="newtag">
+            <button type="button" id="btn-addnewtag" @click="addtag()">添加新分类</button>
+            </div>
         </div>
     </form>
     <button id="btn-save" type="button" @click="submitform()">保存</button>
@@ -60,6 +81,8 @@
 var posturl="{% url 'book:add' %}";
 var cate_list="{% url 'book:cate_list' %}";
 var cate_add="{% url 'book:cate_add' %}";
+var tag_add="{% url 'book:tag_add' %}";
+var tag_list="{% url 'book:tag_list' %}";
 {% verbatim %}
 Vue.component("cate-option",{
     template: "<option :value='id'>{{ text }}</option>",
@@ -91,7 +114,7 @@ var formapp=new Vue({
         cates: [
         ],
         newcate: "",
-        cateidtoadd: ""
+        cateidtoadd: "",
         tags: [],
         newtag:"",
         tagidtoadd: ""
@@ -137,7 +160,6 @@ var formapp=new Vue({
                             formapp.$data['cateidtoadd']=data['data']['id'];
                             formapp.catetolist();
                         });
-
                     }
                 }
             });
@@ -166,6 +188,64 @@ var formapp=new Vue({
                     formapp.$data['book']['category'].push({id: formapp.$data['cateidtoadd'], text: formapp.$data['cates'][i]['text'] });
                 }
             }
+        },
+
+        fetchtags: function(callback){
+            var arg_num=arguments.length;
+            $.get({
+                url: tag_list,
+                success: function(data) {
+                    // Get cate list
+                    if(data['result']=='ok'){
+                        formapp.$data['tags']=$.evalJSON(data['data']);
+                        if(arg_num>0){
+                            try { callback(); }
+                            finally {}
+                        }
+                    }
+                }
+            })
+        },
+
+        addtag: function () {
+            $.post({
+                url: tag_add,
+                data: $.toJSON({text: this.$data['newtag']}),
+                success: function (data) {
+                    if (data['result'] == 'ok') {
+                        formapp.fetchtags(function () {
+                            formapp.$data['newtag'] = "";
+                            formapp.$data['tagidtoadd']=data['data']['id'];
+                            formapp.tagtolist();
+                        });
+                    }
+                }
+            });
+        },
+        // 将选定的tag加入book.tag
+        tagtolist: function () {
+            var tag_exists = false;
+            var tag_text_found=false;
+            console.log(formapp.$data['tagidtoadd']);
+            for(var j=0;j<formapp.$data['book']['tag'].length;j++){
+                if(formapp.$data['tagidtoadd']==formapp.$data['book']['tag'][j]['id']){
+                    tag_exists=true;
+                    break;
+                }
+            }
+            if(!tag_exists){
+                var i=0;
+                console.log(formapp.$data['tags'].length);
+                for(i=0;i<formapp.$data['tags'].length;i++){
+                    if(formapp.$data['tags'][i]['id']==formapp.$data['tagidtoadd']){
+                        tag_text_found=true;
+                        break;
+                    }
+                }
+                if(tag_text_found){
+                    formapp.$data['book']['tag'].push({id: formapp.$data['tagidtoadd'], text: formapp.$data['tags'][i]['text'] });
+                }
+            }
         }
 
     }
@@ -173,6 +253,7 @@ var formapp=new Vue({
 
 // Fetch catelist
     formapp.fetchcates();
+    formapp.fetchtags();
 {% endverbatim %}
 </script>
 </body>
