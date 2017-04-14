@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>图书详情</title>
+</head>
+<body>
+<div id="book-info">
+    <div>ISBN: {{ book.isbn }}</div>
+    <div></div>
+    <div>标题: {{ book.title }}</div>
+    <div>作者: {{ book.author }}</div>
+    <div>译者: {{ book.translator }}</div>
+    <div>版次: {{ book.edition }}</div>
+    <div>出版社: {{ book.pubhouse }}</div>
+    <div>出版时间: {{ book.pubtime }}</div>
+    <div>摘要: {{ book.summary }}</div>
+    <div>目录: {{ book.context }}</div>
+    <div>索书号: {{ book.clc }}</div>
+    <div>价格: {{ book.price }}</div>
+    <div>
+        分类：
+        <div>
+            {% for cate in book.category.all %}
+                <span class="cate-item">{{ cate.text }}</span>
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

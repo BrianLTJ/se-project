@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 class Category(models.Model):
     text = models.CharField(max_length=50)
-    note = models.TextField(null=True)
+    note = models.TextField(null=True, default="")
 
     def __str__(self):
         return self.text
@@ -11,7 +11,7 @@ class Category(models.Model):
 
 class Tag(models.Model):
     text = models.CharField(max_length=50)
-    note = models.TextField(null=True)
+    note = models.TextField(null=True,default="")
 
     def __str__(self):
         return self.text
@@ -23,12 +23,12 @@ class Book(models.Model):
     cover = models.CharField(max_length=50)
     title = models.CharField(max_length=200)
     author = models.CharField(max_length=500)
-    translator = models.CharField(max_length=500, null=True)
+    translator = models.CharField(max_length=500, null=True,default="")
     edition = models.CharField(max_length=20)
     pubhouse = models.CharField(max_length=50)
     pubtime = models.CharField(max_length=20)
-    summary = models.TextField(null=True)
-    context = models.TextField(null=True)
+    summary = models.TextField(null=True,default="")
+    context = models.TextField(null=True,default="")
     price = models.DecimalField(max_digits=8, decimal_places=2)
     clc = models.CharField(max_length=20)
 

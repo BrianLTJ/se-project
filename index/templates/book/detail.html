@@ -68,7 +68,7 @@
         url: "/api/book/book/detail/{{ book_id }}",
         success: function(data){
             console.log(data['data']);
-            bookinfo.$data['book']=$.evalJSON(data['data'])[0]['fields'];
+            bookinfo.$data['book']=$.evalJSON(data['data'])['data'];
         }
         });
 </script>
