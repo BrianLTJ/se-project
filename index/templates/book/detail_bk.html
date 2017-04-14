@@ -6,6 +6,10 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>图书详情</title>
+    <script src="/static/vue/dist/vue.js"></script>
+    <script src="/static/jquery/dist/jquery.js"></script>
+    <script src="/static/js-cookie/src/js.cookie.js"></script>
+    <script src="/static/jquery-json/dist/jquery.json.min.js"></script>
 </head>
 <body>
 <div id="book-info">
@@ -38,6 +42,17 @@
             {% endfor %}
 
         </div>
+    </div>
+
+    <div id="libbook-info">
+        <table>
+            <thead>
+                <td>id</td>
+                <td>条形码</td>
+                <td>馆藏位置</td>
+                <td>状态</td>
+            </thead>
+        </table>
     </div>
 </div>
 </body>

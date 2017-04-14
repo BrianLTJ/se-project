@@ -41,6 +41,9 @@ class Book(models.Model):
 
 class LibBook(models.Model):
     libbookid = models.AutoField(primary_key=True)
-    barid = models.CharField(max_length=20)
-    location = models.CharField(max_length=50)
+    book = models.ForeignKey(Book)
+    barid = models.CharField(max_length=20, unique=True)
+    location = models.CharField(max_length=150)
+    add_time = models.DateTimeField(auto_now_add=True)
+    update_time = models.DateTimeField(auto_now=True)
 
