@@ -34,10 +34,19 @@
         "</div>",
         props: ["location","barid"]
     });
+    Vue.component("libbook-item",{
+        template: "<<div><span>{{ barid }}</span> <span>{{ location }}</span> <span>state</span> </div>",
+        props: ['barid','location']
+    });
     var libbook=Vue({
         el: "#libbookarea",
         data:{
-            bookid: ""
+            bookid: "",
+            libbook: [],
+            newlibbook: {
+                "barid": "",
+                "location": ""
+            }
         }
     });
 </script>
