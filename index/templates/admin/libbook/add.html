@@ -6,8 +6,40 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>增加馆藏</title>
+    <script src="/static/vue/dist/vue.js"></script>
+    <script src="/static/jquery/dist/jquery.js"></script>
+    <script src="/static/js-cookie/src/js.cookie.js"></script>
+    <script src="/static/jquery-json/dist/jquery.json.min.js"></script>
 </head>
 <body>
+<div id="libbookarea">
+    <div>书本id<input type="text" v-model="bookid" id="inp-bookid"></div>
 
+    <div><input type="text" v-model="" id="inp-"></div>
+    <div><input type="text" v-model="" id="inp-"></div>
+    <div><input type="text" v-model="" id="inp-"></div>
+    <div><input type="text" v-model="" id="inp-"></div>
+    <div><input type="text" v-model="" id="inp-"></div>
+    <div><input type="text" v-model="" id=""></div>
+    <div><input type="text" v-model="" id=""></div>
+    <div><input type="text" v-model="" id=""></div>
+    <div><input type="text" v-model="" id=""></div>
+</div>
+
+<script>
+    Vue.component("libbook",{
+        template: "<div>" +
+            "<div><input type=\"text\" v-model=\"\" id=\"inp-\"></div>"+
+            "<div><input type=\"text\" v-model=\"\" id=\"inp-\"></div>"+
+        "</div>",
+        props: ["location","barid"]
+    });
+    var libbook=Vue({
+        el: "#libbookarea",
+        data:{
+            bookid: ""
+        }
+    });
+</script>
 </body>
 </html>
