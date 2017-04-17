@@ -62,3 +62,24 @@ def book_add(request):
 
     return JsonResponse(response_data)
 
+def book_del(request):
+    response_data = {}
+    response_data['result'] = 'error'
+    if request.method == "POST":
+        # Requests
+        req = json.loads(request.body.decode('utf-8'))
+        req = req[0]
+        bookid = req['bookid']
+
+        try:
+            book = Book.objects.get(bookid=bookid)
+            book.delete()
+
+            response_data['result'] = 'ok'
+        except:
+            response_data['message'] = 'Fail to delete.'
+    else:
+        response_data['message'] = 'Not a valid request.'
+
+    return JsonResponse(response_data)
+

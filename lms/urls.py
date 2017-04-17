@@ -15,9 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from rest_framework import routers, serializers, viewsets
+
 
 urlpatterns = [
     #url(r'^admin/', admin.site.urls),
+
+    url(r'api/auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'api/book/', include('book.urls', namespace='book', app_name='book')),
     url(r'admin/',include('index.admin_urls', namespace='admin_urls', app_name='admin')),
     url(r'^', include('index.urls', namespace="index", app_name='index')),
