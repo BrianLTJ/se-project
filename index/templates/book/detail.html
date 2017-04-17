@@ -35,12 +35,30 @@
             ></span>
         </div>
     </div>
+    <div>
+        标签：
+        <div>
+            <span
+                is="tag-item"
+                v-for="t in book.tag"
+                v-bind:text="t.text"
+            ></span>
+        </div>
+    </div>
 </div>
 {% endverbatim %}
 <script>
+        var fetch_url = "{% url 'book:detail' book_id %}";
+</script>
+{% verbatim %}
+<script>
     Vue.component('cate-item',{
         template: "<span class='cate-item'>{{ text }}</span>",
-        probs: ['text']
+        props: ['text']
+    });
+    Vue.component('tag-item',{
+        template: "<span class='tag-item'>{{ text }}</span>",
+        props: ['text']
     });
     var bookinfo = new Vue({
         el: "#book-info",
@@ -59,18 +77,22 @@
                 clc: "",
                 category: [
                 ],
+                tag:[],
                 price: ""
             }
         }
     });
 
     $.get({
-        url: "/api/book/book/detail/{{ book_id }}",
-        success: function(data){
-            console.log(data['data']);
-            bookinfo.$data['book']=$.evalJSON(data['data'])['data'];
+        url: fetch_url,
+        success: function(data){            
+            console.log(data);
+            if(data['result']=='ok'){
+                bookinfo.$data['book']=data['data'];
+            };
         }
-        });
+    });
 </script>
+{% endverbatim %}
 </body>
 </html>

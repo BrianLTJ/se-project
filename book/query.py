@@ -18,17 +18,13 @@ def book_query_list(request):
 # Show book details
 @csrf_exempt
 def book_detail(request, bid):
-    # raw_data = request.body
     response_data = {}
     response_data['result'] = 'error'
     if request.method == "GET":
-        # book_item = Book.objects.values().filter(bookid=bid).values_list()
-        # response_data['data'] = serializers.serialize('json',book_item)
         try:
-            book_item = Book.objects.filter(bookid=bid)
-            if len(book_item)!=1:
-                raise exceptions.ObjectDoesNotExist
-            resp_book = []
+            book_item = Book.objects.get(bookid=int(bid))
+
+            resp_book = {}
             resp_book['isbn'] = book_item.isbn
             resp_book['title'] = book_item.title
             resp_book['author'] = book_item.author
@@ -40,16 +36,26 @@ def book_detail(request, bid):
             resp_book['context'] = book_item.context
             resp_book['clc'] = book_item.clc
             resp_book['price'] = book_item.price
+            resp_book['category'] = []
+            resp_book['tag'] = []
 
-            for i in book_item.category:
-                item = []
+            print(len(book_item.category.all()))
+
+            for i in book_item.category.all():
+                item = {}
                 item['id'] = i.id
                 item['text'] = i.text
                 resp_book['category'].append(item)
+            
+            for i in book_item.tag.all():
+                item = {}
+                item['id'] = i.id
+                item['text'] = i.text
+                resp_book['tag'].append(item)
 
             response_data['result'] = 'ok'
 
-            response_data['data'] = book_item
+            response_data['data'] = resp_book
         except:
             response_data['result'] = 'error'
             response_data['message'] = 'Book not found'

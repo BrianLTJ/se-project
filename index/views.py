@@ -13,6 +13,9 @@ def book_detail(request, bid):
     else:
         return render(request, 'universal/error.html', {'msg': "找不到这本书"})
 
+def book_detail_rest(request, bid):
+    return render(request, 'book/detail.html', {"book_id": bid})
+
 def search_index(request):
     return render(request, template_name='search/index.html')
 
