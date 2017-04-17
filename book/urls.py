@@ -2,11 +2,14 @@ from django.conf.urls import url
 from book import query as book_query
 from book import modify as book_modify
 from book import category as book_category
-from book import libbook as book_libook
+from book import libbook as book_libbook
 
 urlpatterns =[
-    url(r'book/add', book_modify.book_add, name='add'),
+    #libbook
+    url(r'libbook/add', book_libbook.libbook_add, name='libbook_add'),
+    url(r'libbook/list', book_libbook.libbook_list, name='libbook_list'),
 
+    url(r'book/add', book_modify.book_add, name='add'),
     url(r'book/detail/(.+)', book_query.book_detail, name='detail'),
     # url(r'detail/libbook', ),
 
@@ -18,7 +21,5 @@ urlpatterns =[
     url(r'tag/list', book_category.tag_list, name='tag_list'),
     url(r'tag/add', book_category.tag_add, name='tag_add'),
 
-    #libbook
-    url(r'libbook/add', book_libook.libbook_add, name='libbook_add'),
-    url(r'libbook/list', book_libook.libbook_list, name='libbook_list'),
+    
 ]

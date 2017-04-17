@@ -10,22 +10,20 @@ def libbook_add(request):
     response_data['result'] = 'error'
     if request.method == "POST":
         req = json.loads(request.body.decode('utf-8'))
-        res_data=[]
+        req = req[0]
 
-        for item in req:
-            res_data_item=[]
-            res_data_item['barid']=item['barid']
-            try:
-                libbook = LibBook()
-                libbook.book = Book.objects.get(bookid=item['bookid'])
-                libbook.barid = item['barid']
-                libbook.location = item['location']
-                libbook.save()
-                res_data_item['result'] = 'ok'
-            except:
-                res_data_item['result'] = 'error'
-            finally:
-                res_data.append(res_data_item)
+        # try:
+        libbook = LibBook()
+        print(req['bookid'])
+        book = Book.objects.get(bookid=int(req['bookid']))
+        libbook.book = book
+        libbook.barid = req['barid']
+        libbook.location = req['location']
+        libbook.save()
+        response_data['result'] = 'ok'
+        # except:
+        #     response_data['result'] = 'error'
+
     else:
         response_data['message'] = 'Not a valid request.'
 
@@ -38,15 +36,17 @@ def libbook_list(request):
     response_data['result'] = 'error'
     if request.method == "POST":
         req = json.loads(request.body.decode('utf-8'))
+        req=req[0]
         try:
             bookid=req['bookid']
-            libbooks = LibBook.objects.filter(book_bookid=bookid)
+            libbooks = LibBook.objects.filter(book=Book.objects.get(bookid=int(req['bookid'])))
+            print(len(libbooks))
             resp_libbookdata=[]
-            for i in libbooks:
-                item=[]
-                item['libbookid']=i.libbookid
-                item['barid']=i.barid
-                item['location']=i.location
+            for libitem in libbooks:
+                item={}
+                item['libbookid']=libitem.libbookid
+                item['barid']=libitem.barid
+                item['location']=libitem.location
                 resp_libbookdata.append(item)
 
             response_data['result'] = 'ok'
@@ -55,3 +55,5 @@ def libbook_list(request):
             response_data['message'] = 'Book Not found.'
     else:
         response_data['message'] = 'Not a valid request.'
+
+    return JsonResponse(response_data)

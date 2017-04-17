@@ -14,19 +14,31 @@
 <body>
 <div id="libbookarea">
     <div>书本id<input type="text" v-model="bookid" id="inp-bookid"></div>
+    <button type="button" @click="fetchlibbooks()">获取馆藏信息</button>
 
-    <div><input type="text" v-model="" id="inp-"></div>
-    <div><input type="text" v-model="" id="inp-"></div>
-    <div><input type="text" v-model="" id="inp-"></div>
-    <div><input type="text" v-model="" id="inp-"></div>
-    <div><input type="text" v-model="" id="inp-"></div>
-    <div><input type="text" v-model="" id=""></div>
-    <div><input type="text" v-model="" id=""></div>
-    <div><input type="text" v-model="" id=""></div>
-    <div><input type="text" v-model="" id=""></div>
+    <div>
+        <div
+            is="libbook-item"
+            v-for="item in libbook"
+            v-bind:location="item.location"
+            v-bind:barid="item.barid">
+        </div>
+    </div>
+
+    <div>
+        <p>添加</p>
+        <p>条码：<input type="text" v-model="newlibbook.barid"></p>
+        <p>位置：<input type="text" v-model="newlibbook.location"></p>
+        <p><button type="button" @click="libbook_add()">添加</button></p>
+    </div>
+
 </div>
-
 <script>
+    //var libbook_list="/api/book/libbook/list";
+    //var libbook_add="/api/book/libbook/add";
+    var libbook_list="{% url 'book:libbook_list' %}";
+    var libbook_add="{% url 'book:libbook_add' %}";
+    {% verbatim %}
     Vue.component("libbook",{
         template: "<div>" +
             "<div><input type=\"text\" v-model=\"\" id=\"inp-\"></div>"+
@@ -35,20 +47,45 @@
         props: ["location","barid"]
     });
     Vue.component("libbook-item",{
-        template: "<<div><span>{{ barid }}</span> <span>{{ location }}</span> <span>state</span> </div>",
+        template: "<div><span>{{ barid }}</span>-<span>{{ location }}</span> <span>state</span> </div>",
         props: ['barid','location']
     });
-    var libbook=Vue({
+    var libbook=new Vue({
         el: "#libbookarea",
         data:{
-            bookid: "",
+            bookid: 0,
             libbook: [],
             newlibbook: {
+                "bookid": 0,
                 "barid": "",
                 "location": ""
             }
+        },
+        methods:{
+            fetchlibbooks: function () {
+                $.post({
+                    url: libbook_list,
+                    data: "[{ \"bookid\": "+libbook.$data['bookid']+" }]",
+                    success: function (data) {
+                        libbook.$data['libbook']=data['data'];
+                    }
+                })
+            },
+            libbook_add: function(){
+                libbook.$data['newlibbook']['bookid']=libbook.$data['bookid'];
+                
+                $.post({
+                    url: libbook_add,
+                    data: "["+JSON.stringify(libbook.$data['newlibbook'])+"]",
+                    success: function (data) {
+                        libbook.fetchlibbooks();
+                    }
+                })
+            }
         }
     });
+    libbook.fetchlibbooks();
+    {% endverbatim %}
 </script>
 </body>
 </html>
