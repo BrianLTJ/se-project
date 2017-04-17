@@ -1,8 +1,10 @@
 from book.models import Book, LibBook
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 import json
 
 # add libbook
+@csrf_exempt
 def libbook_add(request):
     response_data = {}
     response_data['result'] = 'error'
@@ -30,6 +32,7 @@ def libbook_add(request):
     return JsonResponse(response_data)
 
 # get libbook list
+@csrf_exempt
 def libbook_list(request):
     response_data = {}
     response_data['result'] = 'error'
