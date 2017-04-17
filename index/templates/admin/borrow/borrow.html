@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>借书</title>
+	<script src="/static/vue/dist/vue.js"></script>
+    <script src="/static/jquery/dist/jquery.js"></script>
+    <script src="/static/js-cookie/src/js.cookie.js"></script>
+    <script src="/static/jquery-json/dist/jquery.json.min.js"></script>
+</head>
+<body>
+	<div id="book-borrow">
+		<div>图书条码：<input type="text" v-model="libbookid"></div>
+		<div>借书账号：<input type="text" v-model="userid"></div>
+		<div><button type="button" @click="brrow()">借书</button><button type="reset">清空</button></div>
+	</div>
+
+	<script>
+
+	</script>
+	{% verbatim %}
+	<script>
+		var bookborrow = new Vue({
+			el: "#book-borrow",
+			data: {
+				libbookid: "",
+				userid: ""
+			},
+			methods:{
+				borrow: function(){
+
+				}
+			}
+		});
+	</script>
+	{% endverbatim %}
+</body>
+</html>

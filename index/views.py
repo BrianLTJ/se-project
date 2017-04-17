@@ -19,3 +19,4 @@ def book_detail_rest(request, bid):
 def search_index(request):
     return render(request, template_name='search/index.html')
 
+

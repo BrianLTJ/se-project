@@ -7,4 +7,6 @@ urlpatterns = [
 
     url(r'libbook', admin_views.admin_libbook),
 
+    url(r'borrow', admin_views.admin_borrow),
+
 ]
