@@ -5,9 +5,96 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>搜索</title>
+    <title>图书列表</title>
+    <script src="/static/vue/dist/vue.js"></script>
+    <script src="/static/jquery/dist/jquery.js"></script>
+    <script src="/static/js-cookie/src/js.cookie.js"></script>
+    <script src="/static/jquery-json/dist/jquery.json.min.js"></script>
 </head>
 <body>
+<div id="booklist">
+    <div id="query">
+        <select name="" v-model="query.rule" id="query-rule">
+            <option value="title">标题</option>
+            <option value="isbn">ISBN</option>
+            <option value="author">作者</option>
+            <option value="translator">译者</option>
+            <option value="pubhouse">出版社</option>
+        </select>
+        <label for="query-keyword">关键字</label>
+        <input type="text" id="query-keyword" v-model="query.keyword">
+        <button type="button" @click="sendquery">查询</button>
+    </div>
+    <div id="result">
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>标题</th>
+                <th>作者/译者</th>
+                <th>ISBN</th>
+                <th>出版社</th>
+                <th>出版时间</th>
+                <th>版次</th>
+                <th>索书号</th>
+                <th>查看</th>
+            </tr>
+            <tr
+                is="book-item"
+                v-for="(book,index) in list"
+                :idx="index+1"
+                :url="detailurl+book.bookid"
+                :title="book.title"
+                :author="book.author"
+                :translator="book.translator"
+                :isbn="book.isbn"
+                :pubhouse="book.pubhouse"
+                :pubtime="book.pubtime"
+                :cover="book.cover"
+                :clc="book.clc"
+                :edition="book.edition"></tr>
+        </table>
 
+    </div>
+</div>
+<script>
+    var api_bookquery="{% url 'book:query' %}";
+    var url_bookdetail="/book/detail/";
+</script>
+{% verbatim %}
+<script>
+    Vue.component('book-item',{
+        template: "<tr>" +
+        "<td>{{ idx }}</td><td>{{ title }}</td><td>{{ author }},{{ translator }}</td><td>{{ isbn }}</td><td>{{ pubhouse }}</td><td>{{ pubtime }}</td><td>{{ edition }}</td><td>{{ clc }}</td><td><a :href='url'>查看</a></td>" +
+        "</tr>",
+        props: ["idx","url","title","author","translator","isbn","pubhouse","pubtime","cover","clc","edition"]
+    });
+
+    var booklist = new Vue({
+        el: "#booklist",
+        data: {
+            query: {
+                rule: "title",
+                keyword: ""
+            },
+            list: [],
+            detailurl: url_bookdetail
+        },
+        methods:{
+            sendquery: function () {
+                $.post({
+                    url: api_bookquery,
+                    data: "["+JSON.stringify(booklist.$data['query'])+"]",
+                    success: function (data) {
+                        console.log(data);
+                        if(data['result']=='ok'){
+                            booklist.$data['list']=data['data'];
+                        }
+                    }
+                });
+            }
+        }
+    });
+</script>
+{% endverbatim %}
 </body>
 </html>

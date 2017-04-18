@@ -11,6 +11,9 @@ urlpatterns =[
     url(r'libbook/list', book_libbook.libbook_list, name='libbook_list'),
 
     url(r'book/add', book_modify.book_add, name='add'),
+
+    # book info
+    url(r'book/query$', book_query.book_query_list, name='query'),
     url(r'book/detail/(.+)', book_query.book_detail, name='detail'),
     # url(r'detail/libbook', ),
 
@@ -23,8 +26,8 @@ urlpatterns =[
     url(r'tag/add', book_category.tag_add, name='tag_add'),
 
     # borrow
-    url(r'borrow/borrow', book_borrow.borrow_book, name='book_borrow'),
-    url(r'borrow/return', book_borrow.re)
+    url(r'borrow/borrow$', book_borrow.book_borrow, name='book_borrow'),
+    url(r'borrow/return$', book_borrow.book_return, name='book_return'),
 
     
 ]

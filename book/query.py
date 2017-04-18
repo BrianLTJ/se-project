@@ -12,6 +12,7 @@ from book.models import Book, Tag, Category
 def wrap_book_list_item(book):
     try:
         resp_item={}
+        resp_item['bookid']=book.bookid
         resp_item["title"]=book.title
         resp_item["author"]=book.author
         resp_item["translator"]=book.translator
@@ -34,7 +35,29 @@ def book_query_list(request):
     try:
         req = json.loads(request.body.decode('utf-8'))
         req = req[0]
+        resp_booklist = []
+        if req['rule']=='isbn':
+            booklist = Book.objects.filter(isbn__contains=req['keyword'])
+        elif req['rule']=='title':
+            booklist = Book.objects.filter(title__contains=req['keyword'])
+        elif req['rule']=='author':
+            booklist = Book.objects.filter(author__contains=req['keyword'])
+        elif req['rule'] == 'translator':
+            booklist = Book.objects.filter(translator__contains=req['keyword'])
+        elif req['rule'] == 'pubhouse':
+            booklist = Book.objects.filter(pubhouse__contains=req['keyword'])
+        else:
+            booklist = None
+
+        if booklist is not None:
+            for i in booklist:
+                resp_booklist.append(wrap_book_list_item(i))
+            response_data['result'] = 'ok'
+            response_data['data']=resp_booklist
+
     except:
+        response_data['result'] = 'error'
+        response_data['message'] = 'Cant query book'
 
     return JsonResponse(response_data)
 

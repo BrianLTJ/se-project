@@ -5,6 +5,9 @@ from book.models import Book, Category, Tag
 def index_index(request):
     return render(request, template_name='index/index.html')
 
+def book_query(request):
+    return render(request, template_name='search/index.html')
+
 def book_detail(request, bid):
     bookitem=Book.objects.filter(bookid=bid)
     if len(bookitem)==1:

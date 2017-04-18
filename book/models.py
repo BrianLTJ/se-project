@@ -54,8 +54,8 @@ class LibBook(models.Model):
 class BookOperation(models.Model):
     libbook=models.ForeignKey(LibBook)
     operation=models.CharField(max_length=10)
-    operator = models.ForeignKey(User, null=True, blank=True)
-    user = models.ForeignKey(User)
+    operator = models.ForeignKey(User, null=True, blank=True, related_name="operator")
+    user = models.ForeignKey(User, related_name="borrowuser")
     operationtime = models.DateTimeField(auto_now_add=True)
 
 
