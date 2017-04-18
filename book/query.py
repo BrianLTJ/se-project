@@ -9,10 +9,34 @@ import json
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from book.models import Book, Tag, Category
 
-# List book
-def book_query_list(request):
+def wrap_book_list_item(book):
+    try:
+        resp_item={}
+        resp_item["title"]=book.title
+        resp_item["author"]=book.author
+        resp_item["translator"]=book.translator
+        resp_item["isbn"]=book.isbn
+        resp_item["pubhouse"]=book.pubhouse
+        resp_item["pubtime"]=book.translator
+        resp_item["cover"]=book.cover
+        resp_item["clc"]=book.clc
+        resp_item["edition"]=book.edition
+        return resp_item
+    except:
+        return None
 
-    return None
+
+# List book
+@csrf_exempt
+def book_query_list(request):
+    response_data = {}
+    response_data['result'] = 'error'
+    try:
+        req = json.loads(request.body.decode('utf-8'))
+        req = req[0]
+    except:
+
+    return JsonResponse(response_data)
 
 
 # Show book details
@@ -62,7 +86,6 @@ def book_detail(request, bid):
 
     else:
         response_data['message'] = 'Not a valid request.'
-        
     return JsonResponse(response_data)
 
 # Show lib book details
