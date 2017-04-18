@@ -3,6 +3,7 @@ from book import query as book_query
 from book import modify as book_modify
 from book import category as book_category
 from book import libbook as book_libbook
+from book import borrow as book_borrow
 
 urlpatterns =[
     #libbook
@@ -20,6 +21,10 @@ urlpatterns =[
     # tag
     url(r'tag/list', book_category.tag_list, name='tag_list'),
     url(r'tag/add', book_category.tag_add, name='tag_add'),
+
+    # borrow
+    url(r'borrow/borrow', book_borrow.borrow_book, name='book_borrow'),
+    url(r'borrow/return', book_borrow.re)
 
     
 ]

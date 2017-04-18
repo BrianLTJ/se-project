@@ -10,20 +10,20 @@
 </head>
 <body>
 	<div id="book-borrow">
-		<div>图书条码：<input type="text" v-model="libbookid"></div>
+		<div>图书条码：<input type="text" v-model="barid"></div>
 		<div>借书账号：<input type="text" v-model="userid"></div>
 		<div><button type="button" @click="brrow()">借书</button><button type="reset">清空</button></div>
 	</div>
 
 	<script>
-
+        var borrowapi="{% url %}";
 	</script>
 	{% verbatim %}
 	<script>
 		var bookborrow = new Vue({
 			el: "#book-borrow",
 			data: {
-				libbookid: "",
+				barid: "",
 				userid: ""
 			},
 			methods:{

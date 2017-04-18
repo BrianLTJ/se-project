@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/BrianLTJ/se-project#readme",
   "dependencies": {
+    "bootstrap": "^3.3.7",
+    "bootstrap-material-design": "^0.5.10",
     "jquery": "^3.2.1",
     "jquery-json": "^2.6.0",
     "js-cookie": "^2.1.4",
