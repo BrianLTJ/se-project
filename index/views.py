@@ -1,12 +1,15 @@
 from django.shortcuts import render
 from book.models import Book, Category, Tag
 
+
 # Create your views here.
 def index_index(request):
     return render(request, template_name='index/index.html')
 
+
 def book_query(request):
     return render(request, template_name='search/index.html')
+
 
 def book_detail(request, bid):
     bookitem=Book.objects.filter(bookid=bid)
@@ -16,10 +19,15 @@ def book_detail(request, bid):
     else:
         return render(request, 'universal/error.html', {'msg': "找不到这本书"})
 
+
 def book_detail_rest(request, bid):
     return render(request, 'book/detail.html', {"book_id": bid})
+
 
 def search_index(request):
     return render(request, template_name='search/index.html')
 
+
+def login_index(request):
+    return render(request, template_name='admin/login.html')
 
