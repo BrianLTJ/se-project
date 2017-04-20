@@ -13,11 +13,10 @@ def user_login(request):
             username = req['username']
             password = req['password']
 
-            login(request, username, password)
-
+            if login(request, username, password):
+                response_data['result']='ok'
         except:
-
+            response_data['message'] = 'Fail to login'
 
     else:
         response_data['message'] = 'Not a valid request.'
-
