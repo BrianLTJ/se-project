@@ -2,7 +2,10 @@ language: python
 python:
  - "3.5"
  - "3.6"
+env:
+ - BDENV="travis"
 install:
- - "pip install -r requirements.txt"
- - "npm install"
-script: "python manage.py test functional_tests"
+ - pip3 install -r requirements.txt
+ - npm install
+script: 
+ - python manage.py test functional_tests

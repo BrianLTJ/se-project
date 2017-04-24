@@ -9,6 +9,7 @@ import time
 from selenium import webdriver
 from django.test import LiveServerTestCase
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+import os
 
 wait_after_click = 0.5
 wait_after_page = 2
@@ -20,8 +21,29 @@ class AddBookTest(StaticLiveServerTestCase):
     taglist =["BHpmw","MNIoT","va0crc","ZnkNH1xTD","T96Ol","z1gg","TWqmR5"]
 
     def setUp(self):
-        # self.browser = webdriver.PhantomJS()
-        self.browser = webdriver.Chrome()
+        # Webdriver initial setting
+        # c : Chrome
+        # p : PhantomJS
+        driver = 'c'
+        
+        # If on CI platform
+        try:
+            if os.environ['BDENV']=='travis':
+                driver = 'p'
+            else:
+                None
+        except:
+            None
+
+
+        if driver == 'c':
+            self.browser = webdriver.Chrome()
+        elif driver == 'p':
+            self.browser = webdriver.PhantomJS()
+        else:
+            # Default driver Chrome
+            self.browser = webdriver.Chrome()
+        
 
     def tearDown(self):
         self.browser.quit()
