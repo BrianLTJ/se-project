@@ -86,7 +86,7 @@ def book_detail(request, bid):
             resp_book['category'] = []
             resp_book['tag'] = []
 
-            print(len(book_item.category.all()))
+            # print(len(book_item.category.all()))
 
             for i in book_item.category.all():
                 item = {}

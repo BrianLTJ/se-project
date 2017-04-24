@@ -12,17 +12,17 @@ def libbook_add(request):
         req = json.loads(request.body.decode('utf-8'))
         req = req[0]
 
-        # try:
-        libbook = LibBook()
-        print(req['bookid'])
-        book = Book.objects.get(bookid=int(req['bookid']))
-        libbook.book = book
-        libbook.barid = req['barid']
-        libbook.location = req['location']
-        libbook.save()
-        response_data['result'] = 'ok'
-        # except:
-        #     response_data['result'] = 'error'
+        try:
+            libbook = LibBook()
+            # print(req['bookid'])
+            book = Book.objects.get(bookid=int(req['bookid']))
+            libbook.book = book
+            libbook.barid = req['barid']
+            libbook.location = req['location']
+            libbook.save()
+            response_data['result'] = 'ok'
+        except:
+            response_data['result'] = 'error'
 
     else:
         response_data['message'] = 'Not a valid request.'
@@ -40,7 +40,7 @@ def libbook_list(request):
         try:
             bookid=req['bookid']
             libbooks = LibBook.objects.filter(book=Book.objects.get(bookid=int(req['bookid'])))
-            print(len(libbooks))
+            # print(len(libbooks))
             resp_libbookdata=[]
             for libitem in libbooks:
                 item={}
