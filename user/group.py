@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, Permission
 from django.views.decorators.csrf import csrf_exempt
 import json
 
@@ -29,6 +29,16 @@ def group_add(request):
         # try:
         group = Group(name=req['name'])
         group.save()
+        # set group permissions:
+        # Get perm object list
+        perm_list = []
+        for permid in req['perms']:
+            perm = Permission.objects.get(id=permid)
+            perm_list.append(perm)
+
+        group.permissions.set(perm_list)
+        group.save()
+
         response_data['result']='ok'
         response_data['group']={'id':group.id,'name':group.name}
     else:
@@ -37,6 +47,46 @@ def group_add(request):
     return JsonResponse(response_data)
 
 
-# Remove group
+# Change group
+def group_change(request):
+    response_data={}
+    response_data['result']='error'
+    if request.method == "POST":
+        req = json.loads(request.body.decode('utf-8'))
+        # try:
+        group = Group.objects.get(id=req['id'])
+        # Change group name
+        group.name = req['name']
+        # Change group permissions:
+        # Get perm object list
+        perm_list = []
+        for permid in req['perms']:
+            perm = Permission.objects.get(id=permid)
+            perm_list.append(perm)
+        group.save()
+        group.permissions.set(perm_list)
+        group.save()
+        response_data['result']='ok'
+        response_data['group']={'id':group.id,'name':group.name}
+    else:
+        response_data['message']='Invalid request.'
 
+    return JsonResponse(response_data)
+
+
+# Delete group
+def group_delete(request):
+    response_data={}
+    response_data['result']='error'
+    if request.method == "POST":
+        req = json.loads(request.body.decode('utf-8'))
+
+        group = Group.objects.get(id=req['id'])
+        group.delete()
+        response_data['result']='ok'
+        response_data['group']={'id':group.id,'name':group.name}
+    else:
+        response_data['message']='Invalid request.'
+
+    return JsonResponse(response_data)
 
