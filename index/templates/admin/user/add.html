@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}添加用户{% endblock %}
+{% block body %}
+
+<div id="useradd">
+    <div><label for="username">用户名</label><input type="text" id="username" v-model="username"></div>
+    <div><label for="password">密码</label><input type="password" id="password" v-model="password"></div>
+    <div>
+        <button type="button" @click="adduser">添加</button>
+    </div>
+</div>
+    <script>
+    // api urls
+    var api_adduser="{% url 'api_admin_user:user_add' %}";
+    </script>
+    {% verbatim %}
+    <script>
+    var useradd = new Vue({
+        el: "#useradd",
+        data: {
+            username:"",
+            password:"",
+            group:[]
+        },
+        methods: {
+            adduser: function () {
+                $.post({
+                    url: api_adduser,
+                    data: "["+JSON.stringify(useradd.$data)+"]",
+                    success: function (data) {
+                        console.log(data);
+                    }
+                });
+            }
+        }
+    });
+    </script>
+    {% endverbatim %}
+
+{% endblock %}

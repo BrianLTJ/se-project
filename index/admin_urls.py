@@ -9,4 +9,6 @@ urlpatterns = [
 
     url(r'borrow', admin_views.admin_borrow),
 
+    url(r'user/add', admin_views.admin_user_add),
+
 ]

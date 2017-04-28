@@ -10,3 +10,8 @@ def admin_libbook(request):
 
 def admin_borrow(request):
     return render(request, 'admin/borrow/borrow.html')
+
+
+# User
+def admin_user_add(request):
+    return render(request, 'admin/user/add.html')

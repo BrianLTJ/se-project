@@ -23,6 +23,7 @@ urlpatterns = [
 
     # url(r'api/auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'api/book/', include('book.urls', namespace='book', app_name='book')),
+    url(r'api/admin/', include('user.urls_admin', namespace='admin', app_name='api_admin_user')),
     url(r'admin/',include('index.admin_urls', namespace='admin_urls', app_name='admin')),
     url(r'^', include('index.urls', namespace="index", app_name='index')),
 ]

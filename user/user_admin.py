@@ -29,7 +29,7 @@ def admin_user_add(request):
         req = json.loads(request.body.decode('utf-8'))
         req = req[0]
         try:
-            user = User.objects.create_user(username=req['username'], password=req['pwd'])
+            user = User.objects.create_user(username=req['username'], password=req['password'])
             # Add to group
             for i in req['group']:
                 user.groups.add(Group.objects.get(id=i['groupid']))
@@ -38,4 +38,6 @@ def admin_user_add(request):
             response_data['message']='Fail to add user'
     else:
         response_data['message']='Not a valid request.'
+
+    return JsonResponse(response_data)
 

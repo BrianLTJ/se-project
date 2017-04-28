@@ -13,9 +13,9 @@
 </head>
 <body>
 <div id="user-login">
-    <p>用户名 <input type="text"></p>
-    <p>密码 <input type="password"></p>
-    <button type="button">登录</button>
+    <p>用户名 <input type="text" v-model="user.username"></p>
+    <p>密码 <input type="password" v-model="user.password"></p>
+    <button type="button" @click="login">登录</button>
 </div>
 
 <script>
@@ -23,7 +23,23 @@
     var api_login = "";
 </script>
 	{% verbatim %}
-<script></script>
+<script>
+    // App codes
+    var login = Vue({
+        el: "#user-login",
+        data: {
+            user: {
+                username: "",
+                password: ""
+            }
+        },
+        methods: {
+            login: function () {
+
+            }
+        }
+    });
+</script>
 	{% endverbatim %}
 </body>
 </html>
