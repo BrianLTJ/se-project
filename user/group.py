@@ -1,10 +1,41 @@
 from django.http import JsonResponse
 from django.contrib.auth.models import Group
+from django.views.decorators.csrf import csrf_exempt
+import json
 
+def group_wrapper(group):
+    return {'id':group.id, 'name':group.name}
 
 # Get group list
+@csrf_exempt
+def group_list(request):
+    response_data={}
+    response_data['result']='error'
+    groups = Group.objects.all()
+    response_data['groups']=[]
+    for item in groups:
+        response_data['groups'].append(group_wrapper(item))
+
+    return JsonResponse(response_data)
+
 
 # Add group
+@csrf_exempt
+def group_add(request):
+    response_data={}
+    response_data['result']='error'
+    if request.method == "POST":
+        req = json.loads(request.body.decode('utf-8'))
+        # try:
+        group = Group(name=req['name'])
+        group.save()
+        response_data['result']='ok'
+        response_data['group']={'id':group.id,'name':group.name}
+    else:
+        response_data['message']='Invalid request.'
+
+    return JsonResponse(response_data)
+
 
 # Remove group
 
