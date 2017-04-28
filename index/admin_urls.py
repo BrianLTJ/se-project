@@ -11,4 +11,6 @@ urlpatterns = [
 
     url(r'user/add', admin_views.admin_user_add),
 
+
+    url(r'$', admin_views.admin_index),
 ]

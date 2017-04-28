@@ -13,6 +13,7 @@
 </head>
 <body>
 <div id="user-login">
+    <h2>登录</h2>
     <p>用户名 <input type="text" v-model="user.username"></p>
     <p>密码 <input type="password" v-model="user.password"></p>
     <button type="button" @click="login">登录</button>
@@ -20,12 +21,12 @@
 
 <script>
     // API urls
-    var api_login = "";
+    var api_login = "{% url 'api_user:user_login' %}";
 </script>
 	{% verbatim %}
 <script>
     // App codes
-    var login = Vue({
+    var login = new Vue({
         el: "#user-login",
         data: {
             user: {
@@ -35,7 +36,13 @@
         },
         methods: {
             login: function () {
-
+                $.post({
+                    url: api_login,
+                    data: JSON.stringify(login.$data['user']),
+                    success: function (data) {
+                        console.log(data);
+                    }
+                });
             }
         }
     });
