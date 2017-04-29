@@ -25,7 +25,7 @@
     {% verbatim %}
     <script>
     Vue.component('perm-item',{
-        template: "<span>{{ name }}-{{ codename }}<slot></slot></span>",
+        template: "<span>{{ name }}-{{ codename }}</span>",
         props: ['name','codename']
     });
     Vue.component('group-item',{
