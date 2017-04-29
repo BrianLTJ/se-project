@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block title %}添加用户组{% endblock %}
+{% block body %}
+    <div id="group-add">
+        <div>
+            <label for="group-name">用户组名称</label>
+            <input type="text" id="group-name" v-model="group.name">
+        </div>
+        <div>
+            <div>权限描述（节点名）：
+                <select name="" id="" v-model="permtoadd">
+                    <option value="">(请选择)</option>
+                    <option
+                        is="perm-item"
+                        v-for="item in permlist"
+                        :value="item.id"
+                        :name="item.name"
+                        :codename="item.codename">
+                    </option>
+                </select>
+                <button type="button" @click="add_to_list">添加权限</button>
+            </div>
+            <div>
+                <perm
+                    v-for="item in group.perms"
+                    :name="item.name"
+                    :codename="item.codename"></perm>
+            </div>
+        </div>
+    <div>
+        <button type="button" @click="add_group">保存</button>
+    </div>
+    </div>
+
+    <script>
+    //api
+    var api_group_add="{% url 'api_admin_user:group_add' %}";
+    var api_perm_list="{% url 'api_admin_user:permission_list' %}";
+    </script>
+{% verbatim %}
+    <script>
+    Vue.component('perm-item',{
+        template:"<option :value='id'>{{ name }}({{ codename }})</option>",
+        props: ['id','name','codename']
+    });
+    Vue.component('perm',{
+        template: "<span>{{ name }}({{ codename }})</span>",
+        props:['name','codename']
+    })
+    var groupadd = new Vue({
+        el: "#group-add",
+        data: {
+            group:{
+                name: "",
+                perms:[]
+            },
+            permlist: [],
+            permtoadd: ""
+        },
+        methods: {
+            fetch_perm_list: function () {
+                $.get({
+                    url: api_perm_list,
+                    success: function (data) {
+                        if(data['result']=='ok'){
+                            console.log(data);
+                            groupadd.$data['permlist']=data['perms'];
+                        }
+                    }
+                });
+            },
+            add_to_list: function () {
+                perm_exist=false;
+                perm_id=-1;
+                for(var i=0;i<groupadd.$data['permlist'].length;i++){
+                    if(groupadd.$data['permtoadd']==groupadd.$data['permlist'][i]['id']){
+                        perm_id=i;
+                        break;
+                    }
+                }
+                for(var i=0;i<groupadd.$data['group']['perms'].length;i++){
+                    if(groupadd.$data['group']['perms'][i]['id']==groupadd.$data['permtoadd']){
+                        perm_exist=true;
+                        break;
+                    }
+                }
+                if(!perm_exist && perm_id>=0){
+                    groupadd.$data['group']['perms'].push({'id':groupadd.$data['permlist'][perm_id]['id'],'name':groupadd.$data['permlist'][perm_id]['name'],'codename':groupadd.$data['permlist'][perm_id]['codename']});
+                }
+            },
+            add_group: function () {
+                $.post({
+                    url: api_group_add,
+                    data: JSON.stringify(groupadd.$data['group']),
+                    success: function (data) {
+                        console.log(data)
+                    }
+                })
+            }
+        }
+    });
+    groupadd.fetch_perm_list();
+    </script>
+{% endverbatim %}
+
+{% endblock %}

@@ -11,6 +11,10 @@ urlpatterns = [
 
     url(r'user/add', admin_views.admin_user_add),
 
+    #group
+    url(r'group/list',admin_views.admin_group_list),
+    url(r'group/add', admin_views.admin_group_add),
+
 
     url(r'$', admin_views.admin_index),
 ]

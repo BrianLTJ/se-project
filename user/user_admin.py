@@ -2,7 +2,7 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import get_user
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpRequest
 
 
 @csrf_exempt
@@ -27,17 +27,38 @@ def admin_user_add(request):
     response_data['result']='error'
     if request.method=='POST':
         req = json.loads(request.body.decode('utf-8'))
-        req = req[0]
         try:
             user = User.objects.create_user(username=req['username'], password=req['password'])
             # Add to group
-            for i in req['group']:
-                user.groups.add(Group.objects.get(id=i['groupid']))
+            for i in req['groups']:
+                user.groups.add(Group.objects.get(id=i['id']))
 
         except:
             response_data['message']='Fail to add user'
     else:
         response_data['message']='Not a valid request.'
+
+    return JsonResponse(response_data)
+
+@csrf_exempt
+def admin_user_modify_group(request):
+    response_data = {}
+    response_data['result'] = 'error'
+    if request.method == 'POST':
+        req = json.loads(request.body.decode('utf-8'))
+        try:
+            user = request.user
+            # Add to group
+            grouplist=[]
+            for i in req['groups']:
+                grouplist.append(Group.objects.get(id=i['id']))
+
+            user.groups.set(grouplist)
+
+        except:
+            response_data['message'] = 'Fail to add user'
+    else:
+        response_data['message'] = 'Not a valid request.'
 
     return JsonResponse(response_data)
 

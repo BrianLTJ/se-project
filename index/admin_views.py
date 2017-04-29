@@ -20,3 +20,12 @@ def admin_borrow(request):
 # User
 def admin_user_add(request):
     return render(request, 'admin/user/add.html')
+
+# Group
+def admin_group_list(request):
+    return render(request, 'admin/group/list.html')
+
+
+def admin_group_add(request):
+    return render(request, 'admin/group/add.html')
+

@@ -5,17 +5,23 @@ import json
 
 
 def perm_wrapper(perm):
-    return JsonResponse({ "id": perm.id, "name": perm.name })
+    return {'id':perm.id,'name':perm.name, 'codename': perm.codename}
 
 
 # Permission list
 def perm_list(request):
     response_data={}
     response_data['result']='error'
-    groups = Permission.objects.all()
-    response_data['perms']=[]
-    for item in groups:
-        response_data['perms'].append(perm_wrapper(item))
+    try:
+        perms = Permission.objects.all()
+
+        permslist=[]
+        for item in perms:
+            permslist.append(perm_wrapper(item))
+        response_data['perms'] = permslist
+        response_data['result']='ok'
+    except:
+        response_data['message']='Fail to get permissions'
 
     return JsonResponse(response_data)
 

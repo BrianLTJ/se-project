@@ -11,3 +11,4 @@ urlpatterns = [
     url(r'logout$', user_login.user_logout, name='user_logout'),
     url(r'loginstate$', user_login.user_login_state, name='user_login_state'),
 ]
+

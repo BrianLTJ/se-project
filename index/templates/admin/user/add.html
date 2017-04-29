@@ -3,37 +3,98 @@
 {% block body %}
 
 <div id="useradd">
-    <div><label for="username">用户名</label><input type="text" id="username" v-model="username"></div>
-    <div><label for="password">密码</label><input type="password" id="password" v-model="password"></div>
+    <div><label for="username">用户名</label><input type="text" id="username" v-model="user.username"></div>
+    <div><label for="password">密码</label><input type="password" id="password" v-model="user.password"></div>
     <div>
-        <button type="button" @click="adduser">添加</button>
+        <p>
+            添加用户组：
+            <select name="" id="" v-model="grouptoadd">
+                <option value="">(请选择)</option>
+                <option is="group-opt" v-for="i in grouplist" :value="i.id" :name="i.name"></option>
+            </select>
+            <button type="button" @click="push_to_list">加入用户组</button>
+        </p>
+        <p>
+            <group-list
+                v-for="i in user.group" :text="i.name"></group-list>
+        </p>
+
+    </div>
+    <div>
+        <button type="button" @click="adduser">添加用户</button>
     </div>
 </div>
     <script>
     // api urls
     var api_adduser="{% url 'api_admin_user:user_add' %}";
+    var api_grouplist="{% url 'api_admin_user:group_list' %}"
     </script>
     {% verbatim %}
     <script>
+    Vue.component('group-opt',{
+        template:"<option :value='id'>{{ name }}</option>",
+        props: ['id','name']
+    });
+    Vue.component('group-list',{
+        template:"<span>{{ text }}</span>",
+        props: ['text']
+    });
     var useradd = new Vue({
         el: "#useradd",
         data: {
-            username:"",
-            password:"",
-            group:[]
+            user:{
+                username:"",
+                password:"",
+                group:[]
+            },
+            grouplist:[],
+            grouptoadd: ''
         },
         methods: {
             adduser: function () {
                 $.post({
                     url: api_adduser,
-                    data: "["+JSON.stringify(useradd.$data)+"]",
+                    data: JSON.stringify(useradd.$data['user']),
                     success: function (data) {
                         console.log(data);
                     }
                 });
+            },
+            fetch_group_list: function () {
+                $.get({
+                    url: api_grouplist,
+                    success: function (data) {
+                        console.log(data);
+                        if(data['result']=='ok'){
+
+                            useradd.$data['grouplist']=data['groups'];
+                        }
+                    }
+                });
+            },
+            push_to_list: function () {
+                group_exist=false; // group exists in user group
+                group_index_in_list=-1;
+                // Try to find the group in grouplist
+                for(var i=0;i<useradd.$data['grouplist'].length;i++){
+                    if(useradd.$data['grouptoadd']==useradd.$data['grouplist'][i]['id']){
+                        group_index_in_list=i;
+                        break;
+                    }
+                }
+                for(var i=0;i<useradd.$data['user']['group'].length;i++){
+                    if(useradd.$data['user']['group'][i]['id']==useradd.$data['grouptoadd']){
+                        group_exist=true;
+                        break;
+                    }
+                }
+                if(!group_exist&& group_index_in_list>-1){
+                    useradd.$data['user']['group'].push({'id': useradd.$data['grouptoadd'], 'name':useradd.$data['grouplist'][group_index_in_list]['name']});
+                }
             }
         }
     });
+    useradd.fetch_group_list();
     </script>
     {% endverbatim %}
 

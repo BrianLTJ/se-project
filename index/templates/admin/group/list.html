@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block title %}用户组列表{% endblock %}
+{% block body %}
+    <div id="grouplist">
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>群组名称</th>
+                <th>权限</th>
+            </tr>
+            <tr
+                is="group-item"
+                v-for="(i,index) in groups"
+                :index="index"
+                :name="i.name"
+                :perms="i.perms"></tr>
+        </table>
+    </div>
+
+    <script>
+    //api
+    var api_group_list="{% url 'api_admin_user:group_list' %}";
+    </script>
+
+    {% verbatim %}
+    <script>
+    Vue.component('perm-item',{
+        template: "<span>{{ name }}-{{ codename }}<slot></slot></span>",
+        props: ['name','codename']
+    });
+    Vue.component('group-item',{
+        template: "<tr><td>{{ index }}</td><td>{{ name }}</td><td><perm-item v-for='i in perms' :name='i.name' :codename='i.codename'></perm-item></td></tr>",
+        props: ["index","name", "perms"]
+    });
+    var grouplist = new Vue({
+        el: "#grouplist",
+        data: {
+            groups:[]
+        },
+        methods: {
+            fetch_group_list: function () {
+                $.get({
+                    url:api_group_list,
+                    success: function (data) {
+                        if(data['result']=='ok'){
+                            grouplist.$data['groups']=data['groups'];
+                        }
+                    }
+                });
+            }
+        }
+    });
+    grouplist.fetch_group_list();
+    </script>
+    {% endverbatim %}
+
+{% endblock %}
