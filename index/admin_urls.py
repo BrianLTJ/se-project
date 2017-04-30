@@ -14,6 +14,7 @@ urlpatterns = [
     #group
     url(r'group/list',admin_views.admin_group_list),
     url(r'group/add', admin_views.admin_group_add),
+    url(r'group/edit/(?P<groupid>\d+)', admin_views.admin_group_edit),
 
 
     url(r'$', admin_views.admin_index),

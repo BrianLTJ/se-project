@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'group/add', group.group_add, name='group_add'),
     url(r'group/change', group.group_change, name='group_change'),
     url(r'group/delete', group.group_delete, name='group_delete'),
+    url(r'group/detail', group.group_detail, name='group_detail'),
 
     # Permission
     url(r'permission/list', permission.perm_list, name='permission_list'),

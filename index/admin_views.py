@@ -27,5 +27,8 @@ def admin_group_list(request):
 
 
 def admin_group_add(request):
-    return render(request, 'admin/group/add.html')
+    return render(request, 'admin/group/add.html', {'pagetitle': '添加用户组'})
+
+def admin_group_edit(request,groupid):
+    return render(request, 'admin/group/add.html', {'pagetitle': '修改用户组', 'id': int(groupid)})
 
