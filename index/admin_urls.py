@@ -11,7 +11,7 @@ urlpatterns = [
     # User
     url(r'user/list', admin_views.admin_user_list),
     url(r'user/add', admin_views.admin_user_add),
-    url(r'user/edit/(\d+)', admin_views.admin_user_add),
+    url(r'user/edit/(\d+)', admin_views.admin_user_edit),
 
     #group
     url(r'group/list',admin_views.admin_group_list),

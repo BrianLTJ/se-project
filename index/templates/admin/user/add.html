@@ -4,7 +4,12 @@
 
 <div id="useradd">
     <div><label for="username">用户名</label><input type="text" id="username" v-model="user.username"></div>
+    {% if id > -1 %}
+        <p>更改密码</p>
+    {% else %}
+    {# New User can set password, existed user cant change password from here #}
     <div><label for="password">密码</label><input type="password" id="password" v-model="user.password"></div>
+    {% endif %}
     <div>
         <p>
             添加用户组：
@@ -16,18 +21,35 @@
         </p>
         <p>
             <group-list
-                v-for="i in user.group" :text="i.name"></group-list>
+                v-for="(i,index) in user.groups"
+                :text="i.name"
+                @remove="user.groups.splice(index,1)"></group-list>
         </p>
 
     </div>
     <div>
-        <button type="button" @click="adduser">添加用户</button>
+        {% if id > -1 %}
+            <button type="button" @click="edituser">保存更改</button>
+            <button type="button" @click="deleteuser">删除用户</button>
+        {% else %}
+            <button type="button" @click="adduser">添加用户</button>
+        {% endif %}
+
     </div>
 </div>
     <script>
     // api urls
     var api_adduser="{% url 'api_admin_user:user_add' %}";
-    var api_grouplist="{% url 'api_admin_user:group_list' %}"
+    var api_grouplist="{% url 'api_admin_user:group_list' %}";
+    var api_user_edit="{% url 'api_admin_user:user_edit' %}";
+    var api_user_delete="{% url 'api_admin_user:user_delete' %}";
+    var api_user_detail="{% url 'api_admin_user:user_detail' %}";
+
+    {% if id > -1 %}
+        var userid={{ id }};
+    {% else %}
+        var userid=-1;
+    {% endif %}
     </script>
     {% verbatim %}
     <script>
@@ -36,7 +58,7 @@
         props: ['id','name']
     });
     Vue.component('group-list',{
-        template:"<span>{{ text }}</span>",
+        template:'<span>{{ text }} <button type="button" @click="$emit(\'remove\')">X</button></span>',
         props: ['text']
     });
     var useradd = new Vue({
@@ -45,7 +67,7 @@
             user:{
                 username:"",
                 password:"",
-                group:[]
+                groups:[]
             },
             grouplist:[],
             grouptoadd: ''
@@ -60,13 +82,41 @@
                     }
                 });
             },
+            edituser: function () {
+                $.post({
+                    url: api_user_edit,
+                    data: JSON.stringify(useradd.$data['user']),
+                    success:function (data) {
+                        console.log(data);
+                    }
+                });
+            },
+            deleteuser: function () {
+                $.post({
+                    url: api_user_delete,
+                    data: JSON.stringify({"id": useradd.$data['user']['id']}),
+                    success: function (data) {
+                        console.log(data);
+                    }
+                });
+            },
+            fetch_user_detail: function () {
+                $.post({
+                    url: api_user_detail,
+                    data: JSON.stringify({"id": userid}),
+                    success: function (data) {
+                        if(data['result']=='ok'){
+                            useradd.$data['user']=data['user'];
+                        }
+                    }
+                });
+            },
             fetch_group_list: function () {
                 $.get({
                     url: api_grouplist,
                     success: function (data) {
                         console.log(data);
                         if(data['result']=='ok'){
-
                             useradd.$data['grouplist']=data['groups'];
                         }
                     }
@@ -82,19 +132,22 @@
                         break;
                     }
                 }
-                for(var i=0;i<useradd.$data['user']['group'].length;i++){
-                    if(useradd.$data['user']['group'][i]['id']==useradd.$data['grouptoadd']){
+                for(var i=0;i<useradd.$data['user']['groups'].length;i++){
+                    if(useradd.$data['user']['groups'][i]['id']==useradd.$data['grouptoadd']){
                         group_exist=true;
                         break;
                     }
                 }
                 if(!group_exist&& group_index_in_list>-1){
-                    useradd.$data['user']['group'].push({'id': useradd.$data['grouptoadd'], 'name':useradd.$data['grouplist'][group_index_in_list]['name']});
+                    useradd.$data['user']['groups'].push({'id': useradd.$data['grouptoadd'], 'name':useradd.$data['grouplist'][group_index_in_list]['name']});
                 }
             }
         }
     });
     useradd.fetch_group_list();
+    if(userid>-1){
+        useradd.fetch_user_detail();
+    }
     </script>
     {% endverbatim %}
 

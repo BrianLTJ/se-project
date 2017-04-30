@@ -1,6 +1,6 @@
 import json
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group,Permission
 from django.contrib.auth import get_user
 from django.http import JsonResponse,HttpRequest
 
@@ -8,7 +8,11 @@ def user_wrapper(user):
     groups=[]
     for g in user.groups.all():
         groups.append({"id":g.id, "name":g.name})
-    return {"id":user.id, "username":user.username, "last_login": user.last_login, "groups":groups}
+    perms=[]
+    for p in user.get_all_permissions():
+        perms.append(p)
+
+    return {"id":user.id, "username":user.username, "last_login": user.last_login, "groups":groups, "perms": perms}
 
 @csrf_exempt
 def admin_change_password(request):
@@ -43,7 +47,6 @@ def admin_user_list(request):
     return JsonResponse(response_data)
 
 
-
 @csrf_exempt
 def admin_user_add(request):
     response_data={}
@@ -52,16 +55,86 @@ def admin_user_add(request):
         req = json.loads(request.body.decode('utf-8'))
         try:
             user = User.objects.create_user(username=req['username'], password=req['password'])
+            user.save()
             # Add to group
             for i in req['groups']:
                 user.groups.add(Group.objects.get(id=i['id']))
 
+            user.save()
+            response_data['result']='ok'
+            response_data['userid']=user.id
         except:
             response_data['message']='Fail to add user'
     else:
         response_data['message']='Not a valid request.'
 
     return JsonResponse(response_data)
+
+
+@csrf_exempt
+def admin_user_edit(request):
+    response_data={}
+    response_data['result']='error'
+    if request.method=='POST':
+        req = json.loads(request.body.decode('utf-8'))
+        try:
+            user = User.objects.get(id=req['id'])
+            # Add to group
+            user.username=req['username']
+            user.save()
+            newgroup = []
+            for i in req['groups']:
+                newgroup.append(Group.objects.get(id=i['id']))
+
+            user.groups.set(newgroup)
+            user.save()
+            response_data['result']='ok'
+            response_data['userid']=user.id
+        except:
+            response_data['message']='Fail to edit user'
+    else:
+        response_data['message']='Not a valid request.'
+
+    return JsonResponse(response_data)
+
+
+@csrf_exempt
+def admin_user_detail(request):
+    response_data={}
+    response_data['result']='error'
+    if request.method=='POST':
+        req = json.loads(request.body.decode('utf-8'))
+        try:
+            user = User.objects.get(id=req['id'])
+            response_data['result']='ok'
+            response_data['user']=user_wrapper(user)
+
+        except:
+            response_data['message']='User not found'
+    else:
+        response_data['message']='Not a valid request.'
+
+    return JsonResponse(response_data)
+
+
+
+@csrf_exempt
+def admin_user_delete(request):
+    response_data={}
+    response_data['result']='error'
+    if request.method=='POST':
+        req = json.loads(request.body.decode('utf-8'))
+        try:
+            user = User.objects.get(id=req['id'])
+            user.delete()
+            response_data['result']='ok'
+        except:
+            response_data['message']='Fail to delete user'
+    else:
+        response_data['message']='Not a valid request.'
+
+    return JsonResponse(response_data)
+
 
 @csrf_exempt
 def admin_user_modify_group(request):
