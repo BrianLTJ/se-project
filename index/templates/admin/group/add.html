@@ -24,7 +24,8 @@
                 <perm
                     v-for="item in group.perms"
                     :name="item.name"
-                    :codename="item.codename"></perm>
+                    :codename="item.codename"
+                    v-on:remove="group.perms.splice(index,1)"></perm>
             </div>
         </div>
     <div>
@@ -40,11 +41,11 @@
 {% verbatim %}
     <script>
     Vue.component('perm-item',{
-        template:"<option :value='id'>{{ name }}({{ codename }})</option>",
+        template:'<option :value="id">{{ name }}({{ codename }})</option>',
         props: ['id','name','codename']
     });
     Vue.component('perm',{
-        template: "<span>{{ name }}({{ codename }})</span>",
+        template: '<span>{{ name }}({{ codename }})<button type="button" v-on:click="$emit(\'remove\')">X</button></span>',
         props:['name','codename']
     })
     var groupadd = new Vue({
