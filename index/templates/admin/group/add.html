@@ -33,6 +33,7 @@
     <div>
         {% if id > -1 %}
             <button type="button" @click="save_group">保存</button>
+            <button type="button" @click="delete_group">删除</button>
         {% else %}
             <button type="button" @click="add_group">添加</button>
         {% endif %}
@@ -44,6 +45,7 @@
     //api
     var api_group_add="{% url 'api_admin_user:group_add' %}";
     var api_group_save="{% url 'api_admin_user:group_change' %}";
+    var api_group_delete="{% url 'api_admin_user:group_delete' %}"
     var api_perm_list="{% url 'api_admin_user:permission_list' %}";
     var api_group_detail="{% url 'api_admin_user:group_detail' %}";
     //Initial vars
@@ -135,6 +137,15 @@
                         }
                     }
                 })
+            },
+            delete_group: function () {
+                $.post({
+                    url:api_group_delete,
+                    data: JSON.stringify({"id": groupid}),
+                    success: function (data) {
+                        console.log(data);
+                    }
+                });
             }
         }
     });

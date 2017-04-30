@@ -31,7 +31,7 @@
         props: ['name','codename']
     });
     Vue.component('group-item',{
-        template: "<tr><td>{{ index }}</td><td>{{ name }}</td><td><perm-item v-for='i in perms' :name='i.name' :codename='i.codename'></perm-item></td><td><a :href='modifyurl'>修改</a></td></tr>",
+        template: "<tr><td>{{ index }}</td><td>{{ name }}</td><td><perm-item v-for='i in perms' :name='i.name' :codename='i.codename'></perm-item></td><td><a :href='modifyurl'>修改与删除</a></td></tr>",
         props: ["index","name", "perms", "modifyurl"]
     });
     var grouplist = new Vue({
