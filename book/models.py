@@ -60,7 +60,7 @@ class BookOperation(models.Model):
 
 
 class BorrowRight(models.Model):
-    group = models.ForeignKey(Group)
+    group = models.OneToOneField(Group)
     booknum = models.IntegerField(default=0)
     day = models.IntegerField(default=0)
     allowborrow = models.BooleanField(default=False)
