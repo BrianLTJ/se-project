@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}用户列表{% endblock %}
+{% block body %}
+<div id="user-list">
+<table>
+    <tr>
+        <th>序号</th>
+        <th>用户名</th>
+        <th>上次登录</th>
+        <th>用户组</th>
+        <th>操作</th>
+    </tr>
+    <tr
+        is="user-item"
+        v-for="(u,index) in users"
+        :index="index+1"
+        :username="u.username"
+        :lastlogin="u.last_login"
+        :editurl="'/admin/user/edit/'+u.id"
+        :groups="u.groups" ></tr>
+</table>
+</div>
+    <script>
+    //apis
+    var api_user_list="{% url 'api_admin_user:user_list' %}"
+    </script>
+{% verbatim %}
+    <script>
+    Vue.component("user-item",{
+        template: '<tr> <td>{{ index }}</td> <td>{{ username }}</td> <td>{{ lastlogin }}</td> <td><span v-for="g in groups">{{ g.name }}</span></td> <td><a :href="editurl">修改和删除</a></td> </tr>',
+        props:['index','id','username','lastlogin','editurl','groups']
+    });
+    var userlist=new Vue({
+        el: "#user-list",
+        data: {
+            users:[]
+        },
+        methods: {
+            fetch_user_list: function () {
+                $.get({
+                    url: api_user_list,
+                    success: function (data) {
+                        console.log(data);
+                        if(data['result']=='ok'){
+                            userlist.$data['users']=data['users'];
+                        }
+                    }
+                });
+            }
+        }
+    });
+    userlist.fetch_user_list();
+    </script>
+{% endverbatim %}
+{% endblock %}

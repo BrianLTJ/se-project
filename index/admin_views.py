@@ -19,7 +19,13 @@ def admin_borrow(request):
 
 # User
 def admin_user_add(request):
-    return render(request, 'admin/user/add.html')
+    return render(request, 'admin/user/add.html', {"pagetitle": "添加用户"})
+
+def admin_user_edit(request, userid):
+    return render(request, 'admin/user/add.html', {"pagetitle": "修改用户", "id": int(userid)})
+
+def admin_user_list(request):
+    return render(request, 'admin/user/list.html')
 
 # Group
 def admin_group_list(request):

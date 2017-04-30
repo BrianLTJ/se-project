@@ -4,6 +4,11 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth import get_user
 from django.http import JsonResponse,HttpRequest
 
+def user_wrapper(user):
+    groups=[]
+    for g in user.groups.all():
+        groups.append({"id":g.id, "name":g.name})
+    return {"id":user.id, "username":user.username, "last_login": user.last_login, "groups":groups}
 
 @csrf_exempt
 def admin_change_password(request):
@@ -20,6 +25,24 @@ def admin_change_password(request):
             response_data['message']='Fail to set password'
     else:
         response_data['message']='Not a valid request.'
+
+
+def admin_user_list(request):
+    response_data={}
+    response_data['result']='error'
+    if request.method=='GET':
+        users = User.objects.all()
+        userlist=[]
+        for user in users:
+            userlist.append(user_wrapper(user))
+        response_data['result']='ok'
+        response_data['users']=userlist
+    else:
+        response_data['message']='Not a valid request.'
+
+    return JsonResponse(response_data)
+
+
 
 @csrf_exempt
 def admin_user_add(request):

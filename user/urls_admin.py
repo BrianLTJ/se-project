@@ -9,6 +9,7 @@ from user import group, permission
 
 urlpatterns = [
     url(r'user/add', user_admin.admin_user_add, name='user_add'),
+    url(r'user/list', user_admin.admin_user_list, name='user_list'),
 
     # Group
     url(r'group/list', group.group_list, name='group_list'),
