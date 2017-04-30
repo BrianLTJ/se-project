@@ -46,22 +46,16 @@ class LibBook(models.Model):
     book = models.ForeignKey(Book)
     barid = models.CharField(max_length=20, unique=True)
     location = models.CharField(max_length=150)
-    borrowuser = models.ForeignKey(User, null=True, blank=True)
     add_time = models.DateTimeField(auto_now_add=True)
     update_time = models.DateTimeField(auto_now=True)
 
 
-class BookOperation(models.Model):
-    libbook=models.ForeignKey(LibBook)
-    operation=models.CharField(max_length=10)
+class BookBorrow(models.Model):
+    libbook = models.ForeignKey(LibBook)
     operator = models.ForeignKey(User, null=True, blank=True, related_name="operator")
     user = models.ForeignKey(User, related_name="borrowuser")
-    operationtime = models.DateTimeField(auto_now_add=True)
-
-
-class BorrowRight(models.Model):
-    group = models.OneToOneField(Group)
-    booknum = models.IntegerField(default=0)
-    day = models.IntegerField(default=0)
-    allowborrow = models.BooleanField(default=False)
-
+    borrowtime = models.DateTimeField(auto_now_add=True)
+    returntime = models.DateTimeField(null=True,blank=True)
+    # borrowtype 借书类型 b 普通借书 e 续期，同一个libbook对应同一个user，同一时间只能有一个未关闭的e，仅在该libbook和该user
+    borrowtype = models.CharField(default='b', max_length=6)
+    returntype = models.CharField(default='n', max_length=6)
