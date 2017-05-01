@@ -3,6 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User, Group,Permission
 from django.contrib.auth import get_user
 from django.http import JsonResponse,HttpRequest
+from user.models import BorrowRight, UserBorrowRight
 
 def user_wrapper(user):
     groups=[]
@@ -12,7 +13,13 @@ def user_wrapper(user):
     for p in user.get_all_permissions():
         perms.append(p)
 
-    return {"id":user.id, "username":user.username, "last_login": user.last_login, "groups":groups, "perms": perms}
+    try:
+        borrowright=UserBorrowRight.objects.get(user=user).borrowright
+        borrowright_dict={"id":borrowright.id, "booknum":borrowright.booknum, "day":borrowright.day, "allowborrow":borrowright.allowborrow}
+    except:
+        borrowright_dict={}
+
+    return {"id":user.id, "username":user.username, "last_login": user.last_login, "groups":groups, "perms": perms, "borrowright":borrowright_dict}
 
 @csrf_exempt
 def admin_change_password(request):
