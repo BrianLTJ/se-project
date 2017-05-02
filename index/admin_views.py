@@ -38,3 +38,15 @@ def admin_group_add(request):
 def admin_group_edit(request,groupid):
     return render(request, 'admin/group/add.html', {'pagetitle': '修改用户组', 'id': int(groupid)})
 
+# Borrowrights
+
+def admin_br_list(request):
+    return render(request, 'admin/borrowright/list.html')
+
+def admin_br_add(request):
+    return render(request, 'admin/borrowright/add.html', {"pagetitle":"添加借书权限组"})
+
+def admin_br_edit(request, brid):
+    return render(request, 'admin/borrowright/add.html', {"pagetitle":"修改借书权限组", "id":int(brid)})
+
+

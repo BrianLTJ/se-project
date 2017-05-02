@@ -26,8 +26,8 @@ urlpatterns =[
     url(r'tag/add', book_category.tag_add, name='tag_add'),
 
     # borrow
-    url(r'borrow/borrow$', book_borrow.book_borrow, name='book_borrow'),
-    url(r'borrow/return$', book_borrow.book_return, name='book_return'),
+    url(r'12borrow/borrow$', book_borrow.book_borrow, name='book_borrow'),
+    url(r'23borrow/return$', book_borrow.book_return, name='book_return'),
 
     
 ]

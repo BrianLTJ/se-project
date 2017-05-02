@@ -1,14 +1,106 @@
 {% extends 'base.html' %}
 {% block title %}{{ pagetitle }}{% endblock %}
 {% block body %}
-
+    <div id="borrowright">
+        <div><label for="name">借书组名称</label><input type="text" id="name" v-model="br.name"></div>
+        <div><label for="booknum">同时可借本数</label><input type="number" id="booknum" v-model="br.booknum"></div>
+        <div><label for="day">最多可借天数</label><input type="number" id="day" v-model="br.day"></div>
+        <div><label for="allowborrow">是否允许借书</label><input type="checkbox" id="allowborrow" v-model="br.allowborrow"></div>
+        <div>
+            {% if id > -1 %}
+                <button type="button" @click="br_edit">保存更改</button>
+                <button type="button" @click="br_delete">删除</button>
+            {% else %}
+                <button type="button" @click="br_add">添加</button>
+            {% endif %}
+        </div>
+    </div>
     <script>
     // apis
+    var api_borrowright_add='{% url "api_admin_user:borrowright_add" %}';
+    var api_borrowright_edit='{% url "api_admin_user:borrowright_edit" %}';
+    var api_borrowright_delete='{% url "api_admin_user:borrowright_delete" %}';
+    var api_borrowright_detail='{% url "api_admin_user:borrowright_detail" %}';
+    {% if id > -1 %}
+        var borrowrightid={{ id }};
+    {% else %}
+         var borrowrightid=-1;
+    {% endif %}
     </script>
 {% verbatim %}
-    <script>
-
-    </script>
+<script>
+    var borrowright=new Vue({
+        el: '#borrowright',
+        data: {
+            br: {
+                name: '',
+                booknum: 0,
+                day: 0,
+                allowborrow: false
+            }
+        },
+        methods: {
+            br_fetch: function () {
+                if(borrowrightid>-1){
+                    $.post({
+                        url: api_borrowright_detail,
+                        data: JSON.stringify({"id": borrowrightid}),
+                        success: function (data) {
+                            console.log(data);
+                            if(data['result']=='ok'){
+                                borrowright.$data['br']=data['borrowright'];
+                            }
+                        }
+                    });
+                }
+            },
+            br_delete: function () {
+                if(borrowrightid>-1){
+                    $.post({
+                        url: api_borrowright_delete,
+                        data: JSON.stringify({"id": borrowrightid}),
+                        success: function (data) {
+                            if(data['result']=='ok'){
+                                console.log(data);
+                            }
+                        }
+                    });
+                }
+            },
+            br_add: function () {
+                if(!(borrowrightid>-1)){
+                    $.post({
+                        url: api_borrowright_add,
+                        data: JSON.stringify(borrowright.$data['br']),
+                        success: function (data) {
+                            console.log(data);
+                            if(data['result']=='ok'){
+                                console.log(data);
+                            }
+                        }
+                    });
+                }
+            },
+            br_edit: function () {
+                if(borrowrightid>-1){
+                    $.post({
+                        url: api_borrowright_edit,
+                        data: JSON.stringify(borrowright.$data['br']),
+                        success: function (data) {
+                            console.log(data);
+                            if(data['result']=='ok'){
+                                console.log(data);
+                            }
+                        }
+                    });
+                }
+            }
+        }
+    });
+    if(borrowrightid>-1){
+        borrowright.br_fetch();
+    }
+</script>
 
 {% endverbatim %}
 

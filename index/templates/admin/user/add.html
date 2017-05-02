@@ -28,6 +28,21 @@
 
     </div>
     <div>
+        <p>
+            设置借书权限组：
+            <select name="" id="" v-model="user.borrowright">
+                <option value="">(请选择)</option>
+                <option
+                    is="borrowright-opt"
+                    v-for="br in borrowrightlist"
+                    :id="br.id"
+                    :name="br.name"
+                    :day="br.day"
+                    :booknum="br.booknum"></option>
+            </select>
+        </p>
+    </div>
+    <div>
         {% if id > -1 %}
             <button type="button" @click="edituser">保存更改</button>
             <button type="button" @click="deleteuser">删除用户</button>
@@ -61,15 +76,21 @@
         template:'<span>{{ text }} <button type="button" @click="$emit(\'remove\')">X</button></span>',
         props: ['text']
     });
+    Vue.component('borrowright-opt',{
+        template: '<option :value="id">{{ name }}，最多可借{{ booknum }}本，每本可借{{ day }}天</option>',
+        props: ['id','name','booknum','day']
+    });
     var useradd = new Vue({
         el: "#useradd",
         data: {
             user:{
                 username:"",
                 password:"",
-                groups:[]
+                groups:[],
+                borrowright: ""
             },
             grouplist:[],
+            borrowrightlist: [],
             grouptoadd: ''
         },
         methods: {
@@ -121,6 +142,9 @@
                         }
                     }
                 });
+            },
+            fetch_borrowright_list: function () {
+
             },
             push_to_list: function () {
                 group_exist=false; // group exists in user group

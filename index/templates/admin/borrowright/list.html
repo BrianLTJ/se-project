@@ -2,14 +2,64 @@
 {% block title %}借书权限组列表{% endblock %}
 {% block body %}
 
+    <div id="br-list">
+        <table>
+            <tr>
+                <th>序号</th>
+                <th>名称</th>
+                <th>是否能借书</th>
+                <th>可借本数</th>
+                <th>可借天数</th>
+                <th>操作</th>
+            </tr>
+            <tr
+                is="br-item"
+                v-for="(br, index) in borrowrights"
+                :index="index+1"
+                :name="br.name"
+                :allow="br.allowborrow"
+                :booknum="br.booknum"
+                :day="br.day"
+                :opturl="'/admin/borrowright/edit/'+br.id"></tr>
+        </table>
+    </div>
     <script>
     // apis
+    var api_borrowright_list='{% url "api_admin_user:borrowright_list" %}';
     </script>
 {% verbatim %}
-    <script>
-
-    </script>
-
+<script>
+Vue.component('br-item',{
+    template: '<tr>' +
+    '<td>{{ index }}</td>' +
+    '<td>{{ name }}</td>' +
+    '<td>{{ allow ? "是" : "否" }}</td>' +
+    '<td>{{ booknum }}</td>' +
+    '<td>{{ day }}</td>' +
+    '<td><a :href="opturl">修改或删除</a></td>' +
+    '</tr>',
+    props: ['index','id','name','allow','booknum','day','opturl']
+});
+var brlist=new Vue({
+    el: "#br-list",
+    data: {
+        borrowrights: []
+    },
+    methods: {
+        fetch_list: function () {
+            $.get({
+                url: api_borrowright_list,
+                success: function (data) {
+                    if(data['result']=='ok'){
+                        brlist.$data['borrowrights']=data['borrowrights'];
+                    }
+                }
+            });
+        }
+    }
+});
+brlist.fetch_list();
+</script>
 {% endverbatim %}
 
 {% endblock %}

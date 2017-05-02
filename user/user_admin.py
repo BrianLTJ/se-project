@@ -5,6 +5,7 @@ from django.contrib.auth import get_user
 from django.http import JsonResponse,HttpRequest
 from user.models import BorrowRight, UserBorrowRight
 
+
 def user_wrapper(user):
     groups=[]
     for g in user.groups.all():
@@ -37,7 +38,7 @@ def admin_change_password(request):
     else:
         response_data['message']='Not a valid request.'
 
-
+@csrf_exempt
 def admin_user_list(request):
     response_data={}
     response_data['result']='error'
@@ -67,7 +68,12 @@ def admin_user_add(request):
             for i in req['groups']:
                 user.groups.add(Group.objects.get(id=i['id']))
 
+            # Add to borrowright group
+            borrowright = BorrowRight.objects.get(id=req.borrowright)
             user.save()
+            userborrowright = UserBorrowRight(user=user, borrowright=borrowright)
+            userborrowright.save()
+
             response_data['result']='ok'
             response_data['userid']=user.id
         except:
@@ -94,6 +100,20 @@ def admin_user_edit(request):
                 newgroup.append(Group.objects.get(id=i['id']))
 
             user.groups.set(newgroup)
+
+            # Set new borrowright
+            ubr=UserBorrowRight.objects.filter(user=user)
+
+            ubrnotchanged = (len(ubr)==1) & (ubr.id==int(request.borrowright))
+
+            if not ubrnotchanged:
+                # Clear all old ubr item
+                for i in ubr:
+                    i.delete()
+                # Add new ubr item
+                newubr=UserBorrowRight(user=user, borrowright=BorrowRight.objects.get(id=req.borrowright))
+                newubr.save()
+
             user.save()
             response_data['result']='ok'
             response_data['userid']=user.id
@@ -133,7 +153,13 @@ def admin_user_delete(request):
         req = json.loads(request.body.decode('utf-8'))
         try:
             user = User.objects.get(id=req['id'])
+            # Delete user borrow right list
+            ubr = UserBorrowRight.objects.filter(user=user)
+            for i in ubr:
+                i.delete()
+
             user.delete()
+
             response_data['result']='ok'
         except:
             response_data['message']='Fail to delete user'

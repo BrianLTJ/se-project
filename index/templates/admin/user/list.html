@@ -8,6 +8,10 @@
         <th>用户名</th>
         <th>上次登录</th>
         <th>用户组</th>
+        <th>借书权限组</th>
+        <th>是否允许借书</th>
+        <th>借书时长</th>
+        <th>同时可借最大数量</th>
         <th>操作</th>
     </tr>
     <tr
@@ -17,7 +21,8 @@
         :username="u.username"
         :lastlogin="u.last_login"
         :editurl="'/admin/user/edit/'+u.id"
-        :groups="u.groups" ></tr>
+        :groups="u.groups"
+        :br="u.borrowright"></tr>
 </table>
 </div>
     <script>
@@ -27,8 +32,18 @@
 {% verbatim %}
     <script>
     Vue.component("user-item",{
-        template: '<tr> <td>{{ index }}</td> <td>{{ username }}</td> <td>{{ lastlogin }}</td> <td><span v-for="g in groups">{{ g.name }}</span></td> <td><a :href="editurl">修改和删除</a></td> </tr>',
-        props:['index','id','username','lastlogin','editurl','groups']
+        template: '<tr>' +
+        '<td>{{ index }}</td>' +
+        '<td>{{ username }}</td>' +
+        '<td>{{ lastlogin }}</td>' +
+        '<td><span v-for="g in groups">{{ g.name }}</span></td>' +
+        '<td>{{ br.name }}</td>' +
+        '<td>{{ br.allowborrow ? "是" : "否" }}</td>' +
+        '<td>{{ br.day }}</td>' +
+        '<td>{{ br.booknum }}</td>' +
+        '<td><a :href="editurl">修改和删除</a></td>' +
+        '</tr>',
+        props:['index','id','username','lastlogin','editurl','groups','br']
     });
     var userlist=new Vue({
         el: "#user-list",
