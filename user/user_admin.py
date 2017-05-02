@@ -15,10 +15,11 @@ def user_wrapper(user):
         perms.append(p)
 
     try:
-        borrowright=UserBorrowRight.objects.get(user=user).borrowright
-        borrowright_dict={"id":borrowright.id, "booknum":borrowright.booknum, "day":borrowright.day, "allowborrow":borrowright.allowborrow}
+        ubr=UserBorrowRight.objects.get(user=user)
+        borrowright=ubr.borrowright
+        borrowright_dict={"id":borrowright.id,"name": borrowright.name, "booknum":borrowright.booknum, "day":borrowright.day, "allowborrow":borrowright.allowborrow}
     except:
-        borrowright_dict={}
+        borrowright_dict={"id":""}
 
     return {"id":user.id, "username":user.username, "last_login": user.last_login, "groups":groups, "perms": perms, "borrowright":borrowright_dict}
 
@@ -68,11 +69,16 @@ def admin_user_add(request):
             for i in req['groups']:
                 user.groups.add(Group.objects.get(id=i['id']))
 
-            # Add to borrowright group
-            borrowright = BorrowRight.objects.get(id=req.borrowright)
             user.save()
-            userborrowright = UserBorrowRight(user=user, borrowright=borrowright)
-            userborrowright.save()
+
+            try:
+                newbr = BorrowRight.objects.get(id=int(req['borrowright']['id']))
+                newubr = UserBorrowRight()
+                newubr.user = user
+                newubr.borrowright = newbr
+                newubr.save()
+            except:
+                pass
 
             response_data['result']='ok'
             response_data['userid']=user.id
@@ -103,16 +109,26 @@ def admin_user_edit(request):
 
             # Set new borrowright
             ubr=UserBorrowRight.objects.filter(user=user)
-
-            ubrnotchanged = (len(ubr)==1) & (ubr.id==int(request.borrowright))
+            ubrnotchanged=False
+            try:
+                if len(ubr)==1:
+                    ubrnotchanged = (ubr[0].id==int(req['borrowright']['id']))
+            except:
+                pass
 
             if not ubrnotchanged:
                 # Clear all old ubr item
                 for i in ubr:
                     i.delete()
-                # Add new ubr item
-                newubr=UserBorrowRight(user=user, borrowright=BorrowRight.objects.get(id=req.borrowright))
-                newubr.save()
+
+                try:
+                    newbr = BorrowRight.objects.get(id=int(req['borrowright']['id']))
+                    newubr = UserBorrowRight()
+                    newubr.user = user
+                    newubr.borrowright = newbr
+                    newubr.save()
+                except:
+                    pass
 
             user.save()
             response_data['result']='ok'

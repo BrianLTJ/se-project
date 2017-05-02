@@ -30,7 +30,7 @@
     <div>
         <p>
             设置借书权限组：
-            <select name="" id="" v-model="user.borrowright">
+            <select name="" id="" v-model="user.borrowright.id">
                 <option value="">(请选择)</option>
                 <option
                     is="borrowright-opt"
@@ -38,8 +38,10 @@
                     :id="br.id"
                     :name="br.name"
                     :day="br.day"
-                    :booknum="br.booknum"></option>
+                    :booknum="br.booknum"
+                    :allow="br.allowborrow"></option>
             </select>
+
         </p>
     </div>
     <div>
@@ -60,6 +62,8 @@
     var api_user_delete="{% url 'api_admin_user:user_delete' %}";
     var api_user_detail="{% url 'api_admin_user:user_detail' %}";
 
+    var api_br_list='{% url "api_admin_user:borrowright_list" %}';
+
     {% if id > -1 %}
         var userid={{ id }};
     {% else %}
@@ -77,8 +81,8 @@
         props: ['text']
     });
     Vue.component('borrowright-opt',{
-        template: '<option :value="id">{{ name }}，最多可借{{ booknum }}本，每本可借{{ day }}天</option>',
-        props: ['id','name','booknum','day']
+        template: '<option :value="id">({{ allow ? "当前可借书" : "当前不可借书" }}){{ name }}，最多可借{{ booknum }}本，每本可借{{ day }}天</option>',
+        props: ['id','name','booknum','day','allow']
     });
     var useradd = new Vue({
         el: "#useradd",
@@ -87,7 +91,9 @@
                 username:"",
                 password:"",
                 groups:[],
-                borrowright: ""
+                borrowright: {
+                    "id": ""
+                }
             },
             grouplist:[],
             borrowrightlist: [],
@@ -144,7 +150,15 @@
                 });
             },
             fetch_borrowright_list: function () {
-
+                $.get({
+                    url: api_br_list,
+                    success: function (data) {
+                        console.log(data);
+                        if(data['result']=='ok'){
+                            useradd.$data['borrowrightlist']=data['borrowrights'];
+                        }
+                    }
+                });
             },
             push_to_list: function () {
                 group_exist=false; // group exists in user group
@@ -169,6 +183,7 @@
         }
     });
     useradd.fetch_group_list();
+    useradd.fetch_borrowright_list();
     if(userid>-1){
         useradd.fetch_user_detail();
     }
