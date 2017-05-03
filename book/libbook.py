@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from user.borrow import libbook_borrowed, bookborrow_getexpireday
 from user.models import BorrowRight, UserBorrowRight
+from apitools.decorators import accept_methods
 import json
 
 
@@ -20,37 +21,34 @@ def libbook_wrapper(libbook):
 
 # add libbook
 @csrf_exempt
+@accept_methods(['post'])
 def libbook_add(request):
     response_data = {}
     response_data['result'] = 'error'
-    if request.method == "POST":
-        req = json.loads(request.body.decode('utf-8'))
+    req = json.loads(request.body.decode('utf-8'))
 
-        try:
-            libbook = LibBook()
+    try:
+        libbook = LibBook()
 
-            book = Book.objects.get(bookid=int(req['bookid']))
-            libbook.book = book
-            libbook.barid = req['barid']
-            libbook.location = req['location']
-            libbook.save()
-            response_data['result'] = 'ok'
-        except:
-            response_data['result'] = 'error'
-
-    else:
-        response_data['message'] = 'Not a valid request.'
+        book = Book.objects.get(bookid=int(req['bookid']))
+        libbook.book = book
+        libbook.barid = req['barid']
+        libbook.location = req['location']
+        libbook.save()
+        response_data['result'] = 'ok'
+    except:
+        response_data['result'] = 'error'
 
     return JsonResponse(response_data)
 
 # get libbook list
 @csrf_exempt
+@accept_methods(['post'])
 def libbook_list(request):
     response_data = {}
     response_data['result'] = 'error'
-    if request.method == "POST":
-        req = json.loads(request.body.decode('utf-8'))
-        # try:
+    req = json.loads(request.body.decode('utf-8'))
+    try:
         bookid=req['bookid']
         libbooks = LibBook.objects.filter(book=Book.objects.get(bookid=int(req['bookid'])))
         # print(len(libbooks))
@@ -64,9 +62,7 @@ def libbook_list(request):
 
         response_data['result'] = 'ok'
         response_data['data']=resp_libbookdata
-        # except:
-        #     response_data['message'] = 'Book Not found.'
-    else:
-        response_data['message'] = 'Not a valid request.'
+    except:
+        response_data['message'] = 'Book Not found.'
 
     return JsonResponse(response_data)
