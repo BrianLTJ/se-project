@@ -16,6 +16,9 @@ def admin_libbook(request):
 def admin_borrow(request):
     return render(request, 'admin/borrow/borrow.html')
 
+def admin_return(request):
+    return render(request, 'admin/borrow/return.html')
+
 
 # User
 def admin_user_add(request):

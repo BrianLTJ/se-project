@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}还书{% endblock %}
+{% block body %}
+<div id="return">
+    <label for="barid">图书条码：</label>
+    <input type="text" id="barid" v-model="barid">
+    <button type="button" @click="returnbook">归还</button>
+</div>
+
+    <script>
+    //apis
+    var api_book_return = '{% url "api_admin_user:book_return" %}';
+    </script>
+{% verbatim %}
+    <script>
+        var bookreturn = new Vue({
+            el: "#return",
+            data: {
+                barid: "",
+                libbook: {},
+                borrowuser: ""
+            },
+            methods: {
+                returnbook: function () {
+                    $.post({
+                        url: api_book_return,
+                        data: JSON.stringify({"barid": bookreturn.$data['barid']}),
+                        success: function (data) {
+                            if(data['result']=='ok'){
+                                console.log(data);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+{% endverbatim %}
+{% endblock %}

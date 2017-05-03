@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from book.models import LibBook, BookBorrow
 from django.contrib.auth.models import User
+from django.utils.timezone import localtime
 from user.models import BorrowRight, UserBorrowRight, BanList
 from django.http import HttpRequest
 import datetime, time
@@ -18,7 +19,8 @@ def bookborrow_getexpireday(libbook):
     try:
         bookborrow = BookBorrow.objects.filter(libbook=libbook).filter(returntype='n').get()
         bookday = UserBorrowRight.objects.get(user=bookborrow.user).borrowright.day
-        expiredatetime=bookborrow.borrowtime+datetime.timedelta(days=bookday)
+        expiredatetime=(bookborrow.borrowtime + datetime.timedelta(days=bookday))
+        expiredatetime=localtime(expiredatetime).strftime("%Y-%m-%d")
         return expiredatetime
     except:
         return None
@@ -68,19 +70,19 @@ def book_borrow(request):
             response_data['message'] = 'Maximun allowed book number.'
 
             if allowborrow:
+                # print("allowborrow")
                 # Fetch libbook
                 libbook=LibBook.objects.get(barid=req['barid'])
 
                 if libbook_borrowed(libbook) == False:
-                    bookborrow = BookBorrow.objects.create(user=user)
-
-                    libbook.borrow=bookborrow
-                    libbook.save()
+                    bookborrow = BookBorrow.objects.create(user=user, libbook=libbook)
 
                     bookborrow.operator=request.user
                     bookborrow.save()
 
                     response_data['result'] = 'ok'
+                    response_data['username']=user.username
+                    response_data['expire']=bookborrow_getexpireday(libbook)
                 else:
                     response_data['message'] = 'Book has been borrowed.'
         except:
@@ -102,7 +104,7 @@ def book_return(request):
             libbook=LibBook.objects.get(barid=req['barid'])
             # Query whether libbook is borrowed
             if libbook_borrowed(libbook):
-                bookborrow=BookBorrow.objects.get(libbook=libbook, returntype='n')
+                bookborrow=BookBorrow.objects.filter(libbook=libbook).filter(returntype='n').get()
                 bookborrow.returntime= datetime.datetime.now()
                 bookborrow.returntype = 'r'
                 bookborrow.save()

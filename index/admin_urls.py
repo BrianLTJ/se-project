@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'libbook', admin_views.admin_libbook),
 
     url(r'borrow/borrow', admin_views.admin_borrow),
+    url(r'borrow/return', admin_views.admin_return),
     # User
     url(r'user/list', admin_views.admin_user_list),
     url(r'user/add', admin_views.admin_user_add),

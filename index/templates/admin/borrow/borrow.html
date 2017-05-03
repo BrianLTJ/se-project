@@ -12,11 +12,11 @@
 	<div id="book-borrow">
 		<div>图书条码：<input type="text" v-model="barid"></div>
 		<div>借书账号：<input type="text" v-model="userid"></div>
-		<div><button type="button" @click="brrow()">借书</button><button type="reset">清空</button></div>
+		<div><button type="button" @click="borrow">借书</button><button type="reset">清空</button></div>
 	</div>
 
 	<script>
-        var borrowapi="{% url 'book:book_borrow' %}";
+        var borrowapi="{% url 'api_admin_user:book_borrow' %}";
 	</script>
 	{% verbatim %}
 	<script>
@@ -28,7 +28,13 @@
 			},
 			methods:{
 				borrow: function(){
-
+                    $.post({
+                        url: borrowapi,
+                        data: JSON.stringify({"userid": bookborrow.$data['userid'], "barid":bookborrow.$data['barid']}),
+                        success: function (data) {
+                            console.log(data);
+                        }
+                    })
 				}
 			}
 		});
