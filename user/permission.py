@@ -1,6 +1,7 @@
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.http import JsonResponse
+from apitools.decorators import accept_methods
 import json
 
 
@@ -9,6 +10,7 @@ def perm_wrapper(perm):
 
 
 # Permission list
+@accept_methods(['get'])
 def perm_list(request):
     response_data={}
     response_data['result']='error'

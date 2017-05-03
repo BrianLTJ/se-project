@@ -3,7 +3,7 @@
 Decorators for project
 
 '''
-
+import functools
 from django.http import JsonResponse
 
 
@@ -22,6 +22,7 @@ Pass accepted methods.
 '''
 def accept_methods(accepted_methods):
     def decorator(func):
+        @functools.wraps(func)
         def wrapper(*args,**kw):
             allowed = False
             req_method = args[0].method.upper()

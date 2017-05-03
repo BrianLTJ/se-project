@@ -31,6 +31,7 @@ def cate_list(request):
         response_data['result'] = 'error'
         response_data['message'] = 'Fail to fetch categories.'
 
+    return JsonResponse(response_data)
 
 # Add cate
 @csrf_exempt
