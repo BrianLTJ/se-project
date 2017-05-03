@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'index',
     'book',
     'user',
+    'apitools',
 ]
 
 MIDDLEWARE = [
