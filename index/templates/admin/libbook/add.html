@@ -19,9 +19,11 @@
     <div>
         <div
             is="libbook-item"
-            v-for="item in libbook"
-            v-bind:location="item.location"
-            v-bind:barid="item.barid">
+            v-for="(item,index) in libbook"
+            :index="index+1"
+            :location="item.location"
+            :barid="item.barid"
+            :state="item.state">
         </div>
     </div>
 
@@ -38,7 +40,9 @@
     //var libbook_add="/api/book/libbook/add";
     var libbook_list="{% url 'book:libbook_list' %}";
     var libbook_add="{% url 'book:libbook_add' %}";
+   </script>
     {% verbatim %}
+     <script>
     Vue.component("libbook",{
         template: "<div>" +
             "<div><input type=\"text\" v-model=\"\" id=\"inp-\"></div>"+
@@ -47,8 +51,8 @@
         props: ["location","barid"]
     });
     Vue.component("libbook-item",{
-        template: "<div><span>{{ barid }}</span>-<span>{{ location }}</span> <span>state</span> </div>",
-        props: ['barid','location']
+        template: "<div><span>{{ index }}</span>-<span>{{ barid }}</span>-<span>{{ location }}</span> <span>{{ state.borrowed ? '已借出，到期时间 '+state.expire : '在架' }}</span> </div>",
+        props: ['barid','location','index','state']
     });
     var libbook=new Vue({
         el: "#libbookarea",
@@ -65,7 +69,7 @@
             fetchlibbooks: function () {
                 $.post({
                     url: libbook_list,
-                    data: "[{ \"bookid\": "+libbook.$data['bookid']+" }]",
+                    data: JSON.stringify({"bookid":libbook.$data['bookid']}),
                     success: function (data) {
                         libbook.$data['libbook']=data['data'];
                     }
@@ -76,7 +80,7 @@
                 
                 $.post({
                     url: libbook_add,
-                    data: "["+JSON.stringify(libbook.$data['newlibbook'])+"]",
+                    data: JSON.stringify(libbook.$data['newlibbook']),
                     success: function (data) {
                         libbook.fetchlibbooks();
                     }
@@ -85,7 +89,8 @@
         }
     });
     libbook.fetchlibbooks();
+    </script>
     {% endverbatim %}
-</script>
+
 </body>
 </html>

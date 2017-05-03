@@ -4,7 +4,7 @@ API url for admin
 
 '''
 from django.conf.urls import url
-from user import user_admin, group, permission, borrowright
+from user import user_admin, group, permission, borrowright,borrow
 
 urlpatterns = [
     url(r'user/add$', user_admin.admin_user_add, name='user_add'),
@@ -29,4 +29,7 @@ urlpatterns = [
     url(r'borrowright/edit$', borrowright.borrowright_edit, name='borrowright_edit'),
     url(r'borrowright/detail$', borrowright.borrowright_detail, name='borrowright_detail'),
     url(r'borrowright/delete$', borrowright.borrowright_delete, name='borrowright_delete'),
+    # borrow
+    url(r'borrow/borrow$', borrow.book_borrow, name='book_borrow'),
+    url(r'borrow/return$', borrow.book_return, name='book_return'),
 ]

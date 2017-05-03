@@ -44,6 +44,8 @@
 
         </p>
     </div>
+    <div><label for="active">允许用户操作</label><input type="checkbox" id="active" v-model="user.active"></div>
+    <div><label for="banned">禁止用户借书</label><input type="checkbox" id="banned" v-model="user.banned"></div>
     <div>
         {% if id > -1 %}
             <button type="button" @click="edituser">保存更改</button>
@@ -93,7 +95,9 @@
                 groups:[],
                 borrowright: {
                     "id": ""
-                }
+                },
+                active: true,
+                banned: false
             },
             grouplist:[],
             borrowrightlist: [],

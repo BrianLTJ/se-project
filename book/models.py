@@ -58,4 +58,5 @@ class BookBorrow(models.Model):
     returntime = models.DateTimeField(null=True,blank=True)
     # borrowtype 借书类型 b 普通借书 e 续期，同一个libbook对应同一个user，同一时间只能有一个未关闭的e，仅在该libbook和该user
     borrowtype = models.CharField(default='b', max_length=6)
+    # return type 归还类型 n 未还， e 被展期，r 已还
     returntype = models.CharField(default='n', max_length=6)

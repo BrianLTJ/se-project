@@ -8,8 +8,10 @@
         <th>用户名</th>
         <th>上次登录</th>
         <th>用户组</th>
+        <th>是否激活</th>
+        <th>黑名单</th>
         <th>借书权限组</th>
-        <th>是否允许借书</th>
+        <th>权限组是否允许借书</th>
         <th>借书时长</th>
         <th>同时可借最大数量</th>
         <th>操作</th>
@@ -22,8 +24,11 @@
         :lastlogin="u.last_login"
         :editurl="'/admin/user/edit/'+u.id"
         :groups="u.groups"
-        :br="u.borrowright"></tr>
+        :br="u.borrowright"
+        :active="u.active"
+        :banned="u.banned"></tr>
 </table>
+
 </div>
     <script>
     //apis
@@ -37,13 +42,15 @@
         '<td>{{ username }}</td>' +
         '<td>{{ lastlogin }}</td>' +
         '<td><span v-for="g in groups">{{ g.name }}</span></td>' +
+        '<td>{{ active ? "是" : "否" }}</td>' +
+        '<td>{{ banned ? "是" : "否" }}</td>' +
         '<td>{{ br.name }}</td>' +
         '<td>{{ br.allowborrow ? "是" : "否" }}</td>' +
         '<td>{{ br.day }}</td>' +
         '<td>{{ br.booknum }}</td>' +
         '<td><a :href="editurl">修改和删除</a></td>' +
         '</tr>',
-        props:['index','id','username','lastlogin','editurl','groups','br']
+        props:['index','id','username','lastlogin','editurl','groups','br', 'active','banned']
     });
     var userlist=new Vue({
         el: "#user-list",

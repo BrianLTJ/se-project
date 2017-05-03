@@ -10,6 +10,10 @@ class BorrowRight(models.Model):
 
 
 class UserBorrowRight(models.Model):
-    user = models.ForeignKey(User)
+    user = models.OneToOneField(User, unique=True)
     borrowright = models.ForeignKey(BorrowRight)
+
+
+class BanList(models.Model):
+    user = models.OneToOneField(User, unique=True)
 

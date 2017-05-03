@@ -31,7 +31,7 @@
             <span
                 is="cate-item"
                 v-for="cate in book.category"
-                v-bind:text="cate.text"
+                :text="cate.text"
             ></span>
         </div>
     </div>
@@ -41,14 +41,36 @@
             <span
                 is="tag-item"
                 v-for="t in book.tag"
-                v-bind:text="t.text"
+                :text="t.text"
             ></span>
         </div>
+    </div>
+    <div>
+        <p>馆藏信息</p>
+        <table>
+            <tr>
+                <th>序号</th>
+                <th>条码</th>
+                <th>馆藏地址</th>
+                <th>索书号</th>
+                <th>状态</th>
+            </tr>
+            <tr
+                is="libbook-item"
+                v-for="(item,index) in libbook"
+                :index="index+1"
+                :clc="book.clc"
+                :location="item.location"
+                :barid="item.barid"
+                :state="item.state"></tr>
+        </table>
     </div>
 </div>
 {% endverbatim %}
 <script>
+        var bookid={{ book_id }};
         var fetch_url = "{% url 'book:detail' book_id %}";
+        var fetch_libbooklist = '{% url 'book:libbook_list' %}';
 </script>
 {% verbatim %}
 <script>
@@ -59,6 +81,10 @@
     Vue.component('tag-item',{
         template: "<span class='tag-item'>{{ text }}</span>",
         props: ['text']
+    });
+    Vue.component("libbook-item",{
+        template: "<tr><td>{{ index }}</td><td>{{ barid }}</td><td>{{ location }}</td><td>{{ clc }}</td><td>{{ state.borrowed ? '已借出，到期时间 '+state.expire : '在架' }}</td></tr>",
+        props: ['barid','location','index','state','clc']
     });
     var bookinfo = new Vue({
         el: "#book-info",
@@ -79,19 +105,37 @@
                 ],
                 tag:[],
                 price: ""
+            },
+            libbook: []
+        },
+        methods: {
+            fetch_bookdetail: function () {
+                $.get({
+                    url: fetch_url,
+                    success: function(data){
+                        console.log(data);
+                        if(data['result']=='ok'){
+                            bookinfo.$data['book']=data['data'];
+                            bookinfo.fetch_libbook();
+                        };
+                    }
+                });
+            },
+            fetch_libbook: function () {
+                $.post({
+                    url: fetch_libbooklist,
+                    data: JSON.stringify({'bookid': bookid}),
+                    success: function (data) {
+                        if(data['result']=='ok'){
+                            bookinfo.$data['libbook']=data['data']
+                        }
+                    }
+                });
             }
         }
     });
+    bookinfo.fetch_bookdetail();
 
-    $.get({
-        url: fetch_url,
-        success: function(data){            
-            console.log(data);
-            if(data['result']=='ok'){
-                bookinfo.$data['book']=data['data'];
-            };
-        }
-    });
 </script>
 {% endverbatim %}
 </body>

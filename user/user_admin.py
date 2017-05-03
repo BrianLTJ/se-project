@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User, Group,Permission
 from django.contrib.auth import get_user
 from django.http import JsonResponse,HttpRequest
-from user.models import BorrowRight, UserBorrowRight
+from user.models import BorrowRight, UserBorrowRight, BanList
 
 
 def user_wrapper(user):
@@ -21,7 +21,12 @@ def user_wrapper(user):
     except:
         borrowright_dict={"id":""}
 
-    return {"id":user.id, "username":user.username, "last_login": user.last_login, "groups":groups, "perms": perms, "borrowright":borrowright_dict}
+    banned=False
+    ban=BanList.objects.filter(user=user)
+    if len(ban)>0:
+        banned = True
+
+    return {"id":user.id, "username":user.username, "last_login": user.last_login, "groups":groups, "perms": perms, "borrowright":borrowright_dict, "banned": banned,"active":user.is_active}
 
 @csrf_exempt
 def admin_change_password(request):
@@ -80,6 +85,14 @@ def admin_user_add(request):
             except:
                 pass
 
+            #is active
+            user.is_active=bool(req['active'])
+
+            # Banlist
+            if req['banlist'] == True:
+                banlist=BanList(user=user)
+                banlist.save()
+
             response_data['result']='ok'
             response_data['userid']=user.id
         except:
@@ -130,7 +143,21 @@ def admin_user_edit(request):
                 except:
                     pass
 
+            # banned
+            if req['banned'] == True:
+                try:
+                    BanList(user=user).save()
+                except:
+                    pass
+            else:
+                try:
+                    BanList.objects.get(user=user).delete()
+                except:
+                    pass
+
+            user.is_active=bool(req['active'])
             user.save()
+
             response_data['result']='ok'
             response_data['userid']=user.id
         except:
@@ -172,6 +199,11 @@ def admin_user_delete(request):
             # Delete user borrow right list
             ubr = UserBorrowRight.objects.filter(user=user)
             for i in ubr:
+                i.delete()
+
+            # Delete banlist
+            banlist = BanList.objects.filter(user=user)
+            for i in banlist:
                 i.delete()
 
             user.delete()
