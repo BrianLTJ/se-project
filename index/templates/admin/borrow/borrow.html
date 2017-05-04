@@ -1,19 +1,22 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset="UTF-8">
-	<title>借书</title>
-	<script src="/static/vue/dist/vue.js"></script>
-    <script src="/static/jquery/dist/jquery.js"></script>
-    <script src="/static/js-cookie/src/js.cookie.js"></script>
-    <script src="/static/jquery-json/dist/jquery.json.min.js"></script>
-</head>
-<body>
-	<div id="book-borrow">
-		<div>图书条码：<input type="text" v-model="barid"></div>
-		<div>借书账号：<input type="text" v-model="userid"></div>
-		<div><button type="button" @click="borrow">借书</button><button type="reset">清空</button></div>
-	</div>
+{% extends 'base_admin.html' %}
+{% block title %}借书操作{% endblock %}
+{% block body %}
+    <div class="row">
+        <div class="card col s12 m6 offset-m3">
+            <div class="card-content">
+                <span class="card-title">借书</span>
+                <div id="book-borrow">
+                    <div class="row"><div class="input-field"><input type="text" id="barid" v-model="barid"><label for="barid">图书条码</label></div></div>
+                    <div class="row"><div class="input-field"><input type="text" id="userid" v-model="userid"><label for="userid">借书账号</label></div></div>
+                    <div class="row"><div class="input-field">
+                        <button type="button" class="waves-effect waves-light btn" @click="borrow">借书</button>
+                        <button class="waves-effect waves-light btn" type="reset">清空</button>
+                    </div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 	<script>
         var borrowapi="{% url 'api_admin_user:book_borrow' %}";
@@ -32,7 +35,13 @@
                         url: borrowapi,
                         data: JSON.stringify({"userid": bookborrow.$data['userid'], "barid":bookborrow.$data['barid']}),
                         success: function (data) {
-                            console.log(data);
+                            if(data['result']=='ok'){
+                                Materialize.toast('图书 '+bookreturn.$data['barid']+'借阅成功',2000);
+                                bookreturn.$data['barid']='';
+                                bookreturn.$data['userid']='';
+                            }else{
+                                Materialize.toast('图书 '+bookreturn.$data['barid']+'借阅失败',2000);
+                            }
                         }
                     })
 				}
@@ -40,5 +49,5 @@
 		});
 	</script>
 	{% endverbatim %}
-</body>
-</html>
+
+{% endblock %}

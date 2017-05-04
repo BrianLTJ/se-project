@@ -1,10 +1,19 @@
 {% extends 'base.html' %}
 {% block title %}还书{% endblock %}
 {% block body %}
-<div id="return">
-    <label for="barid">图书条码：</label>
-    <input type="text" id="barid" v-model="barid">
-    <button type="button" @click="returnbook">归还</button>
+<div class="row">
+    <div class="card col s12 m6 offset-m3">
+        <div class="card-content">
+            <span class="card-title">还书</span>
+            <div id="return">
+                <div class="row"><div class="input-field">
+                    <label for="barid">图书条码</label>
+                    <input type="text" id="barid" v-model="barid">
+                </div></div>
+                <div class="row"><button class="waves-effect waves-light btn" type="button" @click="returnbook">归还</button></div>
+            </div>
+        </div>
+    </div>
 </div>
 
     <script>
@@ -26,9 +35,11 @@
                         url: api_book_return,
                         data: JSON.stringify({"barid": bookreturn.$data['barid']}),
                         success: function (data) {
-                            console.log(data);
                             if(data['result']=='ok'){
-                                console.log(data);
+                                Materialize.toast('图书 '+bookreturn.$data['barid']+'归还成功',2000);
+                                bookreturn.$data['barid']='';
+                            }else{
+                                Materialize.toast('图书 '+bookreturn.$data['barid']+'归还失败',2000);
                             }
                         }
                     });
