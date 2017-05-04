@@ -1,8 +1,10 @@
 import json
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.contrib.auth import login, authenticate, logout
 from django.views.decorators.csrf import csrf_exempt
 from apitools.decorators import accept_methods
+from django.contrib.auth.models import User
+
 
 @csrf_exempt
 @accept_methods(['post'])
@@ -10,7 +12,6 @@ def user_login(request):
     response_data = {}
     response_data['result']='error'
     req = json.loads(request.body.decode('utf-8'))
-    print(req)
     try:
         username = req['username']
         password = req['password']
@@ -32,5 +33,14 @@ def user_logout(request):
 
 @accept_methods(['get','post'])
 def user_login_state(request):
-    return JsonResponse({"result":"ok"})
+    response_data={}
+    response_data['result']='error'
+    try:
+        user = request.user
+        if user.is_authenticated():
+            response_data['result']='ok'
+            response_data['user']={'id':user.id,'username':user.username}
+    except:
+        pass
+    return JsonResponse(response_data)
 

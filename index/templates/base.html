@@ -19,6 +19,15 @@
 {% block extrares %}{% endblock %}
 </head>
 <body>
+{% verbatim %}
+<span id="user-area">
+<ul id="dropdown1" class="dropdown-content">
+  <li><a href="#!">{{ user.username }}</a></li>
+  <li><a href="#!">用户中心</a></li>
+  <li class="divider"></li>
+  <li><a href="#" @click="logout">注销</a></li>
+</ul>
+{% endverbatim %}
 <nav class="{% block navcolor %}blue{% endblock %}" style="margin-bottom: 5px">
     <div class="nav-wrapper">
         <a href="#" class="brand-logo center" style="font-size: 22px">{% block pagetitle %}大学图书管理系统{% endblock %}</a>
@@ -26,20 +35,73 @@
         <ul class="right hide-on-med-and-down">
             <li><a href="/">首页</a></li>
             <li><a href="/book/search">搜索书库</a></li>
-            <li><a href="/login">登录</a></li>
+            <li><a href="/admin/book/add">添加图书</a></li>
+            <li class="item-notloggedin"><a href="/login?next={{ request.path }}">登录</a></li>
+
+            {% verbatim %}
+
+            <li class="item-loggedin hide"><a class="dropdown-button" href="#!" data-activates="dropdown1">{{ user.username }}<i class="material-icons right">arrow_drop_down</i></a></li>
+           {% endverbatim %}
         </ul>
         <ul class="side-nav" id="mobile-demo">
+            <li><a href="/center" class="item-loggedin hidden" style="display: none">用户中心</a></li>
             <li><a href="/">首页</a></li>
             <li><a href="/book/search">搜索书库</a></li>
+            <li><a href="/admin/book/add">添加图书</a></li>
             <li><a href="/login">登录</a></li>
         </ul>
     </div>
 </nav>
+ </span>
 <div class="container">
     {% block body %}{% endblock %}
 </div>
 <script>
-     $(".button-collapse").sideNav();
+    var api_check_login_state='{% url "api_user:user_login_state" %}';
+    var api_logout = '{% url "api_user:user_logout" %}';
 </script>
+     {% verbatim %}
+<script>
+     $(".button-collapse").sideNav();
+     var user=new Vue({
+         el: "#user-area",
+         data: {
+             user:{
+                 username: "",
+                 id: 0
+             }
+         },
+         methods: {
+             logout: function () {
+                 $.get({
+                     url: api_logout,
+                     success: function (data) {
+                         Materialize.toast('已退出登录',1000,'',function () {
+                             window.location.href="/";
+                         });
+                     }
+                 })
+             }
+         }
+     })
+    $(document).ready(function () {
+        $.get({
+            url: api_check_login_state,
+            success: function (data) {
+                console.log(data);
+                if(data['result']=='ok'){
+                    //logged in
+                    user.$data['user']=data['user'];
+                    $('.item-notloggedin').remove();
+                    $('.item-loggedin').removeClass('hide');
+                }else{
+                    //not logged in
+                    $('.item-loggedin').remove();
+                }
+            }
+        })
+    });
+</script>
+{% endverbatim %}
 </body>
 </html>
