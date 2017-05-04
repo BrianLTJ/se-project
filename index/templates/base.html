@@ -6,16 +6,38 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{% block title %}大学图书管理系统{% endblock %}</title>
-    <link rel="stylesheet" href="/static/materialize-css/bin/materialize.css">
+    <link rel="stylesheet" href="/static/materialize-css/dist/css/materialize.min.css">
+    <link rel="stylesheet" href="/static/materialize-css/dist/css/materialize.min.css">
     <script src="/static/vue/dist/vue.js"></script>
     <script src="/static/jquery/dist/jquery.js"></script>
     <script src="/static/js-cookie/src/js.cookie.js"></script>
     <script src="/static/jquery-json/dist/jquery.json.min.js"></script>
-    <script src="/static/materialize-css/bin/materialize.js"></script>
+    <script src="/static/materialize-css/dist/js/materialize.min.js"></script>
 
 {% block extrares %}{% endblock %}
 </head>
 <body>
-{% block body %}{% endblock %}
+<nav class="{% block navcolor %}blue{% endblock %}">
+    <div class="nav-wrapper ">
+        <a href="#" class="brand-logo" style="font-size: 22px">{% block pagetitle %}大学图书管理系统{% endblock %}</a>
+        <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+        <ul class="right hide-on-med-and-down">
+            <li><a href="/">首页</a></li>
+            <li><a href="/search">搜索书库</a></li>
+            <li><a href="/login">登录</a></li>
+        </ul>
+        <ul class="side-nav" id="mobile-demo">
+            <li><a href="/">首页</a></li>
+            <li><a href="/search">搜索书库</a></li>
+            <li><a href="/login">登录</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container">
+    {% block body %}{% endblock %}
+</div>
+<script>
+     $(".button-collapse").sideNav();
+</script>
 </body>
 </html>
