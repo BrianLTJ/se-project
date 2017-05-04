@@ -5,7 +5,7 @@ from index import admin_views as admin_views
 urlpatterns = [
     url(r'book/add', admin_views.admin_book_add),
 
-    url(r'libbook', admin_views.admin_libbook),
+    url(r'libbook/list/(\d+)$', admin_views.admin_libbook),
 
     url(r'borrow/borrow', admin_views.admin_borrow),
     url(r'borrow/return', admin_views.admin_return),

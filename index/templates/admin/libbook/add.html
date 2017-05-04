@@ -13,8 +13,8 @@
 </head>
 <body>
 <div id="libbookarea">
-    <div>书本id<input type="text" v-model="bookid" id="inp-bookid"></div>
-    <button type="button" @click="fetchlibbooks()">获取馆藏信息</button>
+{#    <div>书本id<input type="text" v-model="bookid" id="inp-bookid"></div>#}
+{#    <button type="button" @click="fetchlibbooks()">获取馆藏信息</button>#}
 
     <div>
         <div
@@ -24,7 +24,7 @@
             :location="item.location"
             :barid="item.barid"
             :state="item.state"
-            :logs="item.logs">
+            v-on:del="remove_libbook(index)">
         </div>
     </div>
 
@@ -39,6 +39,9 @@
 <script>
     var libbook_list="{% url 'book:libbook_list_log' %}";
     var libbook_add="{% url 'book:libbook_add' %}";
+    var libbook_del="{% url 'book:libbook_delete' %}";
+
+    var bookid={{ bookid }};
    </script>
     {% verbatim %}
      <script>
@@ -60,6 +63,7 @@
         "<span>{{ barid }}</span>-" +
         "<span>{{ location }}</span>-" +
         "<span>{{ state.borrowed ? '已借出，到期时间'+state.expire : '在架' }}</span>" +
+        '<span><button v-on:click=\'$emit("del")\' type="button">删除</button></span>' +
         "</div>" +
         "<table>" +
         "<tr><th>序号</th><th>借阅人</th><th>借出时间</th><th>归还时间</th><th>状态</th></tr>" +
@@ -71,7 +75,7 @@
     var libbook=new Vue({
         el: "#libbookarea",
         data:{
-            bookid: 0,
+            bookid: bookid,
             libbook: [],
             newlibbook: {
                 "bookid": 0,
@@ -92,10 +96,19 @@
             },
             libbook_add: function(){
                 libbook.$data['newlibbook']['bookid']=libbook.$data['bookid'];
-                
                 $.post({
                     url: libbook_add,
-                    data: "["+JSON.stringify(libbook.$data['newlibbook'])+"]",
+                    data: JSON.stringify(libbook.$data['newlibbook']),
+                    success: function (data) {
+                        console.log(data);
+                        libbook.fetchlibbooks();
+                    }
+                })
+            },
+            remove_libbook: function (libbookindex) {
+                $.post({
+                    url: libbook_del,
+                    data: JSON.stringify({'id':libbook.$data['libbook'][libbookindex]['id']}),
                     success: function (data) {
                         libbook.fetchlibbooks();
                     }

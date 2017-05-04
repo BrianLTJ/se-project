@@ -10,8 +10,10 @@ urlpatterns =[
     url(r'libbook/add$', book_libbook.libbook_add, name='libbook_add'),
     url(r'libbook/list$', book_libbook.libbook_list, name='libbook_list'),
     url(r'libbook/listlog$', book_libbook.libbook_list_with_borrowlog, name='libbook_list_log'),
+    url(r'libbook/delete$', book_libbook.libbook_del, name='libbook_delete'),
 
     url(r'book/add$', book_modify.book_add, name='add'),
+    url(r'book/edit$', book_modify.book_edit, name='book_edit'),
 
     # book info
     url(r'book/query$', book_query.book_query_list, name='query'),

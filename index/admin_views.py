@@ -9,8 +9,8 @@ def admin_index(request):
 def admin_book_add(request):
     return render(request, 'admin/book/add.html')
 
-def admin_libbook(request):
-    return render(request, 'admin/libbook/add.html')
+def admin_libbook(request, bookid):
+    return render(request, 'admin/libbook/add.html', {"bookid":bookid})
 
 
 def admin_borrow(request):

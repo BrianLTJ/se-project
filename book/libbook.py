@@ -5,7 +5,7 @@ from user.borrow import libbook_borrowed, bookborrow_getexpireday
 from user.models import BorrowRight, UserBorrowRight
 from apitools.decorators import accept_methods
 from apitools.snippets import lt_time_str
-from user.borrow import bookborrow_getexpireday
+from user.borrow import bookborrow_getexpireday, libbook_borrowed
 import json
 
 
@@ -39,13 +39,28 @@ def libbook_add(request):
     response_data = {}
     response_data['result'] = 'error'
     req = json.loads(request.body.decode('utf-8'))
+    # try:
+    libbook = LibBook()
+    book = Book.objects.get(bookid=int(req['bookid']))
+    libbook.book = book
+    libbook.barid = req['barid']
+    libbook.location = req['location']
+    libbook.save()
+    response_data['result'] = 'ok'
+    # except:
+    #     response_data['result'] = 'error'
 
+    return JsonResponse(response_data)
+
+
+# edit
+@accept_methods(['post'])
+def libbook_edit(request):
+    response_data = {}
+    response_data['result'] = 'error'
+    req = json.loads(request.body.decode('utf-8'))
     try:
-        libbook = LibBook()
-
-        book = Book.objects.get(bookid=int(req['bookid']))
-        libbook.book = book
-        libbook.barid = req['barid']
+        libbook = LibBook(libbookid=req['id'])
         libbook.location = req['location']
         libbook.save()
         response_data['result'] = 'ok'
@@ -53,6 +68,7 @@ def libbook_add(request):
         response_data['result'] = 'error'
 
     return JsonResponse(response_data)
+
 
 # get libbook list
 @csrf_exempt
@@ -64,15 +80,9 @@ def libbook_list(request):
     try:
         bookid=req['bookid']
         libbooks = LibBook.objects.filter(book=Book.objects.get(bookid=int(req['bookid'])))
-
         resp_libbookdata=[]
-
-
         for libitem in libbooks:
             # Fetch borrowlog
-            log = {}
-
-
             resp_libbookdata.append(libbook_wrapper(libitem))
 
         response_data['result'] = 'ok'
@@ -108,6 +118,26 @@ def libbook_list_with_borrowlog(request):
         response_data['data']=resp_libbookdata
     except:
         response_data['message'] = 'Book Not found.'
+
+    return JsonResponse(response_data)
+
+
+@accept_methods(['post'])
+def libbook_del(request):
+    response_data={}
+    response_data['result']='error'
+    try:
+        req=json.loads(request.body.decode('utf-8'))
+        libbook_item = LibBook.objects.get(libbookid=req['id'])
+        #Check if libbook is borrowed
+        if libbook_borrowed(libbook_item):
+            response_data['message']='Book is borrowed'
+        else:
+            libbook_item.delete()
+            response_data['result']='ok'
+
+    except:
+        response_data['message']='Fail to delete the libbook'
 
     return JsonResponse(response_data)
 
