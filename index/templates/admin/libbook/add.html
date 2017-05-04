@@ -23,7 +23,8 @@
             :index="index+1"
             :location="item.location"
             :barid="item.barid"
-            :state="item.state">
+            :state="item.state"
+            :logs="item.logs">
         </div>
     </div>
 
@@ -36,23 +37,36 @@
 
 </div>
 <script>
-    //var libbook_list="/api/book/libbook/list";
-    //var libbook_add="/api/book/libbook/add";
-    var libbook_list="{% url 'book:libbook_list' %}";
+    var libbook_list="{% url 'book:libbook_list_log' %}";
     var libbook_add="{% url 'book:libbook_add' %}";
    </script>
     {% verbatim %}
      <script>
-    Vue.component("libbook",{
-        template: "<div>" +
-            "<div><input type=\"text\" v-model=\"\" id=\"inp-\"></div>"+
-            "<div><input type=\"text\" v-model=\"\" id=\"inp-\"></div>"+
-        "</div>",
-        props: ["location","barid"]
-    });
+    Vue.component("borrow-log",{
+             template: "<tr>" +
+             "<td>{{ index }}</td>" +
+             "<td>{{ user }}</td>" +
+             "<td>{{ borrowtime }}</td>" +
+             "<td>{{ returntime }}</td>" +
+             "<td>{{ returntype == 'r' ? '已归还于'+returntime:'' }}{{ returntype == 'n' ? '已借出，到期'+expire:'' }}{{ returntype == 'e' ? '已展期于'+returntime:'' }}</td>" +
+             "</tr>",
+             props: ['index','user','borrowtime','returntime','borrowtype','returntype','expire']
+         });
+
     Vue.component("libbook-item",{
-        template: "<div><span>{{ index }}</span>-<span>{{ barid }}</span>-<span>{{ location }}</span> <span>{{ state.borrowed ? '已借出，到期时间 '+state.expire : '在架' }}</span> </div>",
-        props: ['barid','location','index','state']
+        template: "<div>" +
+        "<div>" +
+        "<span>{{ index }}</span>-" +
+        "<span>{{ barid }}</span>-" +
+        "<span>{{ location }}</span>-" +
+        "<span>{{ state.borrowed ? '已借出，到期时间'+state.expire : '在架' }}</span>" +
+        "</div>" +
+        "<table>" +
+        "<tr><th>序号</th><th>借阅人</th><th>借出时间</th><th>归还时间</th><th>状态</th></tr>" +
+        "<tr is='borrow-log' v-for='(i,index) in logs' :index='index+1' :user='i.user' :borrowtime='i.borrowtime' :returntime='i.returntime' :borrowtype='i.borrowtype' :returntype='i.returntype' :expire='i.expire'></tr>" +
+        "</table>" +
+        "</div>",
+        props: ['barid','location','index','state','logs']
     });
     var libbook=new Vue({
         el: "#libbookarea",
@@ -69,8 +83,9 @@
             fetchlibbooks: function () {
                 $.post({
                     url: libbook_list,
-                    data: JSON.stringify({"bookid":libbook.$data['bookid']}),
+                    data: JSON.stringify({"bookid": libbook.$data['bookid'] }),
                     success: function (data) {
+                        console.log(data);
                         libbook.$data['libbook']=data['data'];
                     }
                 })
@@ -80,7 +95,7 @@
                 
                 $.post({
                     url: libbook_add,
-                    data: JSON.stringify(libbook.$data['newlibbook']),
+                    data: "["+JSON.stringify(libbook.$data['newlibbook'])+"]",
                     success: function (data) {
                         libbook.fetchlibbooks();
                     }

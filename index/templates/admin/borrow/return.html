@@ -26,6 +26,7 @@
                         url: api_book_return,
                         data: JSON.stringify({"barid": bookreturn.$data['barid']}),
                         success: function (data) {
+                            console.log(data);
                             if(data['result']=='ok'){
                                 console.log(data);
                             }

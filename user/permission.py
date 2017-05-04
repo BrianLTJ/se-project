@@ -6,6 +6,7 @@ import json
 
 
 def perm_wrapper(perm):
+    # return {"id":000}
     return {'id':perm.id,'name':perm.name, 'codename': perm.codename}
 
 

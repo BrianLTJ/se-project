@@ -6,8 +6,10 @@ from django.utils.timezone import localtime
 from user.models import BorrowRight, UserBorrowRight, BanList
 from django.http import HttpRequest
 from apitools.decorators import accept_methods
+from apitools.snippets import lt_day_str,lt_time_str
 import datetime, time
 import json
+
 
 def libbook_borrowed(libbook):
     bookborrow = BookBorrow.objects.filter(libbook=libbook).filter(returntype='n')
@@ -19,9 +21,11 @@ def libbook_borrowed(libbook):
 def bookborrow_getexpireday(libbook):
     try:
         bookborrow = BookBorrow.objects.filter(libbook=libbook).filter(returntype='n').get()
-        bookday = UserBorrowRight.objects.get(user=bookborrow.user).borrowright.day
-        expiredatetime=(bookborrow.borrowtime + datetime.timedelta(days=bookday))
-        expiredatetime=localtime(expiredatetime).strftime("%Y-%m-%d")
+        bookday = 0
+        ubr = UserBorrowRight.objects.filter(user=bookborrow.user)
+        if len(ubr) > 0:
+            bookday = ubr.get().borrowright.day
+        expiredatetime=lt_day_str(bookborrow.borrowtime + datetime.timedelta(days=bookday))
         return expiredatetime
     except:
         return None
@@ -105,7 +109,7 @@ def book_return(request):
         libbook=LibBook.objects.get(barid=req['barid'])
         # Query whether libbook is borrowed
         if libbook_borrowed(libbook):
-            bookborrow=BookBorrow.objects.filter(libbook=libbook, returntype='n')
+            bookborrow=BookBorrow.objects.filter(libbook=libbook, returntype='n').get()
             bookborrow.returntime= datetime.datetime.now()
             bookborrow.returntype = 'r'
             bookborrow.save()
@@ -113,6 +117,7 @@ def book_return(request):
         else:
             response_data['message'] = 'Book haven\'t been borrowed.'
     except:
-        response_data['message'] = 'Fail to borrow.'
+        response_data['message'] = 'Fail to return.'
 
     return JsonResponse(response_data)
+

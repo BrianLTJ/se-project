@@ -5,14 +5,18 @@ from django.contrib.auth import get_user
 from django.http import JsonResponse,HttpRequest
 from user.models import BorrowRight, UserBorrowRight, BanList
 from apitools.decorators import accept_methods
+from apitools.snippets import lt_time_str,lt_day_str
+from user.permission import perm_wrapper
+import datetime, time
+from django.utils.timezone import localtime
 
 def user_wrapper(user):
     groups=[]
     for g in user.groups.all():
         groups.append({"id":g.id, "name":g.name})
-    perms=[]
-    for p in user.get_all_permissions():
-        perms.append(p)
+    # perms=[]
+    # for p in user.get_all_permissions():
+    #     perms.append(perm_wrapper(p))
 
     try:
         ubr=UserBorrowRight.objects.get(user=user)
@@ -26,7 +30,12 @@ def user_wrapper(user):
     if len(ban)>0:
         banned = True
 
-    return {"id":user.id, "username":user.username, "last_login": user.last_login, "groups":groups, "perms": perms, "borrowright":borrowright_dict, "banned": banned,"active":user.is_active}
+    return {"id":user.id, "username":user.username,
+            "last_login": user.last_login,
+            "groups":groups,
+            "borrowright":borrowright_dict,
+            "banned": banned,
+            "active":user.is_active}
 
 
 @csrf_exempt

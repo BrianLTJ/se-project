@@ -136,6 +136,7 @@
                     url: api_user_detail,
                     data: JSON.stringify({"id": userid}),
                     success: function (data) {
+                        console.log(data);
                         if(data['result']=='ok'){
                             useradd.$data['user']=data['user'];
                         }
