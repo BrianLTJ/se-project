@@ -32,6 +32,15 @@
 	{% verbatim %}
 <script>
     // App codes
+    function getParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
     var login = new Vue({
         el: "#user-login",
         data: {
@@ -47,9 +56,18 @@
                     data: JSON.stringify(login.$data['user']),
                     success: function (data) {
                         if(data['result']=='error'){
-                            Materialize.toast('登录失败', 4000);
+                            Materialize.toast('登录失败', 3000);
                             $('#username').addClass('invalid');
                             $('#password').addClass('invalid');
+                        }
+                        if(data['result']='ok'){
+                            Materialize.toast('登录成功',1500,'',function () {
+                                if(getParameterByName('next')!=null){
+                                    window.location.href=getParameterByName('next');
+                                }else{
+                                    window.location.href="/";
+                                }
+                            })
                         }
                     }
                 });
