@@ -19,18 +19,20 @@
 {% block extrares %}{% endblock %}
 </head>
 <body>
-<nav class="{% block navcolor %}blue{% endblock %}" style="margin-bottom: 5px">
+<nav class="{% block navcolor %}green{% endblock %}" style="margin-bottom: 5px">
     <div class="nav-wrapper">
         <a href="#" class="brand-logo center" style="font-size: 22px">{% block pagetitle %}大学图书管理系统{% endblock %}</a>
         <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
         <ul class="right hide-on-med-and-down">
             <li><a href="/">首页</a></li>
             <li><a href="/book/search">搜索书库</a></li>
+            <li><a href="/admin/book/add">添加图书</a></li>
             <li><a href="/login">登录</a></li>
         </ul>
         <ul class="side-nav" id="mobile-demo">
             <li><a href="/">首页</a></li>
             <li><a href="/book/search">搜索书库</a></li>
+            <li><a href="/admin/book/add">添加图书</a></li>
             <li><a href="/login">登录</a></li>
         </ul>
     </div>

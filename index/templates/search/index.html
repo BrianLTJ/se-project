@@ -1,29 +1,31 @@
-<!doctype html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>图书列表</title>
-    <script src="/static/vue/dist/vue.js"></script>
-    <script src="/static/jquery/dist/jquery.js"></script>
-    <script src="/static/js-cookie/src/js.cookie.js"></script>
-    <script src="/static/jquery-json/dist/jquery.json.min.js"></script>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %}搜索{% endblock %}
+{% block pagetitle %}图书搜索{% endblock %}
+{% block body %}
 <div id="booklist">
     <div id="query">
-        <select name="" v-model="query.rule" id="query-rule">
-            <option value="title">标题</option>
-            <option value="isbn">ISBN</option>
-            <option value="author">作者</option>
-            <option value="translator">译者</option>
-            <option value="pubhouse">出版社</option>
-        </select>
-        <label for="query-keyword">关键字</label>
-        <input type="text" id="query-keyword" v-model="query.keyword">
-        <button type="button" @click="sendquery">查询</button>
+        <div class="row">
+        <div class="input-field col s12 m4">
+          <select name="" v-model="query.rule" id="query-rule">
+                <option value="title" selected>标题</option>
+                <option value="isbn">ISBN</option>
+                <option value="author">作者</option>
+                <option value="translator">译者</option>
+                <option value="pubhouse">出版社</option>
+            </select>
+          <label for="first_name">条件</label>
+        </div>
+        <div class="input-field col s12 m6">
+            <input type="text" id="query-keyword" v-model="query.keyword">
+            <label for="query-keyword">关键字</label>
+        </div>
+        <div class="input-field col s12 m2">
+            <button type="button" @click="sendquery" class="waves-effect waves-light btn">查询</button>
+        </div>
+      </div>
+
+
+
     </div>
     <div id="result">
         <table>
@@ -59,12 +61,16 @@
 <script>
     var api_bookquery="{% url 'book:query' %}";
     var url_bookdetail="/book/detail/";
+      $(document).ready(function() {
+    $('select').material_select();
+  });
 </script>
 {% verbatim %}
 <script>
+
     Vue.component('book-item',{
         template: "<tr>" +
-        "<td>{{ idx }}</td><td>{{ title }}</td><td>{{ author }},{{ translator }}</td><td>{{ isbn }}</td><td>{{ pubhouse }}</td><td>{{ pubtime }}</td><td>{{ edition }}</td><td>{{ clc }}</td><td><a :href='url'>查看</a></td>" +
+        "<td>{{ idx }}</td><td>{{ title }}</td><td>{{ author }},{{ translator }}</td><td>{{ isbn }}</td><td>{{ pubhouse }}</td><td>{{ pubtime }}</td><td>{{ edition }}</td><td>{{ clc }}</td><td><a :href='url' target='_blank'>查看</a></td>" +
         "</tr>",
         props: ["idx","url","title","author","translator","isbn","pubhouse","pubtime","cover","clc","edition"]
     });
@@ -88,6 +94,7 @@
                         console.log(data);
                         if(data['result']=='ok'){
                             booklist.$data['list']=data['data'];
+                            Materialize.toast("查询完成", 1000,'rounded')
                         }
                     }
                 });
@@ -96,5 +103,5 @@
     });
 </script>
 {% endverbatim %}
-</body>
-</html>
+
+{% endblock %}

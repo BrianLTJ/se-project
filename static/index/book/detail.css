@@ -1,0 +1,7 @@
+.detail_table {
+    font-size: 16px;
+}
+
+.detail_table>tr>th {
+    text-align: right !important;
+}

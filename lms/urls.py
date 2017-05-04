@@ -23,7 +23,7 @@ urlpatterns = [
     url(r'^api/book/', include('book.urls', namespace='book', app_name='book')),
     url(r'^api/admin/', include('user.urls_admin', namespace='admin', app_name='api_admin_user')),
     url(r'^api/user/', include('user.urls_user', namespace='login', app_name='api_user')),
-    url(r'^admin/',include('index.admin_urls', namespace='admin_urls', app_name='admin')),
+    url(r'^admin',include('index.admin_urls', namespace='admin_urls', app_name='admin')),
     url(r'^center/', include('index.urls_center', namespace='center_urls', app_name='center_urls')),
     url(r'^', include('index.urls', namespace="index", app_name='index')),
 ]

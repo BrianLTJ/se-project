@@ -1,78 +1,85 @@
-<!doctype html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>添加图书</title>
-    <script src="/static/vue/dist/vue.js"></script>
-    <script src="/static/jquery/dist/jquery.js"></script>
-    <script src="/static/js-cookie/src/js.cookie.js"></script>
-    <script src="/static/jquery-json/dist/jquery.json.min.js"></script>
-</head>
-<body>
+{% extends 'base_admin.html' %}
+{% block title %}管理首页{% endblock %}
+{% block body %}
 <div id="formarea">
     {% verbatim %}
-    <form id="new-book-info">
-        <div><label for="">ISBN</label><input type="text" name="isbn" id="isbn" v-model="book.isbn"></div>
-        <div><label for="">标题</label><input type="text" name="title" id="title" v-model="book.title"></div>
-        <div><label for="">作者</label><input type="text" name="author" id="author" v-model="book.author"></div>
-        <div><label for="">译者</label><input type="text" name="translator" id="translator" v-model="book.translator"></div>
-        <div><label for="">版次</label><input type="text" name="edition" id="edition" v-model="book.edition"></div>
-        <div><label for="">出版社</label><input type="text" name="pubhouse" id="pubhouse" v-model="book.pubhouse"></div>
-        <div><label for="">出版时间</label><input type="text" name="pubtime" id="pubtime" v-model="book.pubtime"></div>
-        <div><label for="">摘要</label><input type="text" name="summary" id="summary" v-model="book.summary"></div>
-        <div><label for="">章节目录</label><input type="text" name="context" id="context" v-model="book.context"></div>
-        <div><label for="">图书分类号</label><input type="text" name="clc" id="clc" v-model="book.clc"></div>
-        <div><label for="">价格</label><input type="text" name="price" id="price" v-model="book.price"></div>
+    <form id="new-book-info" class="col s12">
+        <div class="row">
+            <div class="card">
+                <div class="card-content">
+                    <span class="card-title">添加图书</span>
+                        <div class="row"><div class="input-field col s12"><input type="text" name="isbn" id="isbn" v-model="book.isbn"><label for="isbn">ISBN</label></div></div>
+                        <div class="row"><div class="input-field col s12"><input type="text" name="title" id="title" v-model="book.title"><label for="title">标题</label></div></div>
+                        <div class="row"><div class="input-field col s12"><input type="text" name="author" id="author" v-model="book.author"><label for="author">作者</label></div></div>
+                        <div class="row"><div class="input-field col s12"><input type="text" name="translator" id="translator" v-model="book.translator"><label for="translator">译者</label></div></div>
+                        <div class="row"><div class="input-field col s12"><input type="text" name="edition" id="edition" v-model="book.edition"><label for="edition">版次</label></div></div>
+                        <div class="row"><div class="input-field col s12"><input type="text" name="pubhouse" id="pubhouse" v-model="book.pubhouse"><label for="pubhouse">出版社</label></div></div>
+                        <div class="row"><div class="input-field col s12"><input type="text" name="pubtime" id="pubtime" v-model="book.pubtime"><label for="pubtime">出版时间</label></div></div>
+                        <div class="row"><div class="input-field col s12"><input type="text" name="summary" id="summary" v-model="book.summary"><label for="summary">摘要</label></div></div>
+                        <div class="row"><div class="input-field col s12"><input type="text" name="context" id="context" v-model="book.context"><label for="context">章节目录</label></div></div>
+                        <div class="row"><div class="input-field col s12"><input type="text" name="clc" id="clc" v-model="book.clc"><label for="clc">图书分类号</label></div></div>
+                        <div class="row"><div class="input-field col s12"><input type="text" name="price" id="price" v-model="book.price"><label for="price">价格</label></div></div>
 
-        <div><label for="">分类</label>
-            <select name="" id="cate-sel" v-model="cateidtoadd">
-                <option value="">(请选择)</option>
-                <option
-                        is="cate-option"
-                        v-for="c in cates"
-                        v-bind:id="c.id"
-                        v-bind:text="c.text"></option>
-            </select>
-            <button type="button" id="btn-addcate-from-list" @click="catetolist()">添加</button>
-        <div>
-            <span
-                    is="cate-item"
-                    v-for="c in book.category"
-                    v-bind:text="c.text"
-            ></span>
-        </div>
-            <div>
-                <input type="text" id="input-newcate" placeholder="或者在这儿输入新的分类" v-model="newcate">
-            <button type="button" id="btn-addnewcate" @click="addcate()">添加新分类</button>
+                    <div class="row">
+                        <label for="cate-sel" class="col s12 m4">分类</label>
+                        <div class="col s12 m8">
+                            <div class="col s8">
+                                <select name="" id="cate-sel" class="browser-default" v-model="cateidtoadd">
+                                    <option value="">(请选择)</option>
+                                    <option
+                                            is="cate-option"
+                                            v-for="c in cates"
+                                            v-bind:id="c.id"
+                                            v-bind:text="c.text"></option>
+                                </select>
+                            </div>
+                            <div class="col s4">
+                                <button type="button" id="btn-addcate-from-list" @click="catetolist" class="waves-effect waves-light btn">添加</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <span
+                            is="cate-item"
+                            v-for="(c,index) in book.category"
+                            v-bind:text="c.text"
+                            v-on:remove="book.category.splice(index,1)"></span>
+                    </div>
+                    <div class="row">
+                        <input type="text" id="input-newcate" placeholder="或者在这儿输入新的分类" v-model="newcate">
+                        <button type="button" id="btn-addnewcate" @click="addcate" class="waves-effect waves-light btn">添加新分类</button>
+                    </div>
+                    <div class="row">
+                        <label for="tag-sel">标签</label>
+                        <select name="" id="tag-sel" class="browser-default" v-model="tagidtoadd">
+                            <option value="">(请选择)</option>
+                            <option
+                                    is="cate-option"
+                                    v-for="t in tags"
+                                    v-bind:id="t.id"
+                                    v-bind:text="t.text"></option>
+                        </select>
+                        <button type="button" id="btn-addtag-from-list" @click="tagtolist" class="waves-effect waves-light btn">添加</button>
+                    </div>
+                    <div class="row">
+                        <span
+                            is="cate-item"
+                            v-for="(t,index) in book.tag"
+                            v-bind:text="t.text"
+                            v-on:remove="book.tag.splice(index,1)"></span>
+                    </div>
+                    <div class="row">
+                        <input type="text" id="input-newtag" placeholder="或者在这儿输入新的标签" v-model="newtag">
+                        <button type="button" id="btn-addnewtag" @click="addtag" class="waves-effect waves-light btn">添加新标签</button>
+                    </div>
+                    <button id="btn-save" type="button" @click="submitform()" class="waves-effect waves-light btn">保存</button>
+                </div>
             </div>
         </div>
-        <div><label for="">标签</label>
-            <select name="" id="tag-sel" v-model="tagidtoadd">
-                <option value="">(请选择)</option>
-                <option
-                        is="cate-option"
-                        v-for="t in tags"
-                        v-bind:id="t.id"
-                        v-bind:text="t.text"></option>
-            </select>
-            <button type="button" id="btn-addtag-from-list" @click="tagtolist()">添加</button>
-        <div>
-            <span
-                    is="cate-item"
-                    v-for="t in book.tag"
-                    v-bind:text="t.text"
-            ></span>
-        </div>
-            <div>
-                <input type="text" id="input-newtag" placeholder="或者在这儿输入新的标签" v-model="newtag">
-            <button type="button" id="btn-addnewtag" @click="addtag()">添加新分类</button>
-            </div>
-        </div>
+
     </form>
-    <button id="btn-save" type="button" @click="submitform()">保存</button>
+
     {% endverbatim %}
 </div>
 
@@ -83,13 +90,20 @@ var cate_list="{% url 'book:cate_list' %}";
 var cate_add="{% url 'book:cate_add' %}";
 var tag_add="{% url 'book:tag_add' %}";
 var tag_list="{% url 'book:tag_list' %}";
+</script>
+
 {% verbatim %}
+<script>
+$(document).ready(function() {
+    $('select').material_select();
+  });
+
 Vue.component("cate-option",{
     template: "<option :value='id'>{{ text }}</option>",
     props: ['id', 'text']
 });
 Vue.component("cate-item",{
-    template: "<span>{{ text }}</span>",
+    template: "<span class='chip'>{{ text }}<i class='close material-icons' v-on:click='$emit(\"remove\")'>close</i></span>",
     props: ['text']
 });
 var formapp=new Vue({
@@ -111,8 +125,7 @@ var formapp=new Vue({
             category: [],
             tag: []
         },
-        cates: [
-        ],
+        cates: [],
         newcate: "",
         cateidtoadd: "",
         tags: [],
@@ -150,19 +163,22 @@ var formapp=new Vue({
         },
 
         addcate: function () {
-            $.post({
-                url: cate_add,
-                data: $.toJSON({text: this.$data['newcate']}),
-                success: function (data) {
-                    if (data['result'] == 'ok') {
-                        formapp.fetchcates(function () {
-                            formapp.$data['newcate'] = "";
-                            formapp.$data['cateidtoadd']=data['data']['id'];
-                            formapp.catetolist();
-                        });
+            if(this.$data['newcate'].length>0){
+                $.post({
+                    url: cate_add,
+                    data: $.toJSON({text: this.$data['newcate']}),
+                    success: function (data) {
+                        if (data['result'] == 'ok') {
+                            formapp.fetchcates(function () {
+                                formapp.$data['newcate'] = "";
+                                formapp.$data['cateidtoadd']=data['data']['id'];
+                                formapp.fetchcates(formapp.catetolist);
+                            });
+                        }
                     }
-                }
-            });
+                });
+            }
+
         },
         // 将选定的category加入book.category
         catetolist: function () {
@@ -208,25 +224,26 @@ var formapp=new Vue({
         },
 
         addtag: function () {
-            $.post({
-                url: tag_add,
-                data: $.toJSON({text: this.$data['newtag']}),
-                success: function (data) {
-                    if (data['result'] == 'ok') {
-                        formapp.fetchtags(function () {
-                            formapp.$data['newtag'] = "";
-                            formapp.$data['tagidtoadd']=data['data']['id'];
-                            formapp.tagtolist();
-                        });
+            if(this.$data['newtag'].length>0) {
+                $.post({
+                    url: tag_add,
+                    data: $.toJSON({text: this.$data['newtag']}),
+                    success: function (data) {
+                        if (data['result'] == 'ok') {
+                            formapp.fetchtags(function () {
+                                formapp.$data['newtag'] = "";
+                                formapp.$data['tagidtoadd'] = data['data']['id'];
+                                formapp.fetchtags(formapp.tagtolist);
+                            });
+                        }
                     }
-                }
-            });
+                });
+            }
         },
         // 将选定的tag加入book.tag
         tagtolist: function () {
             var tag_exists = false;
             var tag_text_found=false;
-            console.log(formapp.$data['tagidtoadd']);
             for(var j=0;j<formapp.$data['book']['tag'].length;j++){
                 if(formapp.$data['tagidtoadd']==formapp.$data['book']['tag'][j]['id']){
                     tag_exists=true;
@@ -235,7 +252,6 @@ var formapp=new Vue({
             }
             if(!tag_exists){
                 var i=0;
-                console.log(formapp.$data['tags'].length);
                 for(i=0;i<formapp.$data['tags'].length;i++){
                     if(formapp.$data['tags'][i]['id']==formapp.$data['tagidtoadd']){
                         tag_text_found=true;
@@ -243,6 +259,7 @@ var formapp=new Vue({
                     }
                 }
                 if(tag_text_found){
+                    console.log('added');
                     formapp.$data['book']['tag'].push({id: formapp.$data['tagidtoadd'], text: formapp.$data['tags'][i]['text'] });
                 }
             }
@@ -254,7 +271,7 @@ var formapp=new Vue({
 // Fetch catelist
     formapp.fetchcates();
     formapp.fetchtags();
+    </script>
 {% endverbatim %}
-</script>
-</body>
-</html>
+
+{% endblock %}

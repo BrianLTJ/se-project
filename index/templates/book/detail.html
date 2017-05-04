@@ -1,70 +1,114 @@
-<!doctype html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script src="/static/vue/dist/vue.js"></script>
-    <script src="/static/jquery/dist/jquery.js"></script>
-    <script src="/static/jquery-json/dist/jquery.json.min.js"></script>
-    <title>图书详情</title>
-</head>
-<body>
+{% extends 'base.html' %}
+{% block title %}图书详情{% endblock %}
+{% block extrares %}
+    <link rel="stylesheet" href="">
+{% endblock %}
+{% block body %}
 {% verbatim %}
 <div id="book-info">
-    <div>ISBN: {{ book.isbn }}</div>
-    <div></div>
-    <div>标题: {{ book.title }}</div>
-    <div>作者: {{ book.author }}</div>
-    <div>译者: {{ book.translator }}</div>
-    <div>版次: {{ book.edition }}</div>
-    <div>出版社: {{ book.pubhouse }}</div>
-    <div>出版时间: {{ book.pubtime }}</div>
-    <div>摘要: {{ book.summary }}</div>
-    <div>目录: {{ book.context }}</div>
-    <div>索书号: {{ book.clc }}</div>
-    <div>价格: {{ book.price }}</div>
-    <div>
-        分类：
-        <div>
-            <span
-                is="cate-item"
-                v-for="cate in book.category"
-                :text="cate.text"
-            ></span>
+    <div class="row">
+        <div class="col s12">
+            <div class="card z-depth-3">
+                <div class="card-content">
+                    <table class="detail_table">
+                        <tr>
+                            <th>ISBN</th>
+                            <td>{{ book.isbn }}</td>
+                        </tr>
+                        <tr>
+                            <th>标题</th>
+                            <td>{{ book.title }}</td>
+                        </tr>
+                        <tr>
+                            <th>作者</th>
+                            <td>{{ book.author }}</td>
+                        </tr>
+                        <tr>
+                            <th>译者</th>
+                            <td>{{ book.translator }}</td>
+                        </tr>
+                        <tr>
+                            <th>版次</th>
+                            <td>{{ book.edition }}</td>
+                        </tr>
+                        <tr>
+                            <th>出版社</th>
+                            <td>{{ book.pubhouse }}</td>
+                        </tr>
+                        <tr>
+                            <th>出版时间</th>
+                            <td>{{ book.pubtime }}</td>
+                        </tr>
+                        <tr>
+                            <th>摘要</th>
+                            <td>{{ book.summary }}</td>
+                        </tr>
+                        <tr>
+                            <th>目录</th>
+                            <td>{{ book.context }}</td>
+                        </tr>
+                        <tr>
+                            <th>索书号</th>
+                            <td>{{ book.clc }}</td>
+                        </tr>
+                        <tr>
+                            <th>价格</th>
+                            <td>{{ book.price }}</td>
+                        </tr>
+                        <tr>
+                            <th>分类</th>
+                            <td>
+                                <span
+                                is="cate-item"
+                                v-for="cate in book.category"
+                                :text="cate.text"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>标签</th>
+                            <td>
+                                <span
+                                is="tag-item"
+                                v-for="t in book.tag"
+                                :text="t.text"></span>
+                            </td>
+                        </tr>
+                    </table>
+
+
+                </div>
+            </div>
+            </div>
         </div>
     </div>
-    <div>
-        标签：
-        <div>
-            <span
-                is="tag-item"
-                v-for="t in book.tag"
-                :text="t.text"
-            ></span>
+    <div class="row">
+        <div class="col s12">
+            <div class="card z-depth-3">
+                <div class="card-content">
+                    <span class="card-title">馆藏信息</span>
+                    <table>
+                        <tr>
+                            <th>序号</th>
+                            <th>条码</th>
+                            <th>馆藏地址</th>
+                            <th>索书号</th>
+                            <th>状态</th>
+                        </tr>
+                        <tr
+                            is="libbook-item"
+                            v-for="(item,index) in libbook"
+                            :index="index+1"
+                            :clc="book.clc"
+                            :location="item.location"
+                            :barid="item.barid"
+                            :state="item.state"></tr>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
-    <div>
-        <p>馆藏信息</p>
-        <table>
-            <tr>
-                <th>序号</th>
-                <th>条码</th>
-                <th>馆藏地址</th>
-                <th>索书号</th>
-                <th>状态</th>
-            </tr>
-            <tr
-                is="libbook-item"
-                v-for="(item,index) in libbook"
-                :index="index+1"
-                :clc="book.clc"
-                :location="item.location"
-                :barid="item.barid"
-                :state="item.state"></tr>
-        </table>
-    </div>
+
+
 </div>
 {% endverbatim %}
 <script>
@@ -75,11 +119,11 @@
 {% verbatim %}
 <script>
     Vue.component('cate-item',{
-        template: "<span class='cate-item'>{{ text }}</span>",
+        template: "<span class='chip cate-item'>{{ text }}</span>",
         props: ['text']
     });
     Vue.component('tag-item',{
-        template: "<span class='tag-item'>{{ text }}</span>",
+        template: "<span class='chip tag-item'>{{ text }}</span>",
         props: ['text']
     });
     Vue.component("libbook-item",{
@@ -101,8 +145,7 @@
                 summary: "",
                 context: "",
                 clc: "",
-                category: [
-                ],
+                category: [],
                 tag:[],
                 price: ""
             },
@@ -138,5 +181,5 @@
 
 </script>
 {% endverbatim %}
-</body>
-</html>
+
+{% endblock %}
