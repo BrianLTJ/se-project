@@ -1,7 +1,7 @@
-{% extends 'base.html' %}
-{% block title %}搜索{% endblock %}
-{% block pagetitle %}图书搜索{% endblock %}
+{% extends 'base_admin.html' %}
+{% block title %}图书列表{% endblock %}
 {% block body %}
+
 <div id="booklist">
     <div id="query">
         <div class="row">
@@ -55,7 +55,7 @@
 </div>
 <script>
     var api_bookquery="{% url 'book:query' %}";
-    var url_bookdetail="/book/detail/";
+    var url_bookdetail="/admin/book/edit/";
       $(document).ready(function() {
     $('select').material_select();
   });
@@ -65,7 +65,7 @@
 
     Vue.component('book-item',{
         template: "<tr>" +
-        "<td>{{ idx }}</td><td>{{ title }}</td><td>{{ author }},{{ translator }}</td><td>{{ isbn }}</td><td>{{ pubhouse }}</td><td>{{ pubtime }}</td><td>{{ edition }}</td><td>{{ clc }}</td><td><a :href='url' target='_blank'>查看</a></td>" +
+        "<td>{{ idx }}</td><td>{{ title }}</td><td>{{ author }},{{ translator }}</td><td>{{ isbn }}</td><td>{{ pubhouse }}</td><td>{{ pubtime }}</td><td>{{ edition }}</td><td>{{ clc }}</td><td><a :href='url' target='_blank'>编辑</a></td>" +
         "</tr>",
         props: ["idx","url","title","author","translator","isbn","pubhouse","pubtime","cover","clc","edition"]
     });

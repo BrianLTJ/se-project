@@ -4,15 +4,15 @@ Decorators for project
 
 '''
 import functools
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden
 from django.contrib.auth.models import Group, User, Permission, ContentType
 
 '''
 Response JSONs
 '''
 response_method_not_allowed = JsonResponse({"result": "error", "message": "Invalid request"})
-response_permission_not_allowed = JsonResponse({"result": "error", "message": "Permission Denied"})
-
+# response_permission_not_allowed = JsonResponse({"result": "error", "message": "Permission Denied"})
+response_permission_not_allowed = HttpResponseForbidden
 '''
 # Filter request via method
 Usage:
@@ -47,6 +47,7 @@ Usage:
 Pass accepted methods.
 Reject unauthorized request with JSON responses.
 Check items:
+Superuser pass
 User logged in
 User is_active is true
 User is_anonymous is false
@@ -57,8 +58,14 @@ def have_perms(perms):
         @functools.wraps(func)
         def wrapper(*args, **kw):
             allowed = False
-            user = args[0].user
-            allowed = user.has_perms(perms) & user.is_authenticated()
+            try:
+                user = args[0].user
+                allowed = user.has_perms(perms) & user.is_authenticated()
+                # Let superuser pass
+                if user.is_superuser:
+                    allowed = True
+            except:
+                pass
             if allowed:
                 return func(*args,**kw)
             else:

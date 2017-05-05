@@ -1,38 +1,45 @@
-<!doctype html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>增加馆藏</title>
-    <script src="/static/vue/dist/vue.js"></script>
-    <script src="/static/jquery/dist/jquery.js"></script>
-    <script src="/static/js-cookie/src/js.cookie.js"></script>
-    <script src="/static/jquery-json/dist/jquery.json.min.js"></script>
-</head>
-<body>
+{% extends 'base_admin.html' %}
+{% block title %}增加馆藏{% endblock %}
+{% block body %}
 <div id="libbookarea">
-{#    <div>书本id<input type="text" v-model="bookid" id="inp-bookid"></div>#}
-{#    <button type="button" @click="fetchlibbooks()">获取馆藏信息</button>#}
+<div class="row">
+    <div class="col s12">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">当前馆藏</span>
+                <div>
+                    <div
+                        is="libbook-item"
+                        v-for="(item,index) in libbook"
+                        :index="index+1"
+                        :location="item.location"
+                        :barid="item.barid"
+                        :state="item.state"
+                        v-on:del="remove_libbook(index)">
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <div>
-        <div
-            is="libbook-item"
-            v-for="(item,index) in libbook"
-            :index="index+1"
-            :location="item.location"
-            :barid="item.barid"
-            :state="item.state"
-            v-on:del="remove_libbook(index)">
+    </div>
+</div>
+
+    <div class="row">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">添加</span>
+                <div class="input-field"><input type="text" v-model="newlibbook.barid" id="barid"><label for="barid">条码</label></div>
+                <div class="input-field"><input type="text" v-model="newlibbook.location" id="location"><label for="location">位置</label></div>
+            </div>
+            <div class="card-action">
+
+                <div class="input-field"><button type="button" @click="libbook_add()" class="waves-effect btn">添加</button></div>
+            </div>
         </div>
     </div>
-
     <div>
-        <p>添加</p>
-        <p>条码：<input type="text" v-model="newlibbook.barid"></p>
-        <p>位置：<input type="text" v-model="newlibbook.location"></p>
-        <p><button type="button" @click="libbook_add()">添加</button></p>
+        <p></p>
+
     </div>
 
 </div>
@@ -120,5 +127,4 @@
     </script>
     {% endverbatim %}
 
-</body>
-</html>
+{% endblock %}

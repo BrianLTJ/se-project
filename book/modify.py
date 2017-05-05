@@ -17,7 +17,6 @@ def book_add(request):
     response_data['result'] = 'error'
     # Requests
     req = json.loads(request.body.decode('utf-8'))
-    req = req[0]
 
     book_item = Book()
     book_item.isbn = req['isbn']
@@ -68,9 +67,12 @@ def book_edit(request):
     response_data['result'] = 'error'
     # Requests
     req = json.loads(request.body.decode('utf-8'))
-    req = req[0]
 
-    book_item = Book(bookid=req['bookid'])
+    book_item = Book.objects.filter(bookid=req['bookid'])
+    if len(book_item)!=1:
+        return JsonResponse(response_data)
+
+    book_item=book_item.get()
     book_item.isbn = req['isbn']
     book_item.title= req['title']
     book_item.author = req['author']
@@ -82,8 +84,9 @@ def book_edit(request):
     book_item.context = req['context']
     book_item.clc = req['clc']
     book_item.price = req['price']
-    # add cate
     book_item.save()
+    # add cate
+
     book_item.category.clear()
     for item in req['category']:
         try:
@@ -91,6 +94,7 @@ def book_edit(request):
             cate = Category.objects.get(id=item['id'])
             book_item.category.add(cate)
         except:
+        #     print("CATE fail")
             pass
 
     # add tag
@@ -100,6 +104,7 @@ def book_edit(request):
             tag = Tag.objects.get(id=item['id'])
             book_item.tag.add(tag)
         except:
+        #     print("TAG fail")
             pass
 
     # Save book
@@ -109,6 +114,7 @@ def book_edit(request):
         response_data['result'] = 'ok'
         response_data['book_id'] = book_item.bookid
     except:
+        # print("SAVE fail")
         response_data['message'] = 'Fail to save data.'
 
     return JsonResponse(response_data)

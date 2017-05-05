@@ -9,6 +9,7 @@ import json
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from book.models import Book, Tag, Category
 from apitools.decorators import accept_methods
+from django.db.models import QuerySet
 
 def wrap_book_list_item(book):
     try:
@@ -38,20 +39,52 @@ def book_query_list(request):
         req = json.loads(request.body.decode('utf-8'))
         req = req[0]
         resp_booklist = []
-        if req['rule']=='isbn':
-            booklist = Book.objects.filter(isbn__contains=req['keyword'])
-        elif req['rule']=='title':
-            booklist = Book.objects.filter(title__contains=req['keyword'])
-        elif req['rule']=='author':
-            booklist = Book.objects.filter(author__contains=req['keyword'])
-        elif req['rule'] == 'translator':
-            booklist = Book.objects.filter(translator__contains=req['keyword'])
-        elif req['rule'] == 'pubhouse':
-            booklist = Book.objects.filter(pubhouse__contains=req['keyword'])
-        else:
-            booklist = None
 
-        if booklist is not None:
+        start_filter = False
+
+        booklist = QuerySet(model=Book)
+
+        if len(req['title'])>0:
+            booklist = Book.objects.filter(title__contains=req['title'])
+            start_filter = True
+
+        if len(req['isbn'])>0:
+            if start_filter:
+                booklist = booklist.filter(isbn__contains=req['isbn'])
+            else:
+                booklist = Book.objects.filter(isbn__contains=req['isbn'])
+                start_filter = True
+
+        if len(req['clc'])>0:
+            if start_filter:
+                booklist = booklist.filter(clc__contains=req['clc'])
+            else:
+                booklist = Book.objects.filter(clc__contains=req['clc'])
+                start_filter = True
+
+        if len(req['author'])>0:
+            if start_filter:
+                booklist = booklist.filter(author__contains=req['author'])
+            else:
+                booklist = Book.objects.filter(author__contains=req['author'])
+                start_filter = True
+
+        if len(req['translator'])>0:
+            if start_filter:
+                booklist = booklist.filter(translator__contains=req['translator'])
+            else:
+                booklist = Book.objects.filter(translator__contains=req['translator'])
+                start_filter = True
+
+        if len(req['pubhouse'])>0:
+            if start_filter:
+                booklist = booklist.filter(pubhouse__contains=req['pubhouse'])
+            else:
+                booklist = Book.objects.filter(pubhouse__contains=req['pubhouse'])
+                start_filter = True
+
+
+        if start_filter:
             for i in booklist:
                 resp_booklist.append(wrap_book_list_item(i))
             response_data['result'] = 'ok'

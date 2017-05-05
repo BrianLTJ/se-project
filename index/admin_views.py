@@ -5,12 +5,20 @@ from django.contrib.auth.decorators import login_required
 def admin_index(request):
     return render(request, 'admin/index.html')
 
+def admin_book_list(request):
+    return render(request, 'admin/book/list.html')
+
 
 def admin_book_add(request):
-    return render(request, 'admin/book/add.html')
+    return render(request, 'admin/book/add.html',{"bookid": -1})
+
+
+def admin_book_edit(request, bookid):
+    return render(request, 'admin/book/add.html', {"bookid": int(bookid)})
+
 
 def admin_libbook(request, bookid):
-    return render(request, 'admin/libbook/add.html', {"bookid":bookid})
+    return render(request, 'admin/libbook/add.html', {"bookid": int(bookid)})
 
 
 def admin_borrow(request):

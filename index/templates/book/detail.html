@@ -109,7 +109,6 @@
     </div>
 
 
-</div>
 {% endverbatim %}
 <script>
         var bookid={{ book_id }};
@@ -160,7 +159,9 @@
                         if(data['result']=='ok'){
                             bookinfo.$data['book']=data['data'];
                             bookinfo.fetch_libbook();
-                        };
+                        }else{
+                            Materialize.toast("图书未找到", 2000);
+                        }
                     }
                 });
             },
@@ -171,13 +172,18 @@
                     success: function (data) {
                         if(data['result']=='ok'){
                             bookinfo.$data['libbook']=data['data']
+                        }else{
+                            Materialize.toast("馆藏信息查询失败", 2000);
                         }
                     }
                 });
             }
         }
     });
-    bookinfo.fetch_bookdetail();
+    $(document).ready(function(){
+        bookinfo.fetch_bookdetail();
+    });
+
 
 </script>
 {% endverbatim %}

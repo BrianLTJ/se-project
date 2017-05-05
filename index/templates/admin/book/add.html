@@ -79,20 +79,71 @@
         </div>
 
     </form>
-
-    {% endverbatim %}
 </div>
+    {% endverbatim %}
+
+
+
+    <div class="hide" id="libbookarea">
+        <div class="row">
+            <div class="card">
+                <div class="card-content">
+                    <span class="card-title">馆藏信息</span>
+                     <ul class="collapsible" data-collapsible="expandable">
+                         <li
+                            is="libbook-item"
+                            v-for="(item,index) in libbook"
+                            :index="index+1"
+                            :location="item.location"
+                            :barid="item.barid"
+                            :state="item.state"
+                            v-on:del="remove_libbook(index)">
+                        </li>
+                     </ul>
+
+                </div>
+            </div>
+        </div><!--End of libbook current status-->
+
+        <div class="row">
+            <div class="card">
+                <div class="card-content">
+                    <span class="card-title">添加</span>
+                    <div class="input-field"><input type="text" v-model="newlibbook.barid" id="barid"><label for="barid">条码</label></div>
+                    <div class="input-field"><input type="text" v-model="newlibbook.location" id="location"><label for="location">位置</label></div>
+                </div>
+                <div class="card-action">
+
+                    <div class="input-field"><button type="button" @click="libbook_add()" class="waves-effect btn">添加</button></div>
+                </div>
+            </div>
+        </div><!--End of add libbook-->
+
+    </div><!--End of libbookarea-->
+
+
+
 
 
 <script>
+    {% if bookid > -1 %}
+        var posturl="{% url 'book:book_edit' %}";
+    {% else %}
 var posturl="{% url 'book:add' %}";
+    {% endif %}
 var cate_list="{% url 'book:cate_list' %}";
 var cate_add="{% url 'book:cate_add' %}";
 var tag_add="{% url 'book:tag_add' %}";
 var tag_list="{% url 'book:tag_list' %}";
+var bookid={{ bookid }};
+var api_book_detail='{% url "book:detail" bookid %}';
+var libbook_list="{% url 'book:libbook_list_log' %}";
+var libbook_add="{% url 'book:libbook_add' %}";
+var libbook_del="{% url 'book:libbook_delete' %}";
 </script>
 
 {% verbatim %}
+
 <script>
 $(document).ready(function() {
     $('select').material_select();
@@ -106,6 +157,36 @@ Vue.component("cate-item",{
     template: "<span class='chip'>{{ text }}<i class='close material-icons' v-on:click='$emit(\"remove\")'>close</i></span>",
     props: ['text']
 });
+Vue.component("borrow-log",{
+             template: "<tr>" +
+             "<td>{{ index }}</td>" +
+             "<td>{{ user }}</td>" +
+             "<td>{{ borrowtime }}</td>" +
+             "<td>{{ returntime }}</td>" +
+             "<td>{{ returntype == 'r' ? '已归还于'+returntime:'' }}{{ returntype == 'n' ? '已借出，到期'+expire:'' }}{{ returntype == 'e' ? '已展期于'+returntime:'' }}</td>" +
+             "</tr>",
+             props: ['index','user','borrowtime','returntime','borrowtype','returntype','expire']
+         });
+
+    Vue.component("libbook-item",{
+        template: "<li>" +
+        "<div class='collapsible-header'>" +
+        "<span>{{ index }}</span>:" +
+        "<span>条码：{{ barid }}</span>&nbsp;" +
+        "<span>馆藏地点：{{ location }}</span>&nbsp;" +
+        "<span>状态：{{ state.borrowed ? '已借出，到期时间'+state.expire : '在架' }}</span>" +
+        '<span><button class="wave-effects btn btn-small" v-on:click=\'$emit("del")\' type="button">删除</button></span>' +
+        "</div>" +
+        "<div class='collapsible-body'>" +
+        "<table class='highlight'>" +
+        "<tr><th>序号</th><th>借阅人</th><th>借出时间</th><th>归还时间</th><th>状态</th></tr>" +
+        "<tr is='borrow-log' v-for='(i,index) in logs' :index='index+1' :user='i.user' :borrowtime='i.borrowtime' :returntime='i.returntime' :borrowtype='i.borrowtype' :returntype='i.returntype' :expire='i.expire'></tr>" +
+        "</table>" +
+        "</div>" +
+        "</li>",
+        props: ['barid','location','index','state','logs']
+    });
+
 var formapp=new Vue({
     el: "#formarea",
     data: {
@@ -123,28 +204,45 @@ var formapp=new Vue({
             clc: "",
             price: "",
             category: [],
-            tag: []
+            tag: [],
+            bookid: bookid
         },
         cates: [],
         newcate: "",
         cateidtoadd: "",
         tags: [],
         newtag:"",
-        tagidtoadd: ""
+        tagidtoadd: "",
     },
     methods: {
         submitform: function(){
-            console.log(this.$data['book']);
             $.post({
                 url: posturl,
-                data: "["+JSON.stringify(this.$data['book'])+"]",
+                data: JSON.stringify(this.$data['book']),
                 success: function( data ) {
-                    // Successfully posted data
-                    console.log(data);
+                    if(data['result']=='ok'){
+                        Materialize.toast("保存成功",1000);
+                    }else{
+                        Materialize.toast("保存失败",1000);
+                    }
                 }
             });
         },
+        fetchbook:function () {
+            $.get({
+                url: api_book_detail,
+                success: function (data) {
+                    console.log()
+                    if(data['result']=='ok'){
+                        formapp.$data['book']=data['data'];
+                        formapp.$data['book']['bookid']=bookid;
+                    }else{
+                        Materialize.toast("图书未找到", 2000);
+                    }
 
+                }
+            });
+        },
         fetchcates: function(callback){
             var arg_num=arguments.length;
             $.get({
@@ -157,6 +255,8 @@ var formapp=new Vue({
                             try { callback(); }
                             finally {}
                         }
+                    }else{
+                        Materialize.toast("分类列表获取失败",1000);
                     }
                 }
             })
@@ -174,7 +274,9 @@ var formapp=new Vue({
                                 formapp.$data['cateidtoadd']=data['data']['id'];
                                 formapp.fetchcates(formapp.catetolist);
                             });
-                        }
+                        }else{
+                        Materialize.toast("分类添加失败",1000);
+                    }
                     }
                 });
             }
@@ -218,6 +320,8 @@ var formapp=new Vue({
                             try { callback(); }
                             finally {}
                         }
+                    }else{
+                        Materialize.toast("标签列表获取失败",1000);
                     }
                 }
             })
@@ -235,7 +339,9 @@ var formapp=new Vue({
                                 formapp.$data['tagidtoadd'] = data['data']['id'];
                                 formapp.fetchtags(formapp.tagtolist);
                             });
-                        }
+                        }else{
+                        Materialize.toast("标签添加失败",1000);
+                    }
                     }
                 });
             }
@@ -268,9 +374,75 @@ var formapp=new Vue({
     }
 });
 
-// Fetch catelist
+var libbook=new Vue({
+        el: "#libbookarea",
+        data:{
+            bookid: bookid,
+            libbook: [],
+            newlibbook: {
+                "bookid": 0,
+                "barid": "",
+                "location": ""
+            }
+        },
+        methods:{
+            fetchlibbooks: function () {
+                $.post({
+                    url: libbook_list,
+                    data: JSON.stringify({"bookid": libbook.$data['bookid'] }),
+                    success: function (data) {
+                        if(data['result']=='ok'){
+                            libbook.$data['libbook']=data['data'];
+                            $('.collapsible').collapsible();
+                        }else {
+                            Materialize.toast("馆藏获取失败",1000);
+                        }
+
+                    }
+                })
+            },
+            libbook_add: function(){
+                libbook.$data['newlibbook']['bookid']=libbook.$data['bookid'];
+                $.post({
+                    url: libbook_add,
+                    data: JSON.stringify(libbook.$data['newlibbook']),
+                    success: function (data) {
+                        if(data['result']=='ok'){
+                           libbook.fetchlibbooks();
+                        }else{
+                            Materialize.toast("馆藏添加失败",1000);
+                        }
+
+                    }
+                })
+            },
+            remove_libbook: function (libbookindex) {
+                $.post({
+                    url: libbook_del,
+                    data: JSON.stringify({'id':libbook.$data['libbook'][libbookindex]['id']}),
+                    success: function (data) {
+                        if(data['result']=='ok'){libbook.fetchlibbooks();}else{
+                            Materialize.toast("馆藏删除失败",1000);
+                        }
+                    }
+                })
+            }
+        }
+    });
+
+$(document).ready(function(){
+    // Fetch catelist
     formapp.fetchcates();
     formapp.fetchtags();
+
+    if(bookid>-1){
+        formapp.fetchbook();
+        libbook.fetchlibbooks();
+        $("#libbookarea").removeClass('hide');
+    }
+
+});
+
     </script>
 {% endverbatim %}
 

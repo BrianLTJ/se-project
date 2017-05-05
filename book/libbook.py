@@ -39,16 +39,16 @@ def libbook_add(request):
     response_data = {}
     response_data['result'] = 'error'
     req = json.loads(request.body.decode('utf-8'))
-    # try:
-    libbook = LibBook()
-    book = Book.objects.get(bookid=int(req['bookid']))
-    libbook.book = book
-    libbook.barid = req['barid']
-    libbook.location = req['location']
-    libbook.save()
-    response_data['result'] = 'ok'
-    # except:
-    #     response_data['result'] = 'error'
+    try:
+        libbook = LibBook()
+        book = Book.objects.get(bookid=int(req['bookid']))
+        libbook.book = book
+        libbook.barid = req['barid']
+        libbook.location = req['location']
+        libbook.save()
+        response_data['result'] = 'ok'
+    except:
+        response_data['result'] = 'error'
 
     return JsonResponse(response_data)
 
