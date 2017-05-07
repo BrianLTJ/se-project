@@ -2,32 +2,43 @@
 {% block title %}用户列表{% endblock %}
 {% block body %}
 <div id="user-list">
-<table>
-    <tr>
-        <th>序号</th>
-        <th>用户名</th>
-        <th>上次登录</th>
-        <th>用户组</th>
-        <th>是否激活</th>
-        <th>黑名单</th>
-        <th>借书权限组</th>
-        <th>权限组是否允许借书</th>
-        <th>借书时长</th>
-        <th>同时可借最大数量</th>
-        <th>操作</th>
-    </tr>
-    <tr
-        is="user-item"
-        v-for="(u,index) in users"
-        :index="index+1"
-        :username="u.username"
-        :lastlogin="u.last_login"
-        :editurl="'/admin/user/edit/'+u.id"
-        :groups="u.groups"
-        :br="u.borrowright"
-        :active="u.active"
-        :banned="u.banned"></tr>
-</table>
+<div class="row">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">用户列表</span>
+                <table>
+                    <tr>
+                        <th>序号</th>
+                        <th>用户名</th>
+                        <th>上次登录</th>
+                        <th>用户组</th>
+                        <th>是否激活</th>
+                        <th>黑名单</th>
+                        <th>借书权限组</th>
+                        <th>权限组是否允许借书</th>
+                        <th>借书时长</th>
+                        <th>同时可借最大数量</th>
+                        <th>操作</th>
+                    </tr>
+                    <tr
+                        is="user-item"
+                        v-for="(u,index) in users"
+                        :index="index+1"
+                        :username="u.username"
+                        :lastlogin="u.last_login"
+                        :editurl="'/admin/user/edit/'+u.id"
+                        :groups="u.groups"
+                        :br="u.borrowright"
+                        :active="u.active"
+                        :banned="u.banned"></tr>
+                </table>
+            </div>
+            <div class="card-action">
+                <a href="/admin/user/add" class="btn waves-effect">添加用户</a>
+            </div>
+        </div>
+    </div>
+
 
 </div>
     <script>
