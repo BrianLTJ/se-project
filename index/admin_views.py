@@ -22,9 +22,11 @@ def admin_libbook(request, bookid):
     return render(request, 'admin/libbook/add.html', {"bookid": int(bookid)})
 
 
+@have_perms(['book.admin_optborrow_borrow'])
 def admin_borrow(request):
     return render(request, 'admin/borrow/borrow.html')
 
+@have_perms(['book.admin_optborrow_return'])
 def admin_return(request):
     return render(request, 'admin/borrow/return.html')
 

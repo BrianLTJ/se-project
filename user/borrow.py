@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.utils.timezone import localtime
 from user.models import BorrowRight, UserBorrowRight, BanList
 from django.http import HttpRequest
-from apitools.decorators import accept_methods
+from apitools.decorators import accept_methods, have_perms
 from apitools.snippets import lt_day_str,lt_time_str
 import datetime, time
 import json
@@ -33,6 +33,7 @@ def bookborrow_getexpireday(libbook):
 
 @csrf_exempt
 @accept_methods(['post'])
+@have_perms(['book.admin_optborrow_borrow'])
 def book_borrow(request):
     response_data = {}
     response_data['result'] = 'error'
@@ -48,12 +49,12 @@ def book_borrow(request):
 
         # User active?
         allowborrow = allowborrow & user.is_active
-        response_data['message'] = 'User is not active.'
+        response_data['message'] = '用户被冻结。'
         # Banned?
         try:
             ban=BanList.objects.get(user=user)
             allowborrow = False
-            response_data['message'] = 'Banned.'
+            response_data['message'] = '用户被禁止借阅。'
         except:
             pass
 
@@ -63,17 +64,17 @@ def book_borrow(request):
             allownum = br.booknum
             if br.allowborrow == False | allownum == 0 | br.day == 0:
                 allowborrow =False
-                response_data['message'] = 'Group not allowed.'
+                response_data['message'] = '借书组不允许借阅.'
 
         except:
             allowborrow=False
-            response_data['message'] = 'Group not allowed.'
+            response_data['message'] = '借书组不允许借阅.'
 
         # User borrowed book num
         borrowed = BookBorrow.objects.filter(user=user).filter(returntype='n')
         if len(borrowed) >= allownum:
             allowborrow = False
-        response_data['message'] = 'Maximun allowed book number.'
+            response_data['message'] = '超过用户最大可借书数量.'
 
         if allowborrow:
             # print("allowborrow")
@@ -90,15 +91,16 @@ def book_borrow(request):
                 response_data['username']=user.username
                 response_data['expire']=bookborrow_getexpireday(libbook)
             else:
-                response_data['message'] = 'Book has been borrowed.'
+                response_data['message'] = '图书已被借出。'
     except:
-        response_data['message'] = 'Fail to borrow.'
+        response_data['message'] = '借阅失败。'
 
     return JsonResponse(response_data)
 
 
 @csrf_exempt
 @accept_methods(['post'])
+@have_perms(['book.admin_optborrow_return'])
 def book_return(request):
     response_data = {}
     response_data['result'] = 'error'
@@ -115,9 +117,9 @@ def book_return(request):
             bookborrow.save()
             response_data['result'] = 'ok'
         else:
-            response_data['message'] = 'Book haven\'t been borrowed.'
+            response_data['message'] = '图书尚未被借出。'
     except:
-        response_data['message'] = 'Fail to return.'
+        response_data['message'] = '无法归还。'
 
     return JsonResponse(response_data)
 
