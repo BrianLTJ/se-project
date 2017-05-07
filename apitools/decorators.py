@@ -13,6 +13,7 @@ Response JSONs
 response_method_not_allowed = JsonResponse({"result": "error", "message": "Invalid request"})
 response_permission_not_allowed = JsonResponse({"result": "error", "message": "Permission Denied"})
 response_permission_not_allowed_redirect = '/'
+login_url = '/login'
 # response_permission_not_allowed = HttpResponseForbidden
 '''
 # Filter request via method
@@ -66,7 +67,8 @@ def have_perms(perms):
                 if user.is_superuser:
                     allowed = True
             except:
-                pass
+                return HttpResponseRedirect(login_url)
+
             if allowed:
                 return func(*args,**kw)
             else:
