@@ -1,45 +1,57 @@
-{% extends 'base.html' %}
+{% extends 'base_admin.html' %}
 {% block title %}{{ pagetitle }}{% endblock %}
 {% block body %}
-    <h2>{{ pagetitle }}</h2>
 
-    <div id="group-add">
-        <div>
-            <label for="group-name">用户组名称</label>
-            <input type="text" id="group-name" v-model="group.name">
-        </div>
-        <div>
-            <div>权限描述（节点名）：
-                <select name="" id="" v-model="permtoadd">
-                    <option value="">(请选择)</option>
-                    <option
-                        is="perm-item"
-                        v-for="item in permlist"
-                        :value="item.id"
-                        :name="item.name"
-                        :codename="item.codename">
-                    </option>
-                </select>
-                <button type="button" @click="add_to_list">添加权限</button>
+<div class="row">
+    <div class="col s12">
+        <div class="card" id="group-add">
+            <div class="card-content">
+                <span class="card-title">{{ pagetitle }}</span>
+                <div>
+                    <div class="input-field">
+                        <input type="text" id="group-name" v-model="group.name"><label for="group-name">用户组名称</label>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m2"><label for="permtoadd">权限描述</label></div>
+                        <div class="col s12 m6 input-field">
+                            <select name="" class="browser-default" id="permtoadd" v-model="permtoadd">
+                                <option value="">(请选择)</option>
+                                <option
+                                    is="perm-item"
+                                    v-for="item in permlist"
+                                    :value="item.id"
+                                    :name="item.name"
+                                    :codename="item.codename"></option>
+                            </select>
+                            
+                        </div>
+                        <div class="col s12 m4">
+                            <button class="wave-effect btn" type="button" @click="add_to_list">添加权限</button>
+                        </div>
+                        
+                    </div><!--End of add perm selection-->
+                    <div class="input-field row">
+                        <perm
+                            v-for="(item,index) in group.perms"
+                            :name="item.name"
+                            :codename="item.codename"
+                            v-on:remove="group.perms.splice(index,1)"></perm>
+                    </div>
+                </div>
             </div>
-            <div>
-                <perm
-                    v-for="item in group.perms"
-                    :name="item.name"
-                    :codename="item.codename"
-                    v-on:remove="group.perms.splice(index,1)"></perm>
-            </div>
-        </div>
-    <div>
-        {% if id > -1 %}
-            <button type="button" @click="save_group">保存</button>
-            <button type="button" @click="delete_group">删除</button>
-        {% else %}
-            <button type="button" @click="add_group">添加</button>
-        {% endif %}
+            <div class="card-action">
+                 {% if id > -1 %}
+                        <button type="button" class="wave-effect btn" @click="save_group">保存</button>
+                        <button type="button" class="wave-effect btn" @click="delete_group">删除</button>
+                    {% else %}
+                        <button type="button" class="btn wave-effect" @click="add_group">添加</button>
+                    {% endif %}
 
+            </div>
+        </div>
     </div>
-    </div>
+</div>
+
 
     <script>
     //api
@@ -59,11 +71,11 @@
 {% verbatim %}
     <script>
     Vue.component('perm-item',{
-        template:'<option :value="id">{{ name }}({{ codename }})</option>',
+        template:'<option :value="id">{{ name }}</option>',
         props: ['id','name','codename']
     });
     Vue.component('perm',{
-        template: '<span>{{ name }}({{ codename }})<button type="button" v-on:click="$emit(\'remove\')">X</button></span>',
+        template: '<span class="chip">{{ name }}<i class="close material-icons" v-on:click="$emit(\'remove\')">close</i></span>',
         props:['name','codename']
     })
     var groupadd = new Vue({
@@ -113,6 +125,13 @@
                     url: api_group_add,
                     data: JSON.stringify(groupadd.$data['group']),
                     success: function (data) {
+                        if(data['result']=='ok'){
+                            Materialize.toast('添加成功',1000,'',function(){
+                                window.location.href='/admin/group/edit/'+data['group']['id'];
+                            });
+                        }else{
+                            Materialize.toast('添加失败',1000);
+                        }
                         console.log(data)
                     }
                 })
@@ -122,6 +141,11 @@
                     url: api_group_save,
                     data: JSON.stringify(groupadd.$data['group']),
                     success: function (data) {
+                        if(data['result']=='ok'){
+                            Materialize.toast('保存成功',1000);
+                        }else{
+                            Materialize.toast('保存失败',1000);
+                        }
                         console.log(data);
                     }
                 });
@@ -134,6 +158,8 @@
                         console.log(data);
                         if(data['result']=='ok'){
                             groupadd.$data['group']=data['group'];
+                        }else{
+                            Materialize.toast('用户组信息获取失败',1000);
                         }
                     }
                 })
@@ -143,7 +169,13 @@
                     url:api_group_delete,
                     data: JSON.stringify({"id": groupid}),
                     success: function (data) {
-                        console.log(data);
+                        if(data['result']=='ok'){
+                            Materialize.toast('删除成功',1000,'',function(){
+                                window.location.href='/admin/group/list'
+                            });
+                        }else{
+                            Materialize.toast('删除失败',1000);
+                        }
                     }
                 });
             }
@@ -153,6 +185,9 @@
     if(groupid>-1){
         groupadd.fetch_group_info();
     }
+      $(document).ready(function() {
+    $('select').material_select();
+  });
     </script>
 {% endverbatim %}
 
