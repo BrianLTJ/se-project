@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'user/list$', user_admin.admin_user_list, name='user_list'),
     url(r'user/detail$', user_admin.admin_user_detail, name='user_detail'),
     url(r'user/delete$', user_admin.admin_user_delete, name='user_delete'),
+    url(r'user/changepsw', user_admin.admin_change_password, name='user_changepsw'),
 
     # Group
     url(r'group/list$', group.group_list, name='group_list'),

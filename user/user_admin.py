@@ -1,7 +1,7 @@
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User, Group,Permission
-from django.contrib.auth import get_user
+from django.contrib.auth import get_user, logout
 from django.http import JsonResponse,HttpRequest
 from user.models import BorrowRight, UserBorrowRight, BanList
 from apitools.decorators import accept_methods
@@ -44,15 +44,17 @@ def admin_change_password(request):
     response_data={}
     response_data['result']='error'
     req = json.loads(request.body.decode('utf-8'))
-    req = req[0]
     try:
         usertochange = User.objects.get(id=req['userid'])
         usertochange.set_password(req['newpwd'])
+        usertochange.save()
+
         response_data['result']='ok'
     except:
         response_data['message']='Fail to set password'
 
     return JsonResponse(response_data)
+
 
 @csrf_exempt
 @accept_methods(['get'])
@@ -97,9 +99,11 @@ def admin_user_add(request):
         user.is_active=bool(req['active'])
 
         # Banlist
-        if req['banlist'] == True:
+        if req['banned'] == True:
             banlist=BanList(user=user)
             banlist.save()
+
+        user.save()
 
         response_data['result']='ok'
         response_data['userid']=user.id
@@ -182,7 +186,6 @@ def admin_user_detail(request):
         user = User.objects.get(id=req['id'])
         response_data['result']='ok'
         response_data['user']=user_wrapper(user)
-
     except:
         response_data['message']='User not found'
 

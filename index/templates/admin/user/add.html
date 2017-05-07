@@ -1,61 +1,105 @@
-{% extends 'base.html' %}
+{% extends 'base_admin.html' %}
 {% block title %}{{ pagetitle }}{% endblock %}
 {% block body %}
-
 <div id="useradd">
-    <div><label for="username">用户名</label><input type="text" id="username" v-model="user.username"></div>
-    {% if id > -1 %}
-        <p>更改密码</p>
-    {% else %}
-    {# New User can set password, existed user cant change password from here #}
-    <div><label for="password">密码</label><input type="password" id="password" v-model="user.password"></div>
-    {% endif %}
-    <div>
-        <p>
-            添加用户组：
-            <select name="" id="" v-model="grouptoadd">
-                <option value="">(请选择)</option>
-                <option is="group-opt" v-for="i in grouplist" :value="i.id" :name="i.name"></option>
-            </select>
-            <button type="button" @click="push_to_list">加入用户组</button>
-        </p>
-        <p>
-            <group-list
-                v-for="(i,index) in user.groups"
-                :text="i.name"
-                @remove="user.groups.splice(index,1)"></group-list>
-        </p>
+    <div class="row">
+        <div class="col s12">
+            <div class="card">
+                <div class="card-content">
+                    <span class="card-title">用户</span>
+                    <div class="input-field">
+                        <input type="text" id="username" v-model="user.username"><label for="username">用户名</label>
+                    </div>
+                    {% if id > -1 %}
+                        <p>更改密码</p>
+                    {% else %}
+                        {# New User can set password, existed user cant change password from here #}
+                        <div class="input-field">
+                            <input type="password" id="password" v-model="user.password"><label for="password">密码</label>
+                        </div>
+                    {% endif %}
+                    <div class="input-field row">
+                        <div class="col s12 m2"><label for="groupselect">添加用户组</label></div>
+                        <div class="col s12 m4">
+                            <select name="" id="groupselect" class="browser-default" v-model="grouptoadd">
+                                <option value="">(请选择)</option>
+                                <option is="group-opt" v-for="i in grouplist" :value="i.id" :name="i.name"></option>
+                            </select>
+                        </div>
+                        <div class="col s12 m2">
+                            <button type="button" class="btn waves-effect" @click="push_to_list">加入用户组</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <group-list
+                            v-for="(i,index) in user.groups"
+                            :text="i.name"
+                            @remove="user.groups.splice(index,1)"></group-list>
+                    </div>
+                    <div class="input-field row">
+                        <div class="col s12 m2"><label for="borrowright">设置借书权限组</label></div>
+                        <div class="col s12 m10">
+                            <select name="" id="borrowright" class="browser-default" v-model="user.borrowright.id">
+                                <option value="">(请选择)</option>
+                                <option
+                                    is="borrowright-opt"
+                                    v-for="br in borrowrightlist"
+                                    :id="br.id"
+                                    :name="br.name"
+                                    :day="br.day"
+                                    :booknum="br.booknum"
+                                    :allow="br.allowborrow"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col s12 m6">
+                            <input type="checkbox" class="filled-in" id="active" v-model="user.active">
+                            <label for="active">允许用户操作</label>
+                        </div>
+                        <div class="col s12 m6">
+                            <div class="switch">
+                                <input type="checkbox" class="filled-in" id="banned" v-model="user.banned">
+                                <label for="banned">禁止用户借书</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-action">
+                    {% if id > -1 %}
+                        <button type="button" class="btn waves-effect" @click="edituser">保存更改</button>
+                        <button type="button" class="btn waves-effect" @click="deleteuser">删除用户</button>
+                        <button type="button" class="btn waves-effect" data-target="modal-changepsw">修改密码</button>
 
+                    {% else %}
+                        <button type="button" class="btn waves-effect" @click="adduser">添加用户</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
-    <div>
-        <p>
-            设置借书权限组：
-            <select name="" id="" v-model="user.borrowright.id">
-                <option value="">(请选择)</option>
-                <option
-                    is="borrowright-opt"
-                    v-for="br in borrowrightlist"
-                    :id="br.id"
-                    :name="br.name"
-                    :day="br.day"
-                    :booknum="br.booknum"
-                    :allow="br.allowborrow"></option>
-            </select>
+    {% verbatim %}
+    <div id="modal-changepsw" class="modal">
+        <div class="modal-content">
+          <h4>更改用户密码</h4>
+            <div class="row">
+                <div class="input-field"><input id="newpassword1" @keyup="compare" v-model="newpsw1" type="password"><label for="newpassword1">输入新密码</label></div>
+            </div>
+            <div class="row">
+                <div class="input-field"><input id="newpassword2" @keyup="compare" v-model="newpsw2" type="password"><label for="newpassword2">再次输入新密码</label></div>
+            </div>
+            <div class="row">{{ changepsw_msg }}</div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn waves-effect disabled" id="changepsw" type="button" @click="changepsw">更改密码</button>
+        </div>
+    </div>
+    {% endverbatim %}
 
-        </p>
-    </div>
-    <div><label for="active">允许用户操作</label><input type="checkbox" id="active" v-model="user.active"></div>
-    <div><label for="banned">禁止用户借书</label><input type="checkbox" id="banned" v-model="user.banned"></div>
-    <div>
-        {% if id > -1 %}
-            <button type="button" @click="edituser">保存更改</button>
-            <button type="button" @click="deleteuser">删除用户</button>
-        {% else %}
-            <button type="button" @click="adduser">添加用户</button>
-        {% endif %}
 
-    </div>
 </div>
+
+
     <script>
     // api urls
     var api_adduser="{% url 'api_admin_user:user_add' %}";
@@ -63,7 +107,7 @@
     var api_user_edit="{% url 'api_admin_user:user_edit' %}";
     var api_user_delete="{% url 'api_admin_user:user_delete' %}";
     var api_user_detail="{% url 'api_admin_user:user_detail' %}";
-
+    var api_user_changepsw="{% url 'api_admin_user:user_changepsw' %}";
     var api_br_list='{% url "api_admin_user:borrowright_list" %}';
 
     {% if id > -1 %}
@@ -72,6 +116,7 @@
         var userid=-1;
     {% endif %}
     </script>
+
     {% verbatim %}
     <script>
     Vue.component('group-opt',{
@@ -79,7 +124,7 @@
         props: ['id','name']
     });
     Vue.component('group-list',{
-        template:'<span>{{ text }} <button type="button" @click="$emit(\'remove\')">X</button></span>',
+        template:'<span class="chip">{{ text }} <i class="close material-icons" @click="$emit(\'remove\')">close</i></span>',
         props: ['text']
     });
     Vue.component('borrowright-opt',{
@@ -101,7 +146,10 @@
             },
             grouplist:[],
             borrowrightlist: [],
-            grouptoadd: ''
+            grouptoadd: '',
+            newpsw1: '',
+            newpsw2: '',
+            changepsw_msg: ''
         },
         methods: {
             adduser: function () {
@@ -109,7 +157,13 @@
                     url: api_adduser,
                     data: JSON.stringify(useradd.$data['user']),
                     success: function (data) {
-                        console.log(data);
+                        if(data['result']=='ok'){
+                            Materialize.toast("添加成功",1000,'',function () {
+                                window.location.href = '/admin/user/edit/'+data['userid'];
+                            });
+                        }else{
+                            Materialize.toast("添加失败,"+data['message'],1000);
+                        }
                     }
                 });
             },
@@ -184,14 +238,46 @@
                 if(!group_exist&& group_index_in_list>-1){
                     useradd.$data['user']['groups'].push({'id': useradd.$data['grouptoadd'], 'name':useradd.$data['grouplist'][group_index_in_list]['name']});
                 }
+            },
+            compare: function () {
+                if(useradd.$data['newpsw1'].length>0 && (useradd.$data['newpsw1']==useradd.$data['newpsw2']))
+                {
+                    $("#changepsw").removeClass('disabled');
+                    useradd.$data['changepsw_msg']='';
+                }else {
+                    useradd.$data['changepsw_msg']='两次输入密码须非空且保持一致';
+                    if($("#changepsw").hasClass('disabled')){}
+                    else {$("#changepsw").addClass('disabled');}
+                }
+            },
+            changepsw: function () {
+                if(useradd.$data['newpsw1'].length>0 && (useradd.$data['newpsw1']==useradd.$data['newpsw2'])) {
+                    $.post({
+                        url: api_user_changepsw,
+                        data: JSON.stringify({"userid": userid, "newpwd": useradd.$data['newpsw1']}),
+                        success: function (data) {
+                            if (data['result'] == 'ok') {
+                                Materialize.toast('密码修改成功', 1000, '', function () {
+                                    $('#modal-changepsw').modal('close');
+                                });
+                            } else {
+                                Materialize.toast('密码修改失败,' + data['message'], 1000);
+                            }
+                        }
+                    });
+                }
             }
         }
     });
-    useradd.fetch_group_list();
-    useradd.fetch_borrowright_list();
-    if(userid>-1){
-        useradd.fetch_user_detail();
-    }
+    $(document).ready(function () {
+        useradd.fetch_group_list();
+        useradd.fetch_borrowright_list();
+        if(userid>-1){
+            useradd.fetch_user_detail();
+        }
+        $('.modal').modal();
+    });
+
     </script>
     {% endverbatim %}
 

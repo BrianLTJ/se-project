@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from apitools.decorators import have_perms
 
-@login_required(login_url='/login')
+@have_perms(['admin.admin_entry'])
 def admin_index(request):
     return render(request, 'admin/index.html')
 
