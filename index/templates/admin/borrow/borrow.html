@@ -36,9 +36,11 @@
                         data: JSON.stringify({"userid": bookborrow.$data['userid'], "barid":bookborrow.$data['barid']}),
                         success: function (data) {
                             if(data['result']=='ok'){
-                                Materialize.toast('图书 '+ bookborrow.$data['barid']+'借阅成功',1000);
-                                bookreturn.$data['barid']='';
-                                bookreturn.$data['userid']='';
+                                Materialize.toast('图书 '+ bookborrow.$data['barid']+'借阅成功',1000,'',function () {
+                                    bookborrow.$data['barid']='';
+                                    bookborrow.$data['userid']='';
+                                });
+
                             }else{
                                 Materialize.toast('图书 '+ bookborrow.$data['barid']+'借阅失败，'+data['message'],1000);
                             }
