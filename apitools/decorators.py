@@ -4,15 +4,16 @@ Decorators for project
 
 '''
 import functools
-from django.http import JsonResponse, HttpResponseForbidden
+from django.http import JsonResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.contrib.auth.models import Group, User, Permission, ContentType
 
 '''
 Response JSONs
 '''
 response_method_not_allowed = JsonResponse({"result": "error", "message": "Invalid request"})
-# response_permission_not_allowed = JsonResponse({"result": "error", "message": "Permission Denied"})
-response_permission_not_allowed = HttpResponseForbidden
+response_permission_not_allowed = JsonResponse({"result": "error", "message": "Permission Denied"})
+response_permission_not_allowed_redirect = '/'
+# response_permission_not_allowed = HttpResponseForbidden
 '''
 # Filter request via method
 Usage:
@@ -69,7 +70,10 @@ def have_perms(perms):
             if allowed:
                 return func(*args,**kw)
             else:
-                return response_permission_not_allowed
+                if args[0].is_ajax():
+                    return response_permission_not_allowed
+                else:
+                    return HttpResponseRedirect(response_permission_not_allowed_redirect)
 
         return wrapper
 
