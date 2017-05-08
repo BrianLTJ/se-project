@@ -56,6 +56,7 @@
 <div class="container">
     {% block body %}{% endblock %}
 </div>
+{% block script %}{% endblock %}
 <script>
     var api_check_login_state='{% url "api_user:user_login_state" %}';
     var api_logout = '{% url "api_user:user_logout" %}';

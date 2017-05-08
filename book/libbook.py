@@ -35,7 +35,7 @@ def borrowlog_wrapper(bookborrow):
 # add libbook
 @csrf_exempt
 @accept_methods(['post'])
-@have_perms(['book.admin_book_libbook_add'])
+@have_perms(['book.book.admin_book_libbook_add'])
 def libbook_add(request):
     response_data = {}
     response_data['result'] = 'error'
@@ -56,7 +56,7 @@ def libbook_add(request):
 
 # edit
 @accept_methods(['post'])
-@have_perms(['book.admin_book_libbook_edit'])
+@have_perms(['book.book.admin_book_libbook_edit'])
 def libbook_edit(request):
     response_data = {}
     response_data['result'] = 'error'
@@ -99,7 +99,7 @@ def libbook_list(request):
 
 @csrf_exempt
 @accept_methods(['post'])
-@have_perms(['book.admin_book_libbook_view'])
+@have_perms(['book.book.admin_book_libbook_view'])
 def libbook_list_with_borrowlog(request):
     response_data = {}
     response_data['result'] = 'error'
@@ -127,7 +127,7 @@ def libbook_list_with_borrowlog(request):
 
 
 @accept_methods(['post'])
-@have_perms(['book.admin_book_libbook_delete'])
+@have_perms(['book.book.admin_book_libbook_delete'])
 def libbook_del(request):
     response_data={}
     response_data['result']='error'

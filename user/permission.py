@@ -12,7 +12,7 @@ def perm_wrapper(perm):
 
 # Permission list
 @accept_methods(['get'])
-@have_perms(['auth.admin_user_permissions_view'])
+@have_perms(['auth.auth.admin_user_permissions_view'])
 def perm_list(request):
     response_data={}
     response_data['result']='error'

@@ -29,7 +29,7 @@ def bookborrow_wrapper(bookborrow,withid):
 
 @csrf_exempt
 @accept_methods(['post'])
-@have_perms(['book.user_read_borrowlog'])
+@have_perms(['book.book.user_read_borrowlog'])
 def change_password(request):
     response_data={}
     response_data['result']='error'
@@ -51,7 +51,7 @@ def change_password(request):
 
 @csrf_exempt
 @accept_methods(['get'])
-@have_perms(['auth.user_change_password'])
+@have_perms(['auth.auth.user_change_password'])
 def current_user_borrowlog(request):
     response_data={}
     response_data['result']='error'

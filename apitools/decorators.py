@@ -62,8 +62,9 @@ def have_perms(perms):
             allowed = False
             try:
                 user = args[0].user
-                allowed = user.has_perms(perms) & user.is_authenticated()
+                allowed = user.has_perms(perms)
                 if user.is_authenticated() == False:
+                    allowed = False
                     return HttpResponseRedirect(login_url+'?next='+args[0].path)
                 # Let superuser pass
                 if user.is_superuser:

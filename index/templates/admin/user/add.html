@@ -34,7 +34,7 @@
                         <group-list
                             v-for="(i,index) in user.groups"
                             :text="i.name"
-                            @remove="user.groups.splice(index,1)"></group-list>
+                            @remove="user.groups.splice(index, 1)"></group-list>
                     </div>
                     <div class="input-field row">
                         <div class="col s12 m2"><label for="borrowright">设置借书权限组</label></div>
@@ -99,7 +99,9 @@
 
 </div>
 
+{% endblock %}
 
+{% block script %}
     <script>
     // api urls
     var api_adduser="{% url 'api_admin_user:user_add' %}";
@@ -267,16 +269,20 @@
                     });
                 }
             }
+        },
+        mounted: function () {
+            $(document).ready(function () {
+                $('.modal').modal();
+                useradd.fetch_group_list();
+                useradd.fetch_borrowright_list();
+                if(userid>-1){
+                    useradd.fetch_user_detail();
+                }
+
+            });
         }
     });
-    $(document).ready(function () {
-        useradd.fetch_group_list();
-        useradd.fetch_borrowright_list();
-        if(userid>-1){
-            useradd.fetch_user_detail();
-        }
-        $('.modal').modal();
-    });
+
 
     </script>
     {% endverbatim %}

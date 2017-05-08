@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_admin.html' %}
 {% block title %}用户列表{% endblock %}
 {% block body %}
 <div id="user-list">
@@ -41,6 +41,9 @@
 
 
 </div>
+{% endblock %}
+
+{% block script %}
     <script>
     //apis
     var api_user_list="{% url 'api_admin_user:user_list' %}"
@@ -80,9 +83,14 @@
                     }
                 });
             }
+        },
+        mounted: function () {
+            $(document).ready(function () {
+            userlist.fetch_user_list();
+            });
         }
     });
-    userlist.fetch_user_list();
+
     </script>
 {% endverbatim %}
 {% endblock %}

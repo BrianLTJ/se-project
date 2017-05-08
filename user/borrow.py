@@ -33,7 +33,7 @@ def bookborrow_getexpireday(libbook):
 
 @csrf_exempt
 @accept_methods(['post'])
-@have_perms(['book.admin_optborrow_borrow'])
+@have_perms(['book.book.admin_optborrow_borrow'])
 def book_borrow(request):
     response_data = {}
     response_data['result'] = 'error'
@@ -100,7 +100,7 @@ def book_borrow(request):
 
 @csrf_exempt
 @accept_methods(['post'])
-@have_perms(['book.admin_optborrow_return'])
+@have_perms(['book.book.admin_optborrow_return'])
 def book_return(request):
     response_data = {}
     response_data['result'] = 'error'

@@ -13,7 +13,7 @@ def group_wrapper(group):
 # Get group list
 @csrf_exempt
 @accept_methods(['get'])
-@have_perms(['auth.admin_user_group_view'])
+@have_perms(['auth.auth.admin_user_group_view'])
 def group_list(request):
     response_data={}
     response_data['result']='error'
@@ -29,7 +29,7 @@ def group_list(request):
 # Group detail
 @csrf_exempt
 @accept_methods(['post'])
-@have_perms(['auth.admin_user_group_view'])
+@have_perms(['auth.auth.admin_user_group_view'])
 def group_detail(request):
     response_data = {}
     response_data['result'] = 'error'
@@ -47,7 +47,7 @@ def group_detail(request):
 # Add group
 @csrf_exempt
 @accept_methods(['post'])
-@have_perms(['auth.admin_user_group_add'])
+@have_perms(['auth.auth.admin_user_group_add'])
 def group_add(request):
     response_data={}
     response_data['result']='error'
@@ -74,26 +74,28 @@ def group_add(request):
 # Change group
 @csrf_exempt
 @accept_methods(['post'])
-@have_perms(['auth.admin_user_group_edit'])
+@have_perms(['auth.auth.admin_user_group_edit'])
 def group_change(request):
     response_data={}
     response_data['result']='error'
     req = json.loads(request.body.decode('utf-8'))
-    # try:
-    group = Group.objects.get(id=req['id'])
-    # Change group name
-    group.name = req['name']
-    # Change group permissions:
-    # Get perm object list
-    perm_list = []
-    for permid in req['perms']:
-        perm = Permission.objects.get(id=permid['id'])
-        perm_list.append(perm)
+    try:
+        group = Group.objects.get(id=req['id'])
+        # Change group name
+        group.name = req['name']
+        # Change group permissions:
+        # Get perm object list
+        perm_list = []
+        for permid in req['perms']:
+            perm = Permission.objects.get(id=permid['id'])
+            perm_list.append(perm)
 
-    group.permissions.set(perm_list)
-    group.save()
-    response_data['result']='ok'
-    response_data['group']=group_wrapper(group)
+        group.permissions.set(perm_list)
+        group.save()
+        response_data['result']='ok'
+        response_data['group']=group_wrapper(group)
+    except:
+        response_data['message']='群组编辑失败。'
 
     return JsonResponse(response_data)
 
@@ -101,7 +103,7 @@ def group_change(request):
 # Delete group
 @csrf_exempt
 @accept_methods(['post'])
-@have_perms(['auth.admin_user_group_delete'])
+@have_perms(['auth.auth.admin_user_group_delete'])
 def group_delete(request):
     response_data={}
     response_data['result']='error'

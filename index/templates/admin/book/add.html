@@ -84,7 +84,7 @@
 
 
 
-    <div class="hide" id="libbookarea">
+    <div class="hide"  id="libbookarea">
         <div class="row">
             <div class="card">
                 <div class="card-content">
@@ -97,6 +97,7 @@
                             :location="item.location"
                             :barid="item.barid"
                             :state="item.state"
+                            :logs="item.logs"
                             v-on:del="remove_libbook(index)">
                         </li>
                      </ul>
@@ -114,7 +115,7 @@
                 </div>
                 <div class="card-action">
 
-                    <div class="input-field"><button type="button" @click="libbook_add()" class="waves-effect btn">添加</button></div>
+                    <div class="input-field"><button type="button" @click="libbook_add" class="waves-effect btn">添加</button></div>
                 </div>
             </div>
         </div><!--End of add libbook-->
@@ -122,9 +123,9 @@
     </div><!--End of libbookarea-->
 
 
+{% endblock %}
 
-
-
+{% block script %}
 <script>
     {% if bookid > -1 %}
         var posturl="{% url 'book:book_edit' %}";
@@ -371,6 +372,19 @@ var formapp=new Vue({
             }
         }
 
+    },
+    mounted: function () {
+        $(document).ready(function(){
+            // Fetch catelist
+            formapp.fetchcates();
+            formapp.fetchtags();
+
+            if(bookid>-1){
+                formapp.fetchbook();
+                $("#libbookarea").removeClass('hide');
+            }
+
+        });
     }
 });
 
@@ -395,7 +409,7 @@ var libbook=new Vue({
                             libbook.$data['libbook']=data['data'];
                             $('.collapsible').collapsible();
                         }else {
-                            Materialize.toast("馆藏获取失败",1000);
+                            Materialize.toast("馆藏获取失败"+data['message'],1000);
                         }
 
                     }
@@ -427,21 +441,18 @@ var libbook=new Vue({
                     }
                 })
             }
+        },
+        mounted: function () {
+            $(document).ready(function () {
+                if(bookid>-1){
+                    libbook.fetchlibbooks();
+                }
+            });
+
         }
     });
 
-$(document).ready(function(){
-    // Fetch catelist
-    formapp.fetchcates();
-    formapp.fetchtags();
 
-    if(bookid>-1){
-        formapp.fetchbook();
-        libbook.fetchlibbooks();
-        $("#libbookarea").removeClass('hide');
-    }
-
-});
 
     </script>
 {% endverbatim %}

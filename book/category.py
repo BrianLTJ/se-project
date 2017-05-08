@@ -36,6 +36,7 @@ def cate_list(request):
 # Add cate
 @csrf_exempt
 @accept_methods(['post'])
+@have_perms(['book.book.admin_book_category_add'])
 def cate_add(request):
     response_data = {}
     response_data['result'] = 'error'
@@ -96,6 +97,7 @@ def tag_list(request):
 # Add cate
 @csrf_exempt
 @accept_methods(['post'])
+@have_perms(['book.book.admin_book_tag_add'])
 def tag_add(request):
     response_data = {}
     response_data['result'] = 'error'

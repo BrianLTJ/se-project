@@ -31,7 +31,7 @@ def user_wrapper(user):
         banned = True
 
     return {"id":user.id, "username":user.username,
-            "last_login": user.last_login,
+            "last_login": lt_time_str(user.last_login),
             "groups":groups,
             "borrowright":borrowright_dict,
             "banned": banned,
@@ -40,7 +40,7 @@ def user_wrapper(user):
 
 @csrf_exempt
 @accept_methods(['post'])
-@have_perms(['auth.admin_user_account_changepsw'])
+@have_perms(['auth.auth.admin_user_account_changepsw'])
 def admin_change_password(request):
     response_data={}
     response_data['result']='error'
@@ -59,7 +59,7 @@ def admin_change_password(request):
 
 @csrf_exempt
 @accept_methods(['get'])
-@have_perms(['auth.admin_user_account_view'])
+@have_perms(['auth.auth.admin_user_account_view'])
 def admin_user_list(request):
     response_data={}
     response_data['result']='error'
@@ -75,7 +75,7 @@ def admin_user_list(request):
 
 @csrf_exempt
 @accept_methods(['post'])
-@have_perms(['auth.admin_user_account_add'])
+@have_perms(['auth.auth.admin_user_account_add'])
 def admin_user_add(request):
     response_data={}
     response_data['result']='error'
@@ -118,7 +118,7 @@ def admin_user_add(request):
 
 @csrf_exempt
 @accept_methods(['post'])
-@have_perms(['auth.admin_user_account_edit'])
+@have_perms(['auth.auth.admin_user_account_edit'])
 def admin_user_edit(request):
     response_data={}
     response_data['result']='error'
@@ -182,7 +182,7 @@ def admin_user_edit(request):
 
 @csrf_exempt
 @accept_methods(['post'])
-@have_perms(['auth.admin_user_account_view'])
+@have_perms(['auth.auth.admin_user_account_view'])
 def admin_user_detail(request):
     response_data={}
     response_data['result']='error'
@@ -200,7 +200,7 @@ def admin_user_detail(request):
 
 @csrf_exempt
 @accept_methods(['post'])
-@have_perms(['auth.admin_user_account_delete'])
+@have_perms(['auth.auth.admin_user_account_delete'])
 def admin_user_delete(request):
     response_data={}
     response_data['result']='error'
@@ -228,7 +228,7 @@ def admin_user_delete(request):
 
 @csrf_exempt
 @accept_methods(['post'])
-@have_perms(['auth.admin_user_account_edit'])
+@have_perms(['auth.auth.admin_user_account_edit'])
 def admin_user_modify_group(request):
     response_data = {}
     response_data['result'] = 'error'
