@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from user.borrow import libbook_borrowed, bookborrow_getexpireday
 from user.models import BorrowRight, UserBorrowRight
-from apitools.decorators import accept_methods
+from apitools.decorators import accept_methods, have_perms
 from apitools.snippets import lt_time_str
 from user.borrow import bookborrow_getexpireday, libbook_borrowed
 import json
@@ -35,6 +35,7 @@ def borrowlog_wrapper(bookborrow):
 # add libbook
 @csrf_exempt
 @accept_methods(['post'])
+@have_perms(['book.admin_book_libbook_add'])
 def libbook_add(request):
     response_data = {}
     response_data['result'] = 'error'
@@ -55,6 +56,7 @@ def libbook_add(request):
 
 # edit
 @accept_methods(['post'])
+@have_perms(['book.admin_book_libbook_edit'])
 def libbook_edit(request):
     response_data = {}
     response_data['result'] = 'error'
@@ -79,7 +81,9 @@ def libbook_list(request):
     req = json.loads(request.body.decode('utf-8'))
     try:
         bookid=req['bookid']
+
         libbooks = LibBook.objects.filter(book=Book.objects.get(bookid=int(req['bookid'])))
+
         resp_libbookdata=[]
         for libitem in libbooks:
             # Fetch borrowlog
@@ -95,34 +99,35 @@ def libbook_list(request):
 
 @csrf_exempt
 @accept_methods(['post'])
+@have_perms(['book.admin_book_libbook_view'])
 def libbook_list_with_borrowlog(request):
     response_data = {}
     response_data['result'] = 'error'
     req = json.loads(request.body.decode('utf-8'))
-    try:
-        bookid=req['bookid']
-        libbooks = LibBook.objects.filter(book=Book.objects.get(bookid=int(req['bookid'])))
-        # print(len(libbooks))
-        resp_libbookdata=[]
-        for libitem in libbooks:
-            respitem=libbook_wrapper(libitem)
-            respitem['logs']=[]
-            logs = BookBorrow.objects.filter(libbook=libitem)
-            print(logs)
-            for log in logs:
-                respitem['logs'].append(borrowlog_wrapper(log))
+    # try:
+    bookid=req['bookid']
+    libbooks = LibBook.objects.filter(book=Book.objects.get(bookid=int(req['bookid'])))
 
-            resp_libbookdata.append(respitem)
+    resp_libbookdata=[]
+    for libitem in libbooks:
+        respitem=libbook_wrapper(libitem)
+        respitem['logs']=[]
+        logs = BookBorrow.objects.filter(libbook=libitem)
+        for log in logs:
+            respitem['logs'].append(borrowlog_wrapper(log))
 
-        response_data['result'] = 'ok'
-        response_data['data']=resp_libbookdata
-    except:
-        response_data['message'] = 'Book Not found.'
+        resp_libbookdata.append(respitem)
+
+    response_data['result'] = 'ok'
+    response_data['data']=resp_libbookdata
+    # except:
+    #     response_data['message'] = 'Book Not found.'
 
     return JsonResponse(response_data)
 
 
 @accept_methods(['post'])
+@have_perms(['book.admin_book_libbook_delete'])
 def libbook_del(request):
     response_data={}
     response_data['result']='error'

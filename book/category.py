@@ -8,7 +8,7 @@ from django.core import serializers, exceptions
 import json
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from book.models import Book, Tag, Category
-from apitools.decorators import accept_methods
+from apitools.decorators import accept_methods,have_perms
 
 # Show cate list
 @accept_methods(['get'])

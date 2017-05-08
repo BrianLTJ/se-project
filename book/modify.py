@@ -8,10 +8,11 @@ from django.http import JsonResponse
 from book.models import Book, Category, Tag, LibBook
 import json
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
-from apitools.decorators import accept_methods
+from apitools.decorators import accept_methods, have_perms
 
 @csrf_exempt
 @accept_methods(['post'])
+@have_perms(['book.admin_book_book_add'])
 def book_add(request):
     response_data = {}
     response_data['result'] = 'error'
@@ -62,6 +63,7 @@ def book_add(request):
 
 @csrf_exempt
 @accept_methods(['post'])
+@have_perms(['book.admin_book_book_edit'])
 def book_edit(request):
     response_data = {}
     response_data['result'] = 'error'
@@ -122,6 +124,7 @@ def book_edit(request):
 
 
 @accept_methods(['post'])
+@have_perms(['book.admin_book_book_delete'])
 def book_del(request):
     response_data = {}
     response_data['result'] = 'error'
