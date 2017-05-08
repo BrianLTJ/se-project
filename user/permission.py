@@ -1,7 +1,7 @@
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.http import JsonResponse
-from apitools.decorators import accept_methods
+from apitools.decorators import accept_methods,have_perms
 import json
 
 
@@ -12,6 +12,7 @@ def perm_wrapper(perm):
 
 # Permission list
 @accept_methods(['get'])
+@have_perms(['auth.admin_user_permissions_view'])
 def perm_list(request):
     response_data={}
     response_data['result']='error'

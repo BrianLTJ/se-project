@@ -26,10 +26,12 @@ def user_login(request):
 
     return JsonResponse(response_data)
 
+
 @accept_methods(['get','post'])
 def user_logout(request):
     logout(request)
     return JsonResponse({'result':'ok'})
+
 
 @accept_methods(['get','post'])
 def user_login_state(request):

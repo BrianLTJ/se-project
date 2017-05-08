@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import get_user
 from apitools.snippets import lt_day_str,lt_time_str
 from django.http import JsonResponse
-from apitools.decorators import accept_methods
+from apitools.decorators import accept_methods,have_perms
 from book.models import BookBorrow,Book,LibBook
 from user.borrow import bookborrow_getexpireday
 from django.utils.timezone import localtime
@@ -29,6 +29,7 @@ def bookborrow_wrapper(bookborrow,withid):
 
 @csrf_exempt
 @accept_methods(['post'])
+@have_perms(['book.user_read_borrowlog'])
 def change_password(request):
     response_data={}
     response_data['result']='error'
@@ -50,6 +51,7 @@ def change_password(request):
 
 @csrf_exempt
 @accept_methods(['get'])
+@have_perms(['auth.user_change_password'])
 def current_user_borrowlog(request):
     response_data={}
     response_data['result']='error'

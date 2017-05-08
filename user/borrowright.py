@@ -2,7 +2,7 @@ import json
 from user.models import BorrowRight,UserBorrowRight
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-from apitools.decorators import accept_methods
+from apitools.decorators import accept_methods, have_perms
 
 def borrowright_wrapper(br):
     return {'id':br.id, 'name':br.name, 'day':br.day, 'booknum': br.booknum, 'allowborrow': br.allowborrow}
@@ -10,6 +10,7 @@ def borrowright_wrapper(br):
 
 @csrf_exempt
 @accept_methods(['get'])
+@have_perms(['user.admin_user_borrowright_view'])
 def borrowright_list(request):
     response_data = {}
     response_data['result'] = 'error'
@@ -29,6 +30,7 @@ def borrowright_list(request):
 
 @csrf_exempt
 @accept_methods(['post'])
+@have_perms(['user.admin_user_borrowright_view'])
 def borrowright_detail(request):
     response_data={}
     response_data['result']='error'
@@ -44,6 +46,7 @@ def borrowright_detail(request):
 
 @csrf_exempt
 @accept_methods(['post'])
+@have_perms(['user.admin_user_borrowright_add'])
 def borrowright_add(request):
     response_data={}
     response_data['result']='error'
@@ -66,6 +69,7 @@ def borrowright_add(request):
 
 @csrf_exempt
 @accept_methods(['post'])
+@have_perms(['user.admin_user_borrowright_edit'])
 def borrowright_edit(request):
     response_data = {}
     response_data['result'] = 'error'
@@ -86,6 +90,7 @@ def borrowright_edit(request):
 
 @csrf_exempt
 @accept_methods(['post'])
+@have_perms(['user.admin_user_borrowright_delete'])
 def borrowright_delete(request):
     response_data = {}
     response_data['result'] = 'error'

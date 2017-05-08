@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.contrib.auth.models import Group, Permission
 from django.views.decorators.csrf import csrf_exempt
 import json
-from apitools.decorators import accept_methods
+from apitools.decorators import accept_methods,have_perms
 def group_wrapper(group):
     perms = []
     for perm in group.permissions.all():
@@ -13,6 +13,7 @@ def group_wrapper(group):
 # Get group list
 @csrf_exempt
 @accept_methods(['get'])
+@have_perms(['auth.admin_user_group_view'])
 def group_list(request):
     response_data={}
     response_data['result']='error'
@@ -28,6 +29,7 @@ def group_list(request):
 # Group detail
 @csrf_exempt
 @accept_methods(['post'])
+@have_perms(['auth.admin_user_group_view'])
 def group_detail(request):
     response_data = {}
     response_data['result'] = 'error'
@@ -45,6 +47,7 @@ def group_detail(request):
 # Add group
 @csrf_exempt
 @accept_methods(['post'])
+@have_perms(['auth.admin_user_group_add'])
 def group_add(request):
     response_data={}
     response_data['result']='error'
@@ -71,6 +74,7 @@ def group_add(request):
 # Change group
 @csrf_exempt
 @accept_methods(['post'])
+@have_perms(['auth.admin_user_group_edit'])
 def group_change(request):
     response_data={}
     response_data['result']='error'
@@ -97,6 +101,7 @@ def group_change(request):
 # Delete group
 @csrf_exempt
 @accept_methods(['post'])
+@have_perms(['auth.admin_user_group_delete'])
 def group_delete(request):
     response_data={}
     response_data['result']='error'
