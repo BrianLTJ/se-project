@@ -13,5 +13,7 @@ urlpatterns = [
     url(r'loginstate$', user_login.user_login_state, name='user_login_state'),
 
     url(r'borrowlog$', user_center.current_user_borrowlog, name='user_borrow_log'),
+    url(r'userinfo$', user_center.get_userinfo, name='user_info'),
+    url(r'userchangepsw$',user_center.change_password, name='user_changepassword'),
 ]
 

@@ -113,11 +113,16 @@
                     });
                 }
             }
+        },
+        mounted: function () {
+            $(document).ready(function(){
+               if(borrowrightid>-1){
+                    borrowright.br_fetch();
+                }
+            });
         }
     });
-    if(borrowrightid>-1){
-        borrowright.br_fetch();
-    }
+
 </script>
 
 {% endverbatim %}

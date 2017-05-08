@@ -1,4 +1,67 @@
 {% extends 'base_center.html' %}
+{% block title %}个人中心{% endblock %}
 {% block body %}
-    个人中心
+<div id="usercenter">
+    <div class="row">
+        <div class="card">
+            <div class="card-content">
+                <span class="card-title">用户中心</span>
+                <div>
+                    {% verbatim %}
+                    <div class="row">
+                        用户名：{{ user.username }}
+                    </div>
+                    <div class="row">
+                        借书账号：{{ user.id }}
+                    </div>
+                    {% endverbatim %}
+                </div>
+            </div>
+            <div class="card-action">
+                <a href="/center/borrowlog" class="waves-effect waves-light">借阅记录</a>
+                <a href="/center/changepsw" class="waves-effect waves-light">更改密码</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+    <script>
+    //apis
+    var api_user_info='{% url "api_user:user_info" %}';
+    </script>
+    {% verbatim %}
+    <script>
+    var userapp = new Vue({
+        el: "#usercenter",
+        data: {
+            user: {
+                username:"",
+                id:0,
+            }
+        },
+        methods: {
+            fetch_userinfo: function () {
+                $.post({
+                    url: api_user_info,
+                    data: "",
+                    success: function (data) {
+                        if(data['result']=='ok'){
+                            userapp.$data['user']=data['user'];
+                        }else{
+                            Materialize.toast('获取用户信息失败',1000);
+                        }
+                    }
+                })
+            }
+
+        },
+        mounted: function () {
+            $(document).ready(function () {
+                userapp.fetch_userinfo();
+            });
+        }
+    });
+    </script>
+    {% endverbatim %}
 {% endblock %}

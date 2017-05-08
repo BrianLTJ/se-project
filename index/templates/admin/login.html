@@ -60,7 +60,7 @@
                             $('#username').addClass('invalid');
                             $('#password').addClass('invalid');
                         }
-                        if(data['result']='ok'){
+                        if(data['result']=='ok'){
                             Materialize.toast('登录成功',1500,'',function () {
                                 if(getParameterByName('next')!=null){
                                     window.location.href=getParameterByName('next');

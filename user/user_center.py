@@ -27,19 +27,32 @@ def bookborrow_wrapper(bookborrow,withid):
              "expire": expire
              }
 
+
+@accept_methods(['post'])
+def get_userinfo(request):
+    response_data={}
+    response_data['result']='error'
+    try:
+        user = request.user
+        response_data['user']={"id": user.id, "username": user.username}
+        response_data['result']='ok'
+    except:
+        response_data['message']='用户信息查询失败'
+    return JsonResponse(response_data)
+
 @csrf_exempt
 @accept_methods(['post'])
-@have_perms(['book.book.user_read_borrowlog'])
+@have_perms(['auth.auth.user_change_password'])
 def change_password(request):
     response_data={}
     response_data['result']='error'
     try:
         req = json.loads(request.body.decode('utf-8'))
-        req = req[0]
         usertochange=get_user(request)
         # Challenge old password
-        if usertochange.check_password(req['oldpwd']):
-            usertochange.set_password(req['newpwd'])
+        if usertochange.check_password(req['oldpsw']):
+            usertochange.set_password(req['newpsw'])
+            usertochange.save()
             response_data['result']='ok'
         else:
             response_data['message']='Fail to change password.'
@@ -51,7 +64,7 @@ def change_password(request):
 
 @csrf_exempt
 @accept_methods(['get'])
-@have_perms(['auth.auth.user_change_password'])
+@have_perms(['book.book.user_read_borrowlog'])
 def current_user_borrowlog(request):
     response_data={}
     response_data['result']='error'

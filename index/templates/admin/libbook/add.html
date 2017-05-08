@@ -121,9 +121,14 @@
                     }
                 })
             }
+        },
+        mounted: function () {
+            $(document).ready(function () {
+                libbook.fetchlibbooks();
+            });
         }
     });
-    libbook.fetchlibbooks();
+
     </script>
     {% endverbatim %}
 

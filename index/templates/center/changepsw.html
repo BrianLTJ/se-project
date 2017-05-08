@@ -1,0 +1,70 @@
+{% extends 'base_center.html' %}
+{% block title %}更改密码{% endblock %}
+{% block body %}
+    <div class="row" id="psw">
+        <div class="col s12 m6 offset-m3">
+            <div class="card">
+                <div class="card-content">
+                    <span class="card-title">更改密码</span>
+                    <div>
+                        <div class="input-field"><input type="password" id="oldpsw" v-model="psw.oldpsw"><label for="oldpsw">原密码</label></div>
+                        <div class="input-field"><input type="password" id="newpsw1" v-model="psw.newpsw1" @keyup="compare"><label for="newpsw1">新密码</label></div>
+                        <div class="input-field"><input type="password" id="newpsw2" v-model="psw.newpsw2" @keyup="compare"><label for="newpsw2">再输一次新密码</label></div>
+                           {% verbatim %}  {{ changepsw_msg }} {% endverbatim %}
+                    </div>
+                </div>
+                <div class="card-action">
+                    <button type="button" id="changepsw" class="btn waves-effect disabled" @click="change">更改</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+    <script>
+    //apis
+    var api_change_psw = '{%  url "api_user:user_changepassword" %}';
+    </script>
+    {% verbatim %}
+    <script>
+    var psw = new Vue({
+        el: "#psw",
+        data: {
+            psw: {
+                oldpsw: "",
+                newpsw1: "",
+                newpsw2: ""
+            },
+            changepsw_msg: ""
+        },
+        methods:{
+            change: function () {
+                $.post({
+                    url: api_change_psw,
+                    data: JSON.stringify({"oldpsw": psw.$data['psw']['oldpsw'], "newpsw": psw.$data['psw']['newpsw1']}),
+                    success:  function (data) {
+                        if(data['result']=='ok'){
+                            Materialize.toast("密码修改成功",1000,'',function () {
+                                window.location.href='/center';
+                            });
+                        }else{
+                            Materialize.toast("密码修改失败",1000);
+                        }
+                    }
+                });
+            },
+            compare: function () {
+                if( psw.$data['psw']['newpsw1'].length>0 && (psw.$data['psw']['newpsw1']==psw.$data['psw']['newpsw2'])){
+                    $("#changepsw").removeClass('disabled');
+                    psw.$data['changepsw_msg']='';
+                }else {
+                    psw.$data['changepsw_msg']='两次输入密码须非空且保持一致';
+                    if($("#changepsw").hasClass('disabled')){}
+                    else {$("#changepsw").addClass('disabled');}
+                }
+            }
+        }
+    });
+    </script>
+    {% endverbatim %}
+{% endblock %}

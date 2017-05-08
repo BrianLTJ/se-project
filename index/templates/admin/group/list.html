@@ -61,9 +61,14 @@
                     }
                 });
             }
+        },
+        mounted: function () {
+            $(document).ready(function () {
+                grouplist.fetch_group_list();
+            });
         }
     });
-    grouplist.fetch_group_list();
+
     </script>
     {% endverbatim %}
 

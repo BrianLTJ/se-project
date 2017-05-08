@@ -71,9 +71,14 @@ var brlist=new Vue({
                 }
             });
         }
+    },
+    mounted: function () {
+        $(document).ready(function () {
+            brlist.fetch_list();
+        })
     }
 });
-brlist.fetch_list();
+
 </script>
 {% endverbatim %}
 

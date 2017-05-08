@@ -56,9 +56,7 @@
 <script>
     var api_bookquery="{% url 'book:query' %}";
     var url_bookdetail="/admin/book/edit/";
-      $(document).ready(function() {
-    $('select').material_select();
-  });
+
 </script>
 {% verbatim %}
 <script>
@@ -100,6 +98,11 @@
                     }
                 });
             }
+        },
+        mounted: function () {
+              $(document).ready(function() {
+                $('select').material_select();
+              });
         }
     });
 </script>

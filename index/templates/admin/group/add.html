@@ -97,6 +97,9 @@
                         if(data['result']=='ok'){
                             //  console.log(data);
                             groupadd.$data['permlist']=data['perms'];
+                            if(groupid>-1){
+                                groupadd.fetch_group_info();
+                            }
                         }
                     }
                 });
@@ -179,15 +182,14 @@
                     }
                 });
             }
+        },
+        mounted: function () {
+            $(document).ready(function () {
+                groupadd.fetch_perm_list();
+            });
         }
     });
-    groupadd.fetch_perm_list();
-    if(groupid>-1){
-        groupadd.fetch_group_info();
-    }
-      $(document).ready(function() {
-    $('select').material_select();
-  });
+
     </script>
 {% endverbatim %}
 
