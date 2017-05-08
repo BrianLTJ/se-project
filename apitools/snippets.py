@@ -2,9 +2,15 @@ from django.utils.timezone import localtime
 import datetime
 
 def lt_day_str(datetime_obj):
-    return localtime(datetime_obj).strftime("%Y-%m-%d")
+    if type(datetime_obj) == datetime:
+        return localtime(datetime_obj).strftime("%Y-%m-%d")
+    else:
+        return ""
 
 
 def lt_time_str(datetime_obj):
-    return localtime(datetime_obj).strftime("%Y-%m-%d %H:%M:%S")
+    if type(datetime_obj) == datetime:
+        return localtime(datetime_obj).strftime("%Y-%m-%d %H:%M:%S")
+    else:
+        return ""
 
