@@ -8,7 +8,10 @@
             <div class="card">
                 <div class="card-content">
                     <span class="card-title">添加图书</span>
-                        <div class="row"><div class="input-field col s12"><input type="text" name="isbn" id="isbn" v-model="book.isbn"><label for="isbn">ISBN</label></div></div>
+                        <div class="row">
+                            <div class="input-field col s12 m7"><input type="text" name="isbn" id="isbn" v-model="book.isbn"><label for="isbn">ISBN</label></div>
+                            <div class="col s12 m5"><button class="btn waves-effect" type="button">从douban抓取信息</button></div>
+                        </div>
                         <div class="row"><div class="input-field col s12"><input type="text" name="title" id="title" v-model="book.title"><label for="title">标题</label></div></div>
                         <div class="row"><div class="input-field col s12"><input type="text" name="author" id="author" v-model="book.author"><label for="author">作者</label></div></div>
                         <div class="row"><div class="input-field col s12"><input type="text" name="translator" id="translator" v-model="book.translator"><label for="translator">译者</label></div></div>
