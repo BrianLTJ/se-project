@@ -45,7 +45,7 @@ Or in Windows
 (venv)$ python manage.py runserver
 ```
 
-7. Open Browser and visit `http://localhost:8000` or `http://localhost:8000`
+7. Open Browser and visit `http://127.0.0.1:8000` or `http://localhost:8000`
 
 ## For Developers
 1. Install node packages
@@ -53,9 +53,14 @@ Or in Windows
 $ npm install
 ```
 
-2. Make sure you can run gulp
+2. Make sure you can run `gulp`
 
 3. Substitute product js lib with development lib
 ```
 $ gulp dev
+```
+
+4. Before release a product version, make sure the js lib file has been compressed
+```
+$ gulp default
 ```
