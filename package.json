@@ -17,20 +17,16 @@
   },
   "homepage": "https://github.com/BrianLTJ/se-project#readme",
   "dependencies": {
-    "bootstrap": "^3.3.7",
-    "bootstrap-material-design": "^0.5.10",
     "jquery": "^3.2.1",
     "jquery-json": "^2.6.0",
-    "js-cookie": "^2.1.4",
     "material-design-icons": "^3.0.1",
     "materialize-css": "^0.98.2",
     "vue": "^2.2.6"
   },
   "devDependencies": {
     "gulp": "^3.9.1",
-    "gulp-minify-css": "^1.2.4",
-    "gulp-rev": "^7.1.2",
-    "gulp-rev-collector": "^1.1.1",
+    "gulp-clean": "^0.3.2",
+    "gulp-concat": "^2.6.1",
     "gulp-uglify": "^2.1.2"
   }
 }
