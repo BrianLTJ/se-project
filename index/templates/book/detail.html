@@ -80,33 +80,36 @@
             </div>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col s12">
-            <div class="card z-depth-3">
-                <div class="card-content">
-                    <span class="card-title">馆藏信息</span>
-                    <table>
-                        <tr>
-                            <th>序号</th>
-                            <th>条码</th>
-                            <th>馆藏地址</th>
-                            <th>索书号</th>
-                            <th>状态</th>
-                        </tr>
-                        <tr
-                            is="libbook-item"
-                            v-for="(item,index) in libbook"
-                            :index="index+1"
-                            :clc="book.clc"
-                            :location="item.location"
-                            :barid="item.barid"
-                            :state="item.state"></tr>
-                    </table>
+
+        <div class="row">
+            <div class="col s12">
+                <div class="card z-depth-3">
+                    <div class="card-content">
+                        <span class="card-title">馆藏信息</span>
+                        <table>
+                            <tr>
+                                <th>序号</th>
+                                <th>条码</th>
+                                <th>馆藏地址</th>
+                                <th>索书号</th>
+                                <th>状态</th>
+                            </tr>
+                            <tr
+                                is="libbook-item"
+                                v-for="(item,index) in libbook"
+                                :index="index+1"
+                                :clc="book.clc"
+                                :location="item.location"
+                                :barid="item.barid"
+                                :state="item.state"></tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
+
     </div>
+
 
 
 {% endverbatim %}
