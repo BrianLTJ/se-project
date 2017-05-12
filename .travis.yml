@@ -6,6 +6,4 @@ env:
  - BDENV="travis"
 install:
  - pip3 install -r requirements.txt
- - npm install
-script: 
- - python manage.py test functional_tests
+
