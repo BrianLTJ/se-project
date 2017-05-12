@@ -32,7 +32,7 @@ class Book(models.Model):
     summary = models.TextField(null=True,default="", blank=True)
     context = models.TextField(null=True,default="", blank=True)
     price = models.CharField(max_length=20, null=True,default="", blank=True)
-    clc = models.CharField(max_length=50)
+    clc = models.CharField(max_length=50, null=True,default="", blank=True)
 
     category = models.ManyToManyField(Category)
     tag = models.ManyToManyField(Tag)

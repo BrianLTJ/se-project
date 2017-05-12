@@ -9,19 +9,19 @@
                 <div class="card-content">
                     <span class="card-title">添加图书</span>
                         <div class="row">
-                            <div class="input-field col s12 m7"><input type="text" name="isbn" id="isbn" v-model="book.isbn"><label for="isbn">ISBN</label></div>
+                            <div class="input-field col s12 m7"><input type="text" maxlength="20" name="isbn" id="isbn" v-model="book.isbn"><label for="isbn">ISBN</label></div>
                             <div class="col s12 m5"><button class="btn waves-effect" type="button" @click="fetch_douban">从douban抓取信息</button></div>
                         </div>
-                        <div class="row"><div class="input-field col s12"><input type="text" name="title" id="title" v-model="book.title"><label for="title">标题</label></div></div>
-                        <div class="row"><div class="input-field col s12"><input type="text" name="author" id="author" v-model="book.author"><label for="author">作者</label></div></div>
-                        <div class="row"><div class="input-field col s12"><input type="text" name="translator" id="translator" v-model="book.translator"><label for="translator">译者</label></div></div>
-                        <div class="row"><div class="input-field col s12"><input type="text" name="edition" id="edition" v-model="book.edition"><label for="edition">版次</label></div></div>
-                        <div class="row"><div class="input-field col s12"><input type="text" name="pubhouse" id="pubhouse" v-model="book.pubhouse"><label for="pubhouse">出版社</label></div></div>
-                        <div class="row"><div class="input-field col s12"><input type="text" name="pubtime" id="pubtime" v-model="book.pubtime"><label for="pubtime">出版时间</label></div></div>
+                        <div class="row"><div class="input-field col s12"><input type="text" name="title" id="title" v-model="book.title" maxlength="500"><label for="title">标题</label></div></div>
+                        <div class="row"><div class="input-field col s12"><input type="text" name="author" id="author" v-model="book.author" maxlength="200"><label for="author">作者</label></div></div>
+                        <div class="row"><div class="input-field col s12"><input type="text" name="translator" id="translator" v-model="book.translator" maxlength="200"><label for="translator">译者</label></div></div>
+                        <div class="row"><div class="input-field col s12"><input type="text" name="edition" id="edition" v-model="book.edition" maxlength="50"><label for="edition">版次</label></div></div>
+                        <div class="row"><div class="input-field col s12"><input type="text" name="pubhouse" id="pubhouse" v-model="book.pubhouse" maxlength="100"><label for="pubhouse">出版社</label></div></div>
+                        <div class="row"><div class="input-field col s12"><input type="text" name="pubtime" id="pubtime" v-model="book.pubtime" maxlength="50"><label for="pubtime">出版时间</label></div></div>
                         <div class="row"><div class="input-field col s12"><input type="text" name="summary" id="summary" v-model="book.summary"><label for="summary">摘要</label></div></div>
                         <div class="row"><div class="input-field col s12"><input type="text" name="context" id="context" v-model="book.context"><label for="context">章节目录</label></div></div>
-                        <div class="row"><div class="input-field col s12"><input type="text" name="clc" id="clc" v-model="book.clc"><label for="clc">图书分类号</label></div></div>
-                        <div class="row"><div class="input-field col s12"><input type="text" name="price" id="price" v-model="book.price"><label for="price">价格</label></div></div>
+                        <div class="row"><div class="input-field col s12"><input type="text" name="clc" id="clc" v-model="book.clc" maxlength="50"><label for="clc">图书分类号</label></div></div>
+                        <div class="row"><div class="input-field col s12"><input type="text" name="price" id="price" v-model="book.price" maxlength="50"><label for="price">价格</label></div></div>
 
                     <div class="row">
                         <label for="cate-sel" class="col s12 m4">分类</label>
@@ -416,12 +416,7 @@ var formapp=new Vue({
                     },
                     statusCode: {
                         404: function (data) {
-                            if(data['code']=="6000"){
-                                Materialize.toast("图书不存在",1000);
-                            }else{
-                                Materialize.toast("请求404错误", 1000);
-                            }
-
+                            Materialize.toast("图书不存在",1000);
                         }
                     }
 
