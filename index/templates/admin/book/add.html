@@ -10,7 +10,7 @@
                     <span class="card-title">添加图书</span>
                         <div class="row">
                             <div class="input-field col s12 m7"><input type="text" name="isbn" id="isbn" v-model="book.isbn"><label for="isbn">ISBN</label></div>
-                            <div class="col s12 m5"><button class="btn waves-effect" type="button">从douban抓取信息</button></div>
+                            <div class="col s12 m5"><button class="btn waves-effect" type="button" @click="fetch_douban">从douban抓取信息</button></div>
                         </div>
                         <div class="row"><div class="input-field col s12"><input type="text" name="title" id="title" v-model="book.title"><label for="title">标题</label></div></div>
                         <div class="row"><div class="input-field col s12"><input type="text" name="author" id="author" v-model="book.author"><label for="author">作者</label></div></div>
@@ -84,8 +84,6 @@
     </form>
 </div>
     {% endverbatim %}
-
-
 
     <div class="hide"  id="libbookarea">
         <div class="row">
@@ -373,6 +371,57 @@ var formapp=new Vue({
                     formapp.$data['book']['tag'].push({id: formapp.$data['tagidtoadd'], text: formapp.$data['tags'][i]['text'] });
                 }
             }
+        },
+        fetch_douban: function () {
+          url=	"https://api.douban.com/v2/book/isbn/"+formapp.$data['book']['isbn']+"?callback=?";
+          if (formapp.$data['book']['isbn'].length>0){
+            Materialize.toast("正在尝试从Douban获取图书信息", 1000);
+            console.log("Fetching Douban");
+            $.ajax({
+              url: url,
+              method: "get",
+              dataType: 'jsonp',
+              success: function(data){
+                if(formapp.$data['book']['title'].length==0){
+                  formapp.$data['book']['title']=data['title']+" "data['subtitle'];
+                }
+                if(formapp.$data['book']['author'].length==0){
+                  for(var i=0;i<data['author'].length;i++){
+                    formapp.$data['book']['author']=formapp.$data['book']['author']+data['author'][i]+";";
+                  }
+                }
+                if(formapp.$data['book']['translator'].length==0){
+                  for(var i=0;i<data['translator'].length;i++){
+                    formapp.$data['book']['translator']=formapp.$data['book']['translator']+data['translator'][i]+";";
+                  }
+                }
+                if(formapp.$data['book']['context'].length==0){
+                  formapp.$data['book']['context']=data['catalog'];
+                }
+                if(formapp.$data['book']['summary'].length==0){
+                  formapp.$data['book']['summary']=data['summary'];
+                }
+                if(formapp.$data['book']['price'].length==0){
+                  formapp.$data['book']['price']=data['price'];
+                }
+                if(formapp.$data['book']['pubhouse'].length==0){
+                  formapp.$data['book']['pubhouse']=data['publisher'];
+                }
+                if(formapp.$data['book']['pubtime'].length==0){
+                  formapp.$data['book']['pubtime']=data['pubdate'];
+                }
+              },
+              error: function (data){
+                Materialize.toast("请求错误",1000);
+              },
+              statusCode: {
+                404: function() {
+                  Materialize.toast("图书不存在",1000);
+                }
+              }
+            })
+          }
+
         }
 
     },
