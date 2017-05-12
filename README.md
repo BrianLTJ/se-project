@@ -25,16 +25,14 @@ Or in Windows
 ```
 (venv) $ pip install -r requirements.txt
 ```
-```
-$ npm install
-```
+
 
 4. Migrate database
 ```
 (venv)$ python manage.py migrate
 ```
 
-5. Preset
+5. Preset permissions and add Superuser for initial configurations
 ```
 (venv) $ python preset.py
        0
@@ -45,4 +43,19 @@ $ npm install
 6. Run server
 ```
 (venv)$ python manage.py runserver
+```
+
+7. Open Browser and visit `http://localhost:8000` or `http://localhost:8000`
+
+## For Developers
+1. Install node packages
+```
+$ npm install
+```
+
+2. Make sure you can run gulp
+
+3. Substitute product js lib with development lib
+```
+$ gulp dev
 ```
