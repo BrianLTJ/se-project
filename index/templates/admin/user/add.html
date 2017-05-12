@@ -174,7 +174,12 @@
                     url: api_user_edit,
                     data: JSON.stringify(useradd.$data['user']),
                     success:function (data) {
-                        console.log(data);
+                        if(data['result']=='ok'){
+                            Materialize.toast("修改成功",1000);
+                            //console.log(data);
+                        }else{
+                            Materialize.toast("修改失败",1000);
+                        }
                     }
                 });
             },
@@ -183,7 +188,12 @@
                     url: api_user_delete,
                     data: JSON.stringify({"id": useradd.$data['user']['id']}),
                     success: function (data) {
-                        console.log(data);
+                        if(data['result']=='ok'){
+                            Materialize.toast("删除成功",1000);
+                            //console.log(data);
+                        }else{
+                            Materialize.toast("删除失败",1000);
+                        }
                     }
                 });
             },
@@ -192,7 +202,7 @@
                     url: api_user_detail,
                     data: JSON.stringify({"id": userid}),
                     success: function (data) {
-                        console.log(data);
+                        //console.log(data);
                         if(data['result']=='ok'){
                             useradd.$data['user']=data['user'];
                         }
@@ -203,7 +213,7 @@
                 $.get({
                     url: api_grouplist,
                     success: function (data) {
-                        console.log(data);
+                        //console.log(data);
                         if(data['result']=='ok'){
                             useradd.$data['grouplist']=data['groups'];
                         }
@@ -214,7 +224,7 @@
                 $.get({
                     url: api_br_list,
                     success: function (data) {
-                        console.log(data);
+                        //console.log(data);
                         if(data['result']=='ok'){
                             useradd.$data['borrowrightlist']=data['borrowrights'];
                         }

@@ -234,7 +234,7 @@ var formapp=new Vue({
             $.get({
                 url: api_book_detail,
                 success: function (data) {
-                    console.log()
+                    //console.log()
                     if(data['result']=='ok'){
                         formapp.$data['book']=data['data'];
                         formapp.$data['book']['bookid']=bookid;
@@ -288,7 +288,7 @@ var formapp=new Vue({
         catetolist: function () {
             var cate_exists = false;
             var cate_text_found=false;
-            console.log(formapp.$data['cateidtoadd']);
+            //console.log(formapp.$data['cateidtoadd']);
             for(var j=0;j<formapp.$data['book']['category'].length;j++){
                 if(formapp.$data['cateidtoadd']==formapp.$data['book']['category'][j]['id']){
                     cate_exists=true;
@@ -297,7 +297,7 @@ var formapp=new Vue({
             }
             if(!cate_exists){
                 var i=0;
-                console.log(formapp.$data['cates'].length);
+                //console.log(formapp.$data['cates'].length);
                 for(i=0;i<formapp.$data['cates'].length;i++){
                     if(formapp.$data['cates'][i]['id']==formapp.$data['cateidtoadd']){
                         cate_text_found=true;
@@ -367,7 +367,7 @@ var formapp=new Vue({
                     }
                 }
                 if(tag_text_found){
-                    console.log('added');
+                    //console.log('added');
                     formapp.$data['book']['tag'].push({id: formapp.$data['tagidtoadd'], text: formapp.$data['tags'][i]['text'] });
                 }
             }

@@ -155,7 +155,7 @@
                 $.get({
                     url: fetch_url,
                     success: function(data){
-                        console.log(data);
+                        //console.log(data);
                         if(data['result']=='ok'){
                             bookinfo.$data['book']=data['data'];
                             bookinfo.fetch_libbook();

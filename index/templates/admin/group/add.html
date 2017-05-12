@@ -135,7 +135,7 @@
                         }else{
                             Materialize.toast('添加失败',1000);
                         }
-                        console.log(data)
+                        //console.log(data)
                     }
                 })
             },
@@ -149,7 +149,7 @@
                         }else{
                             Materialize.toast('保存失败',1000);
                         }
-                        console.log(data);
+                        //console.log(data);
                     }
                 });
             },
@@ -158,7 +158,7 @@
                     url:api_group_detail,
                     data: JSON.stringify({"id": groupid}),
                     success:function (data) {
-                        console.log(data);
+                        //console.log(data);
                         if(data['result']=='ok'){
                             groupadd.$data['group']=data['group'];
                         }else{

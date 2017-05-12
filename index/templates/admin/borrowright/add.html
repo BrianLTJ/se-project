@@ -64,7 +64,7 @@
                         url: api_borrowright_detail,
                         data: JSON.stringify({"id": borrowrightid}),
                         success: function (data) {
-                            console.log(data);
+                            //console.log(data);
                             if(data['result']=='ok'){
                                 borrowright.$data['br']=data['borrowright'];
                             }
@@ -79,7 +79,10 @@
                         data: JSON.stringify({"id": borrowrightid}),
                         success: function (data) {
                             if(data['result']=='ok'){
-                                console.log(data);
+                                Materialize.toast("删除成功",1000);
+                                //console.log(data);
+                            }else{
+                                Materialize.toast("删除失败",1000);
                             }
                         }
                     });
@@ -91,9 +94,12 @@
                         url: api_borrowright_add,
                         data: JSON.stringify(borrowright.$data['br']),
                         success: function (data) {
-                            console.log(data);
+                            //console.log(data);
                             if(data['result']=='ok'){
-                                console.log(data);
+                                Materialize.toast("添加成功",1000);
+                                //console.log(data);
+                            }else{
+                                Materialize.toast("添加失败",1000);
                             }
                         }
                     });
@@ -105,9 +111,12 @@
                         url: api_borrowright_edit,
                         data: JSON.stringify(borrowright.$data['br']),
                         success: function (data) {
-                            console.log(data);
+                            //console.log(data);
                             if(data['result']=='ok'){
-                                console.log(data);
+                                Materialize.toast("修改成功",1000);
+                                //console.log(data);
+                            }else{
+                                Materialize.toast("修改失败",1000);
                             }
                         }
                     });

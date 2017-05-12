@@ -96,7 +96,7 @@
                     url: libbook_list,
                     data: JSON.stringify({"bookid": libbook.$data['bookid'] }),
                     success: function (data) {
-                        console.log(data);
+                        //console.log(data);
                         libbook.$data['libbook']=data['data'];
                     }
                 })
@@ -107,7 +107,7 @@
                     url: libbook_add,
                     data: JSON.stringify(libbook.$data['newlibbook']),
                     success: function (data) {
-                        console.log(data);
+                        //console.log(data);
                         libbook.fetchlibbooks();
                     }
                 })
