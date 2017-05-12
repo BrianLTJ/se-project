@@ -20,7 +20,7 @@ def wrap_book_list_item(book):
         resp_item["translator"]=book.translator
         resp_item["isbn"]=book.isbn
         resp_item["pubhouse"]=book.pubhouse
-        resp_item["pubtime"]=book.translator
+        resp_item["pubtime"]=book.pubtime
         resp_item["cover"]=book.cover
         resp_item["clc"]=book.clc
         resp_item["edition"]=book.edition
